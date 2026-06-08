@@ -1,939 +1,1052 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ZAKVELA | Luxury Minimal</title>
-  <style>
-    :root{
-      --bg:#050505;
-      --bg-2:#0b0b0b;
-      --card:rgba(255,255,255,.04);
-      --card-2:rgba(255,255,255,.07);
-      --line:rgba(255,255,255,.10);
-      --text:#f5f5f5;
-      --muted:rgba(255,255,255,.68);
-      --soft:rgba(255,255,255,.40);
-      --accent:#ffffff;
-      --radius:24px;
-      --shadow:0 20px 60px rgba(0,0,0,.45);
-    }
-
-    *{box-sizing:border-box}
-    html{scroll-behavior:smooth}
-    body{
-      margin:0;
-      font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Arial,sans-serif;
-      background:
-        radial-gradient(circle at top, rgba(255,255,255,.08), transparent 28%),
-        radial-gradient(circle at 80% 20%, rgba(255,255,255,.06), transparent 18%),
-        linear-gradient(180deg, #0a0a0a 0%, #050505 55%, #030303 100%);
-      color:var(--text);
-      overflow-x:hidden;
-    }
-
-    a{color:inherit;text-decoration:none}
-    .container{
-      width:min(1180px, calc(100% - 32px));
-      margin-inline:auto;
-    }
-
-    .topbar{
-      position:sticky;
-      top:0;
-      z-index:50;
-      backdrop-filter:blur(18px);
-      background:rgba(5,5,5,.55);
-      border-bottom:1px solid rgba(255,255,255,.06);
-    }
-
-    .nav{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:20px;
-      min-height:82px;
-    }
-
-    .brand{
-      display:flex;
-      align-items:center;
-      gap:14px;
-      min-width:max-content;
-    }
-
-    .mark{
-      width:42px;height:42px;
-      border:1px solid rgba(255,255,255,.16);
-      border-radius:14px;
-      display:grid;
-      place-items:center;
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
-      box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
-      font-weight:800;
-      letter-spacing:.08em;
-    }
-
-    .brand-text{
-      display:flex;
-      flex-direction:column;
-      line-height:1.05;
-    }
-
-    .brand-text strong{
-      font-size:.95rem;
-      letter-spacing:.32em;
-      font-weight:700;
-    }
-
-    .brand-text span{
-      font-size:.72rem;
-      letter-spacing:.26em;
-      color:var(--muted);
-      margin-top:6px;
-    }
-
-    .nav-links{
-      display:flex;
-      gap:26px;
-      align-items:center;
-      flex-wrap:wrap;
-      justify-content:center;
-      color:var(--muted);
-      font-size:.95rem;
-    }
-
-    .nav-links a{
-      position:relative;
-      padding:10px 0;
-      transition:.25s ease;
-    }
-
-    .nav-links a::after{
-      content:"";
-      position:absolute;
-      left:0;
-      bottom:2px;
-      width:0;
-      height:1px;
-      background:#fff;
-      transition:.25s ease;
-      opacity:.9;
-    }
-
-    .nav-links a:hover,
-    .nav-links a.active{color:#fff}
-
-    .nav-links a:hover::after,
-    .nav-links a.active::after{width:100%}
-
-    .nav-cta{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      padding:12px 18px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.14);
-      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
-      box-shadow:var(--shadow);
-      transition:.25s ease;
-      white-space:nowrap;
-      cursor:pointer;
-      user-select:none;
-    }
-
-    .nav-cta:hover{
-      transform:translateY(-1px);
-      border-color:rgba(255,255,255,.24);
-      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
-    }
-
-    .hero{
-      position:relative;
-      padding:72px 0 36px;
-      min-height:calc(100vh - 82px);
-      display:grid;
-      align-items:center;
-      overflow:hidden;
-    }
-
-    .hero::before,
-    .hero::after{
-      content:"";
-      position:absolute;
-      inset:auto;
-      border-radius:50%;
-      pointer-events:none;
-      filter:blur(6px);
-      opacity:.55;
-    }
-
-    .hero::before{
-      width:520px;height:520px;
-      left:-180px;top:30px;
-      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 68%);
-    }
-
-    .hero::after{
-      width:420px;height:420px;
-      right:-140px;bottom:-120px;
-      background:radial-gradient(circle, rgba(255,255,255,.08), transparent 68%);
-    }
-
-    .hero-grid{
-      display:grid;
-      grid-template-columns:1.15fr .85fr;
-      gap:34px;
-      align-items:center;
-      position:relative;
-      z-index:1;
-    }
-
-    .eyebrow{
-      display:inline-flex;
-      align-items:center;
-      gap:10px;
-      color:var(--muted);
-      font-size:.82rem;
-      letter-spacing:.28em;
-      text-transform:uppercase;
-      margin-bottom:18px;
-    }
-
-    .eyebrow::before{
-      content:"";
-      width:38px;height:1px;
-      background:rgba(255,255,255,.35);
-    }
-
-    h1{
-      margin:0;
-      font-size:clamp(3rem, 7vw, 6.4rem);
-      line-height:.94;
-      letter-spacing:.02em;
-      font-weight:700;
-    }
-
-    .title-accent{
-      display:block;
-      color:rgba(255,255,255,.82);
-      font-size:.34em;
-      letter-spacing:.34em;
-      text-transform:uppercase;
-      margin-bottom:18px;
-      font-weight:500;
-    }
-
-    .lead{
-      margin:22px 0 0;
-      max-width:58ch;
-      color:var(--muted);
-      font-size:1.05rem;
-      line-height:1.9;
-    }
-
-    .hero-actions{
-      display:flex;
-      gap:14px;
-      flex-wrap:wrap;
-      margin-top:30px;
-    }
-
-    .btn{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      gap:10px;
-      min-height:52px;
-      padding:0 22px;
-      border-radius:999px;
-      border:1px solid transparent;
-      transition:.25s ease;
-      cursor:pointer;
-      font-weight:600;
-      letter-spacing:.02em;
-      user-select:none;
-    }
-
-    .btn-primary{
-      background:#fff;
-      color:#111;
-      box-shadow:0 14px 35px rgba(255,255,255,.10);
-    }
-
-    .btn-primary:hover{transform:translateY(-2px)}
-
-    .btn-ghost{
-      background:rgba(255,255,255,.04);
-      color:#fff;
-      border-color:rgba(255,255,255,.12);
-    }
-
-    .btn-ghost:hover{
-      background:rgba(255,255,255,.07);
-      transform:translateY(-2px);
-    }
-
-    .hero-card{
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      border-radius:34px;
-      padding:26px;
-      box-shadow:var(--shadow);
-      position:relative;
-      overflow:hidden;
-      transform:translateZ(0);
-      transition:transform .35s ease;
-    }
-
-    .hero-card::before{
-      content:"";
-      position:absolute;
-      inset:-60% -40%;
-      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 55%);
-      transform:rotate(18deg);
-      pointer-events:none;
-    }
-
-    .product-mock{
-      border-radius:26px;
-      border:1px solid rgba(255,255,255,.09);
-      background:
-        radial-gradient(circle at 50% 0%, rgba(255,255,255,.16), transparent 20%),
-        linear-gradient(180deg, #111 0%, #070707 100%);
-      min-height:520px;
-      position:relative;
-      overflow:hidden;
-      display:flex;
-      align-items:end;
-      justify-content:center;
-      padding:28px;
-    }
-
-    .shirt{
-      width:min(100%, 360px);
-      aspect-ratio:4/5;
-      position:relative;
-      transform:translateY(6px);
-      filter:drop-shadow(0 24px 50px rgba(0,0,0,.4));
-    }
-
-    .shirt .neck{
-      position:absolute;
-      inset:0 16% auto;
-      height:26%;
-      border:20px solid rgba(255,255,255,.94);
-      border-bottom:none;
-      border-radius:0 0 36% 36%;
-      opacity:.95;
-    }
-
-    .shirt .body{
-      position:absolute;
-      inset:18% 0 0;
-      border-radius:22px 22px 34px 34px;
-      background:linear-gradient(180deg, #f6f6f6 0%, #ffffff 100%);
-      box-shadow:inset 0 1px 0 rgba(0,0,0,.06);
-    }
-
-    .shirt .logo{
-      position:absolute;
-      top:28%;
-      left:50%;
-      transform:translateX(-50%);
-      width:72%;
-      z-index:3;
-    }
-
-    .shirt .logo img{
-      width:100%;
-      height:auto;
-      display:block;
-      object-fit:contain;
-    }
-
-    section{
-      padding:28px 0 90px;
-    }
-
-    .section-head{
-      display:flex;
-      justify-content:space-between;
-      gap:18px;
-      align-items:end;
-      margin-bottom:24px;
-    }
-
-    .section-head h2{
-      margin:0;
-      font-size:clamp(1.8rem, 3vw, 2.8rem);
-      letter-spacing:.02em;
-    }
-
-    .section-head p{
-      margin:0;
-      color:var(--muted);
-      max-width:62ch;
-      line-height:1.8;
-    }
-
-    .grid-3{
-      display:grid;
-      grid-template-columns:repeat(3, 1fr);
-      gap:18px;
-    }
-
-    .card{
-      border:1px solid rgba(255,255,255,.10);
-      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
-      border-radius:var(--radius);
-      padding:22px;
-      box-shadow:var(--shadow);
-      transition:.28s ease;
-    }
-
-    .card:hover{
-      transform:translateY(-4px);
-      border-color:rgba(255,255,255,.18);
-      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
-    }
-
-    .card .icon{
-      width:48px;height:48px;
-      display:grid;
-      place-items:center;
-      border-radius:16px;
-      margin-bottom:18px;
-      border:1px solid rgba(255,255,255,.12);
-      background:rgba(255,255,255,.05);
-      font-size:1.2rem;
-    }
-
-    .card h3{
-      margin:0 0 10px;
-      font-size:1.18rem;
-    }
-
-    .card p{
-      margin:0;
-      color:var(--muted);
-      line-height:1.8;
-      font-size:.98rem;
-    }
-
-    .split{
-      display:grid;
-      grid-template-columns:1fr 1fr;
-      gap:18px;
-      align-items:stretch;
-      margin-top:18px;
-    }
-
-    .feature-panel{
-      border-radius:28px;
-      padding:26px;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 28%),
-        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-      box-shadow:var(--shadow);
-      min-height:240px;
-      position:relative;
-      overflow:hidden;
-    }
-
-    .feature-panel h3{
-      margin:0 0 14px;
-      font-size:1.35rem;
-    }
-
-    .feature-panel ul{
-      margin:0;
-      padding:0;
-      list-style:none;
-      display:grid;
-      gap:14px;
-      color:var(--muted);
-    }
-
-    .feature-panel li{
-      display:flex;
-      gap:12px;
-      align-items:flex-start;
-      line-height:1.8;
-    }
-
-    .bullet{
-      flex:none;
-      width:10px;height:10px;
-      margin-top:9px;
-      border-radius:999px;
-      background:#fff;
-      box-shadow:0 0 0 6px rgba(255,255,255,.07);
-    }
-
-    .cta-band{
-      margin-top:18px;
-      padding:28px;
-      border-radius:30px;
-      border:1px solid rgba(255,255,255,.10);
-      background:
-        linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03)),
-        radial-gradient(circle at right top, rgba(255,255,255,.16), transparent 22%);
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:18px;
-      box-shadow:var(--shadow);
-    }
-
-    .cta-band strong{
-      display:block;
-      font-size:1.35rem;
-      margin-bottom:6px;
-    }
-
-    .cta-band span{
-      color:var(--muted);
-      line-height:1.7;
-    }
-
-    footer{
-      padding:26px 0 42px;
-      border-top:1px solid rgba(255,255,255,.08);
-      color:var(--muted);
-      font-size:.92rem;
-    }
-
-    .footer-row{
-      display:flex;
-      justify-content:space-between;
-      gap:16px;
-      flex-wrap:wrap;
-      align-items:center;
-    }
-
-    .reveal{
-      opacity:0;
-      transform:translateY(22px);
-      transition:opacity .7s ease, transform .7s ease;
-    }
-
-    .reveal.show{
-      opacity:1;
-      transform:translateY(0);
-    }
-
-    .page-transition{
-      position:fixed;
-      left:50%;
-      top:50%;
-      width:120px;
-      height:120px;
-      border-radius:50%;
-      background:#000;
-      transform:translate(-50%,-50%) scale(0);
-      opacity:0;
-      pointer-events:none;
-      z-index:99999;
-      transition:transform .8s cubic-bezier(.22,1,.36,1), opacity .2s ease;
-    }
-
-    @media (max-width: 980px){
-      .hero-grid,
-      .grid-3,
-      .split{
-        grid-template-columns:1fr;
-      }
-
-      .nav{
-        flex-wrap:wrap;
-        padding:14px 0;
-      }
-
-      .nav-links{
-        order:3;
-        width:100%;
-        justify-content:flex-start;
-        gap:18px;
-      }
-
-      .hero{
-        padding-top:40px;
-      }
-
-      .product-mock{
-        min-height:420px;
-      }
-
-      .cta-band{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-    }
-
-    @media (max-width: 640px){
-      .container{width:min(100% - 22px, 1180px)}
-      h1{font-size:clamp(2.5rem, 14vw, 4.2rem)}
-      .lead{font-size:1rem}
-      .section-head{
-        flex-direction:column;
-        align-items:flex-start;
-      }
-      .nav-cta{
-        width:100%;
-        justify-content:center;
-      }
-      .hero-actions .btn{
-        width:100%;
-      }
-      .btn{
-        min-height:50px;
-      }
-    }
-
-    *{
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    a,
-    button,
-    .btn,
-    .contact-links a{
-      -webkit-tap-highlight-color: transparent;
-      outline:none;
-      user-select:none;
-    }
-
-    .contact-links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:16px;
-      margin-top:18px;
-    }
-
-    .contact-links a{
-      position:relative;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-width:170px;
-      height:58px;
-      padding:0 28px;
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      letter-spacing:.08em;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      backdrop-filter:blur(12px);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 10px 30px rgba(0,0,0,.35);
-      transition:
-        transform .3s ease,
-        border-color .3s ease,
-        background .3s ease,
-        box-shadow .3s ease;
-    }
-
-    .contact-links a::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:999px;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
-      opacity:0;
-      transition:.4s ease;
-    }
-
-    .contact-links a::after{
-      content:"";
-      position:absolute;
-      top:0;
-      left:-120%;
-      width:60%;
-      height:100%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-      transition:.6s ease;
-    }
-
-    .contact-links a:hover{
-      transform:translateY(-4px);
-      border-color:rgba(255,255,255,.25);
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.12),
-        0 18px 40px rgba(0,0,0,.45);
-    }
-
-    .contact-links a:hover::before{
-      opacity:1;
-    }
-
-    .contact-links a:hover::after{
-      left:140%;
-    }
-
-    a:active,
-    button:active,
-    .btn:active,
-    .contact-links a:active{
-      transform:scale(0.97);
-      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
-      box-shadow:
-        inset 0 2px 8px rgba(255,255,255,.12),
-        0 8px 20px rgba(0,0,0,.35);
-      transition:all .12s ease;
-    }
-
-    @media(max-width:640px){
-      .contact-links{
-        width:100%;
-        flex-direction:column;
-      }
-
-      .contact-links a{
-        width:100%;
-      }
-    }
-
-    @media (prefers-reduced-motion: reduce){
-      html{scroll-behavior:auto}
-      *, *::before, *::after{
-        animation:none !important;
-        transition:none !important;
-      }
-      .reveal{
-        opacity:1;
-        transform:none;
-      }
-    }
-  </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZAKVELA | المنتجات</title>
+<style>
+:root{
+  --bg:#050505;
+  --text:#f5f5f5;
+  --muted:rgba(255,255,255,.62);
+  --line:rgba(255,255,255,.10);
+  --shadow:0 20px 60px rgba(0,0,0,.5);
+  --radius:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top,rgba(255,255,255,.07),transparent 26%),
+    linear-gradient(180deg,#0a0a0a 0%,#050505 55%,#030303 100%);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(1100px,calc(100% - 32px));margin-inline:auto}
+
+/* NAV */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(5,5,5,.55);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:74px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:40px;height:40px;border:1px solid rgba(255,255,255,.16);border-radius:13px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));font-weight:800;letter-spacing:.06em;font-size:.9rem}
+.brand-text strong{display:block;font-size:.9rem;letter-spacing:.32em}
+.brand-text span{display:block;font-size:.68rem;letter-spacing:.24em;color:var(--muted);margin-top:4px}
+.back-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-size:.88rem;color:var(--muted);transition:.2s ease}
+.back-btn:hover{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.07)}
+
+/* PAGE HEADER */
+.page-header{padding:56px 0 36px;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;margin-bottom:16px}
+.eyebrow::before,.eyebrow::after{content:"";flex:none;width:32px;height:1px;background:rgba(255,255,255,.3)}
+.page-header h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:700;letter-spacing:.04em}
+.page-header p{margin:14px auto 0;max-width:50ch;color:var(--muted);line-height:1.85;font-size:.95rem}
+
+/* ═══════════════════════════
+   PRODUCT VIEWER FRAME
+═══════════════════════════ */
+.product-viewer{
+  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  border-radius:34px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  max-width:780px;
+  margin:0 auto 18px;
+  position:relative;
+}
+
+/* الـ Slider الرئيسي */
+.slider-track-wrap{
+  overflow:hidden;
+  border-radius:26px 26px 0 0;
+  position:relative;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.12),transparent 22%),
+    linear-gradient(180deg,#0f0f0f,#060606);
+  touch-action:none;
+  user-select:none;
+}
+.slider-track{
+  display:grid;
+  will-change:transform;
+}
+.slide{
+  grid-area: 1/1;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 32px;
+  min-height:480px;
+  opacity:0;
+  pointer-events:none;
+}
+@media(max-width:600px){.slide{min-height:340px;padding:32px 20px}}
+
+/* Label اللون */
+.slide-label{
+  position:absolute;
+  bottom:22px;left:50%;
+  transform:translateX(-50%);
+  font-size:.72rem;letter-spacing:.24em;
+  color:var(--muted);text-transform:uppercase;
+  padding:6px 18px;border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  backdrop-filter:blur(8px);
+  white-space:nowrap;
+}
+
+/* ── THUMBNAILS ── */
+.thumb-row{
+  padding:20px 24px;
+  border-top:1px solid rgba(255,255,255,.07);
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  background:rgba(0,0,0,.15);
+  position:relative;
+  overflow:hidden;
+  touch-action:none;
+  user-select:none;
+  cursor:grab;
+}
+.thumb-row:active{cursor:grabbing}
+.thumb-inner{
+  display:flex;
+  gap:14px;
+  will-change:transform;
+  transition:none;
+}
+.thumb{
+  flex:none;
+  width:72px;height:72px;
+  border-radius:16px;
+  border:1.5px solid rgba(255,255,255,.12);
+  overflow:hidden;
+  position:relative;
+  transition:border-color .3s ease, transform .3s ease, opacity .3s ease;
+  opacity:.5;
+  transform:scale(.92);
+  display:flex;align-items:center;justify-content:center;
+}
+.thumb.active{
+  border-color:rgba(255,255,255,.55);
+  opacity:1;
+  transform:scale(1);
+  box-shadow:0 4px 20px rgba(255,255,255,.08);
+}
+.thumb-white{background:linear-gradient(160deg,#e8e8e8,#fff)}
+.thumb-black{background:linear-gradient(160deg,#1c1c1c,#111)}
+.thumb-lbl{font-size:.55rem;letter-spacing:.18em;font-weight:700;text-transform:uppercase}
+.thumb-white .thumb-lbl{color:rgba(0,0,0,.35)}
+.thumb-black .thumb-lbl{color:rgba(255,255,255,.35)}
+
+/* hint سحب */
+.drag-hint{
+  text-align:center;
+  padding:10px 0 4px;
+  font-size:.72rem;letter-spacing:.14em;
+  color:rgba(255,255,255,.22);
+}
+
+/* ═══════════════════════════
+   3D SIZE SELECTOR
+═══════════════════════════ */
+.size-section{
+  max-width:780px;
+  margin:0 auto 22px;
+  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;
+  padding:28px 24px 32px;
+  box-shadow:var(--shadow);
+}
+.size-title{
+  text-align:center;
+  font-size:.75rem;letter-spacing:.26em;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:24px;
+}
+
+.size-carousel-wrap{
+  position:relative;
+  height:130px;
+  perspective:600px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  touch-action:none;
+  user-select:none;
+  cursor:grab;
+}
+.size-carousel-wrap:active{cursor:grabbing}
+
+/* FX layer */
+.size-fx{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:15;
+  overflow:hidden;
+}
+.size-fx-trail{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:260px;
+  height:64px;
+  transform:translate(-50%,-50%) scale(.2);
+  opacity:0;
+  border-radius:999px;
+  filter:blur(14px);
+  mix-blend-mode:screen;
+  transition:opacity .12s ease, transform .08s linear;
+}
+.size-fx-burst{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:260px;
+  height:260px;
+  transform:translate(-50%,-50%) scale(.15);
+  opacity:0;
+  border-radius:50%;
+  filter:blur(24px);
+  background:radial-gradient(circle, rgba(255,255,255,.48) 0%, rgba(255,255,255,.18) 28%, transparent 70%);
+  transition:opacity .14s ease, transform .2s ease;
+}
+.size-carousel-wrap.drag-left .size-fx-trail{
+  background:linear-gradient(270deg,
+    transparent 0%,
+    rgba(255,255,255,.04) 14%,
+    rgba(255,255,255,.16) 28%,
+    rgba(255,255,255,.42) 48%,
+    rgba(255,255,255,.90) 54%,
+    rgba(255,255,255,.42) 60%,
+    rgba(255,255,255,.12) 74%,
+    transparent 100%);
+}
+.size-carousel-wrap.drag-right .size-fx-trail{
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,.04) 14%,
+    rgba(255,255,255,.16) 28%,
+    rgba(255,255,255,.42) 48%,
+    rgba(255,255,255,.90) 54%,
+    rgba(255,255,255,.42) 60%,
+    rgba(255,255,255,.12) 74%,
+    transparent 100%);
+}
+.size-carousel-wrap.drag-left .size-fx-burst,
+.size-carousel-wrap.drag-right .size-fx-burst{
+  opacity:1;
+}
+
+.size-item{
+  position:absolute;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  font-weight:800;
+  letter-spacing:.08em;
+  will-change:transform;
+  transition:transform .55s cubic-bezier(.22,1,.36,1),
+             opacity .55s cubic-bezier(.22,1,.36,1),
+             filter .55s cubic-bezier(.22,1,.36,1),
+             box-shadow .55s cubic-bezier(.22,1,.36,1);
+  cursor:pointer;
+  user-select:none;
+  backdrop-filter:blur(4px);
+}
+
+/* حالة active (المنتصف) */
+.size-item.pos-0{
+  width:104px;height:104px;
+  font-size:1.3rem;
+  opacity:1;
+  transform:translateX(0) scale(1) translateZ(0);
+  border:2px solid rgba(255,255,255,.55);
+  background:
+    radial-gradient(circle at 40% 30%,rgba(255,255,255,.18),rgba(255,255,255,.06) 60%),
+    rgba(255,255,255,.08);
+  box-shadow:
+    0 0 0 8px rgba(255,255,255,.04),
+    0 12px 40px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.2);
+  color:#fff;
+  z-index:10;
+}
+/* جانب يمين */
+.size-item.pos-1{
+  width:72px;height:72px;
+  font-size:.9rem;
+  opacity:.45;
+  transform:translateX(130px) scale(.85) translateZ(-60px);
+  border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  z-index:5;
+  filter:blur(.5px);
+}
+/* جانب يمين 2 */
+.size-item.pos-2{
+  width:52px;height:52px;
+  font-size:.75rem;
+  opacity:.2;
+  transform:translateX(210px) scale(.65) translateZ(-120px);
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  color:rgba(255,255,255,.4);
+  z-index:2;
+  filter:blur(1.5px);
+}
+/* جانب يسار */
+.size-item.pos-neg1{
+  width:72px;height:72px;
+  font-size:.9rem;
+  opacity:.45;
+  transform:translateX(-130px) scale(.85) translateZ(-60px);
+  border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  z-index:5;
+  filter:blur(.5px);
+}
+/* جانب يسار 2 */
+.size-item.pos-neg2{
+  width:52px;height:52px;
+  font-size:.75rem;
+  opacity:.2;
+  transform:translateX(-210px) scale(.65) translateZ(-120px);
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  color:rgba(255,255,255,.4);
+  z-index:2;
+  filter:blur(1.5px);
+}
+/* مخفي */
+.size-item.pos-hidden{
+  opacity:0;
+  transform:translateX(0) scale(.4) translateZ(-200px);
+  pointer-events:none;
+  z-index:0;
+}
+
+.size-active-label{
+  text-align:center;
+  margin-top:14px;
+  font-size:.7rem;
+  letter-spacing:.22em;
+  color:rgba(255,255,255,.28);
+  text-transform:uppercase;
+}
+
+/* ═══════════════════════════
+   ORDER FORM
+═══════════════════════════ */
+.form-section{padding-bottom:80px}
+.form-card{
+  border:1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at top right,rgba(255,255,255,.06),transparent 28%),
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;
+  padding:36px;
+  box-shadow:var(--shadow);
+  max-width:780px;
+  margin-inline:auto;
+}
+.form-card h2{margin:0 0 6px;font-size:1.4rem;font-weight:700;letter-spacing:.04em}
+.form-subtitle{color:var(--muted);font-size:.88rem;margin-bottom:26px;line-height:1.7}
+
+.order-summary{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  margin-bottom:22px;
+}
+.sum-dot{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.2);flex:none;transition:.4s ease}
+.sum-dot.white{background:#f0f0f0}
+.sum-dot.black{background:#1a1a1a}
+.sum-info{font-size:.86rem;color:var(--muted);line-height:1.6}
+.sum-info strong{color:#fff;display:block}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.76rem;letter-spacing:.14em;color:var(--muted);font-weight:600}
+input,select,textarea{
+  width:100%;padding:13px 16px;border-radius:13px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;font-size:.93rem;font-family:inherit;outline:none;
+  transition:.2s ease;-webkit-appearance:none;appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.07)}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.25)}
+select option{background:#111;color:#fff}
+textarea{resize:vertical;min-height:80px;line-height:1.7}
+
+.submit-btn{
+  display:block;width:100%;margin-top:20px;padding:16px;
+  border-radius:14px;border:none;background:#fff;color:#111;
+  font-size:.95rem;font-weight:700;letter-spacing:.12em;cursor:pointer;
+  transition:.25s ease;box-shadow:0 10px 30px rgba(255,255,255,.08);
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,255,255,.13)}
+.submit-btn:active{transform:scale(.97)}
+
+.success-msg{display:none;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 20px}
+.success-msg.show{display:flex}
+.success-icon{font-size:2.4rem;width:70px;height:70px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:grid;place-items:center;background:rgba(255,255,255,.06)}
+.success-msg h3{font-size:1.35rem}
+.success-msg p{color:var(--muted);line-height:1.8;max-width:38ch;font-size:.9rem}
+.reset-btn{margin-top:6px;padding:12px 28px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;font-size:.88rem;letter-spacing:.1em;transition:.2s ease}
+.reset-btn:hover{background:rgba(255,255,255,.09)}
+
+/* QTY SELECTOR */
+.qty-selector{
+  display:flex;
+  align-items:center;
+  gap:0;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:13px;
+  background:rgba(255,255,255,.04);
+  overflow:hidden;
+  height:50px;
+}
+.qty-btn{
+  flex:none;
+  width:50px;height:100%;
+  background:rgba(255,255,255,.05);
+  border:none;
+  color:#fff;
+  font-size:1.35rem;
+  font-weight:300;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.qty-btn:hover{ background:rgba(255,255,255,.11) }
+.qty-btn:active{
+  background:rgba(255,255,255,.18);
+  transform:scale(.92);
+}
+.qty-btn:first-child{
+  border-left:none;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.qty-btn:last-child{
+  border-right:none;
+  border-left:1px solid rgba(255,255,255,.08);
+}
+.qty-display{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  position:relative;
+}
+.qty-num{
+  font-size:1.25rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  line-height:1;
+  transition:transform .22s cubic-bezier(.22,1,.36,1), opacity .22s ease;
+}
+.qty-unit{
+  font-size:.6rem;
+  letter-spacing:.18em;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.qty-num.bump-up{
+  animation:bumpUp .22s cubic-bezier(.22,1,.36,1);
+}
+.qty-num.bump-down{
+  animation:bumpDown .22s cubic-bezier(.22,1,.36,1);
+}
+@keyframes bumpUp{
+  0%{transform:translateY(8px);opacity:0}
+  100%{transform:translateY(0);opacity:1}
+}
+@keyframes bumpDown{
+  0%{transform:translateY(-8px);opacity:0}
+  100%{transform:translateY(0);opacity:1}
+}
+
+/* FOOTER */
+footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:.88rem}
+.footer-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .form-grid{grid-template-columns:1fr}
+  .form-card{padding:22px 16px}
+  .size-item.pos-1{transform:translateX(100px) scale(.85) translateZ(-60px)}
+  .size-item.pos-neg1{transform:translateX(-100px) scale(.85) translateZ(-60px)}
+  .size-item.pos-2{transform:translateX(165px) scale(.65) translateZ(-120px)}
+  .size-item.pos-neg2{transform:translateX(-165px) scale(.65) translateZ(-120px)}
+}
+</style>
 </head>
 <body>
-  <header class="topbar">
-    <div class="container">
-      <nav class="nav">
-        <a class="brand" href="#home" aria-label="ZAKVELA">
-          <div class="mark">ZV</div>
-          <div class="brand-text">
-            <strong>ZAKVELA</strong>
-            <span>MADE IN ALGERIA</span>
-          </div>
-        </a>
 
-        <div class="nav-links">
-          <a href="#home" class="active">الرئيسية</a>
-          <a href="#about">عن العلامة</a>
-          <a href="#features">المميزات</a>
-          <a href="#contact">التواصل</a>
+<header class="topbar">
+  <div class="container">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <div class="mark">ZV</div>
+        <div class="brand-text">
+          <strong>ZAKVELA</strong>
+          <span>MADE IN ALGERIA</span>
+        </div>
+      </a>
+      <a class="back-btn" href="index.html">← الرئيسية</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+  <div class="page-header reveal">
+    <div class="eyebrow">ZAKVELA Collection</div>
+    <h1>تشكيلتنا</h1>
+    <p>اسحب لاستعراض الألوان واختيار مقاسك بطريقة فاخرة.</p>
+  </div>
+
+  <!-- ═══ PRODUCT VIEWER ═══ -->
+  <div class="product-viewer reveal">
+
+    <!-- الـ Slider -->
+    <div class="slider-track-wrap" id="sliderWrap">
+      <div class="slider-track" id="sliderTrack">
+
+        <!-- أبيض -->
+        <div class="slide slide-white">
+          <div class="slide-label">أبيض — White</div>
         </div>
 
-        <a class="nav-cta order-btn" href="catalog.html">اطلب الآن</a>
-      </nav>
+        <!-- أسود -->
+        <div class="slide slide-black">
+          <div class="slide-label">أسود — Black</div>
+        </div>
+
+      </div>
     </div>
-  </header>
 
-  <main id="home" class="hero">
-    <div class="container">
-      <div class="hero-grid">
-        <div class="reveal">
-          <div class="eyebrow">Luxury Minimal Brand</div>
-          <h1>
-            <span class="title-accent">ZAKVELA</span>
-            Proudly Made in Algeria<br />
-          </h1>
-          <p class="lead">
-            هذا التيشيرت مصنوع من قماش التويل، وهو قماش معروف بمتانته مقارنة ببعض أنواع الأقمشة الخفيفة. ملمسه ناعم نسبيًا ويحافظ على شكله بشكل جيد مع الاستعمال العادي. يتوفر باللونين الأبيض والأسود، ويتميز بتصميم بسيط يمكن تنسيقه بسهولة مع مختلف الملابس.
-          </p>
-
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#about">اكتشف التصميم</a>
-            <a class="btn btn-ghost" href="#contact">تواصل معنا</a>
-          </div>
+    <!-- THUMBNAILS -->
+    <div class="thumb-row" id="thumbRow">
+      <div class="thumb-inner" id="thumbInner" dir="ltr">
+        <div class="thumb thumb-white active" data-idx="0">
+          <svg viewBox="0 0 100 110" width="44" height="44">
+            <path d="M50,12 C50,12 42,11 35,9 L20,20 L30,33 L37,28 L37,105 L63,105 L63,28 L70,33 L80,20 L65,9 C58,11 50,12 50,12 Z" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+            <path d="M37,13 C37,13 41,20 50,21 C59,20 63,13 63,13" fill="none" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
         </div>
+        <div class="thumb thumb-black" data-idx="1">
+          <svg viewBox="0 0 100 110" width="44" height="44">
+            <path d="M50,12 C50,12 42,11 35,9 L20,20 L30,33 L37,28 L37,105 L63,105 L63,28 L70,33 L80,20 L65,9 C58,11 50,12 50,12 Z" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+            <path d="M37,13 C37,13 41,20 50,21 C59,20 63,13 63,13" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
 
-        <div class="hero-card reveal">
-          <div class="product-mock">
-            <div class="shirt" aria-hidden="true">
-              <div class="neck"></div>
-              <div class="body"></div>
-              <div class="logo">
-                <img src="image/logo.png" alt="logo">
+    <div class="drag-hint">← اسحب للتبديل →</div>
+  </div>
+
+  <!-- ═══ 3D SIZE SELECTOR ═══ -->
+  <div class="size-section reveal">
+    <div class="size-title">اختر المقاس</div>
+    <div class="size-carousel-wrap" id="sizeCarousel">
+      <div class="size-fx" id="sizeFx" aria-hidden="true">
+        <div class="size-fx-trail"></div>
+        <div class="size-fx-burst"></div>
+      </div>
+      <!-- تُنشأ بالـ JS -->
+    </div>
+    <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
+  </div>
+
+  <!-- ═══ ORDER FORM ═══ -->
+  <div class="form-section reveal">
+    <div class="form-card">
+      <h2>فورم الطلب</h2>
+      <p class="form-subtitle">أرسل طلبك وسنتواصل معك فوراً عبر WhatsApp.</p>
+
+      <div class="order-summary">
+        <div class="sum-dot white" id="sumDot"></div>
+        <div class="sum-info">
+          <strong id="sumColor">أبيض</strong>
+          المقاس: <span id="sumSize">M</span>
+        </div>
+      </div>
+
+      <div id="formWrap">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>الاسم الكامل</label>
+            <input type="text" id="fName" placeholder="مثال: أحمد بن علي">
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="fPhone" placeholder="05xxxxxxxx">
+          </div>
+          <div class="form-group">
+            <label>اللون (محدد تلقائياً)</label>
+            <input type="text" id="fColor" value="أبيض" readonly style="opacity:.7;cursor:default">
+          </div>
+          <div class="form-group">
+            <label>الكمية</label>
+            <div class="qty-selector">
+              <button class="qty-btn" onclick="changeQty(-1)" type="button">−</button>
+              <div class="qty-display">
+                <span class="qty-num" id="qtyNum">1</span>
+                <span class="qty-unit">قطعة</span>
               </div>
+              <button class="qty-btn" onclick="changeQty(1)" type="button">+</button>
             </div>
+            <input type="hidden" id="fQty" value="1">
+          </div>
+          <div class="form-group">
+            <label>الولاية / المدينة</label>
+            <input type="text" id="fCity" placeholder="مثال: الجزائر العاصمة">
+          </div>
+          <div class="form-group">
+            <label>المقاس (محدد تلقائياً)</label>
+            <input type="text" id="fSize" value="M" readonly style="opacity:.7;cursor:default">
+          </div>
+          <div class="form-group full">
+            <label>ملاحظات (اختياري)</label>
+            <textarea id="fNotes" placeholder="أي تفاصيل إضافية..."></textarea>
           </div>
         </div>
+        <button class="submit-btn" onclick="submitOrder()">إرسال الطلب عبر Telegram ←</button>
+      </div>
+
+      <div class="success-msg" id="successMsg">
+        <div class="success-icon">✓</div>
+        <h3>تم إرسال الطلب!</h3>
+        <p>سيفتح Telegram لإتمام الطلب، سنتواصل معك قريباً </p>
+        <button class="reset-btn" onclick="resetForm()">طلب جديد</button>
       </div>
     </div>
-  </main>
+  </div>
 
-  <section id="about">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <h2>هوية نظيفة وبصمة فاخرة</h2>
-          <p>
-            يعتمد التصميم على التباين الأسود والأبيض، مع خطوط واضحة ومساحات فارغة
-            محسوبة، ليظهر المنتج أو العلامة بشكل راقٍ ومباشر.
-          </p>
-        </div>
-      </div>
+</div>
+</main>
 
-      <div class="grid-3">
-        <article class="card reveal">
-          <div class="icon">✦</div>
-          <h3>Minimal</h3>
-          <p>تقليل العناصر غير الضرورية حتى يبقى التركيز على العلامة والمنتج.</p>
-        </article>
-
-        <article class="card reveal">
-          <div class="icon">◌</div>
-          <h3>Elegant Motion</h3>
-          <p>حركات خفيفة جدًا تضيف حياة للواجهة بدون إزعاج أو مبالغة.</p>
-        </article>
-
-        <article class="card reveal">
-          <div class="icon">▣</div>
-          <h3>Practical</h3>
-          <p>واجهة منظمة وسهلة التعديل، مناسبة لعرض منتجات أو صفحة تعريفية أو متجر بسيط.</p>
-        </article>
-      </div>
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <div>© ZAKVELA — Luxury Minimal Design</div>
+      <div>Made in Algeria</div>
     </div>
-  </section>
+  </div>
+</footer>
 
-  <section id="features">
-    <div class="container">
-      <div class="section-head reveal">
-        <div>
-          <h2>مواصفات جاهزة للاستعمال</h2>
-          <p>
-            تقدر تبدل النصوص، الصور، والأزرار بسهولة، مع الحفاظ على نفس الطابع
-            الراقٍ والمتوازن.
-          </p>
-        </div>
-      </div>
+<script>
+(() => {
+  'use strict';
 
-      <div class="split">
-        <div class="feature-panel reveal">
-          <h3>المؤثرات</h3>
-          <ul>
-            <li><span class="bullet"></span>ظلال خفيفة وحواف ناعمة مع خلفية متدرجة.</li>
-            <li><span class="bullet"></span>انتقالات سلسة عند المرور والتمرير.</li>
-            <li><span class="bullet"></span>Reveal animation بسيطة تظهر العناصر تدريجيًا.</li>
-          </ul>
-        </div>
+  const ORDER_API = "https://botzakvela.onrender.com/order";
+  const REQUEST_TIMEOUT_MS = 12000;
+  const COLORS = ['أبيض', 'أسود'];
+  const DOTS = ['white', 'black'];
+  const SIZES = ['M', 'L', 'XL', 'XXL'];
+  const SIZE_STEP = 150;
 
-        <div class="feature-panel reveal">
-          <h3>التوافق</h3>
-          <ul>
-            <li><span class="bullet"></span>Responsive على الهاتف، التابلت، والكمبيوتر.</li>
-            <li><span class="bullet"></span>ألوان واضحة مناسبة للطباعة والعرض التجاري.</li>
-            <li><span class="bullet"></span>سهل جدًا لتعديل الهوية، الأزرار، والأقسام.</li>
-          </ul>
-        </div>
-      </div>
+  const $ = (id) => document.getElementById(id);
+  const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+  const wrapIndex = (i, length) => ((i % length) + length) % length;
 
-      <div class="cta-band reveal" id="contact">
-        <div class="contact-content">
-          <strong>تواصل مع ZAKVELA</strong>
-          <span>للاستفسارات، الطلبات الخاصة، أو التعاون التجاري.</span>
+  const ui = {
+    slides: Array.from(document.querySelectorAll('.slide')),
+    thumbs: Array.from(document.querySelectorAll('.thumb')),
+    wrap: $('sliderWrap'),
+    thumbRow: $('thumbRow'),
+    carousel: $('sizeCarousel'),
+    fColor: $('fColor'),
+    sumColor: $('sumColor'),
+    sumDot: $('sumDot'),
+    sizeCurrent: $('sizeCurrent'),
+    sumSize: $('sumSize'),
+    fSize: $('fSize'),
+    fQty: $('fQty'),
+    qtyNum: $('qtyNum'),
+    formWrap: $('formWrap'),
+    successMsg: $('successMsg'),
+    submitBtn: document.querySelector('.submit-btn'),
+    fName: $('fName'),
+    fPhone: $('fPhone'),
+    fCity: $('fCity'),
+    fNotes: $('fNotes'),
+  };
 
-          <div class="contact-links">
-            <a href="https://wa.me/qr/AQFYXUJWSATEG1" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-            <a href="https://www.facebook.com/zaki.abbas.75457" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://t.me/+213774843237" target="_blank" rel="noopener noreferrer">Telegram</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
+  if (typeof ORDER_API !== 'string' || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
+    console.warn('ORDER_API is still a placeholder. Replace it with your real server URL.');
+  }
 
-  <footer>
-    <div class="container">
-      <div class="footer-row">
-        <div>© ZAKVELA — Luxury Minimal Design</div>
-        <div>Made with a clean black / white aesthetic</div>
-      </div>
-    </div>
-  </footer>
+  let currentSlide = 0;
+  let currentSize = 0;
 
-  <div class="page-transition" aria-hidden="true"></div>
+  function updateColorState(index) {
+    const color = COLORS[index] || COLORS[0];
+    const dot = DOTS[index] || DOTS[0];
 
-  <script>
-    // Reveal on scroll
-    const items = document.querySelectorAll('.reveal');
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) entry.target.classList.add('show');
-      });
-    }, { threshold: 0.12 });
+    if (ui.fColor) ui.fColor.value = color;
+    if (ui.sumColor) ui.sumColor.textContent = color;
+    if (ui.sumDot) ui.sumDot.className = `sum-dot ${dot}`;
+  }
 
-    items.forEach(el => io.observe(el));
+  function updateSizeState(index) {
+    const size = SIZES[index] || SIZES[0];
 
-    // Active nav link
-    const links = [...document.querySelectorAll('.nav-links a')];
-    const sections = ['home', 'about', 'features', 'contact']
-      .map(id => document.getElementById(id))
-      .filter(Boolean);
+    if (ui.sizeCurrent) ui.sizeCurrent.textContent = size;
+    if (ui.sumSize) ui.sumSize.textContent = size;
+    if (ui.fSize) ui.fSize.value = size;
+  }
 
-    const navObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (!entry.isIntersecting) return;
-        links.forEach(a => a.classList.remove('active'));
-        const active = links.find(a => a.getAttribute('href') === '#' + entry.target.id);
-        if (active) active.classList.add('active');
-      });
-    }, { threshold: 0.45 });
+  function showSlide(index, animate = true) {
+    if (!ui.slides.length) return;
 
-    sections.forEach(sec => navObserver.observe(sec));
+    currentSlide = wrapIndex(index, ui.slides.length);
 
-    // Soft parallax for hero card
-    const hero = document.querySelector('.hero');
-    const card = document.querySelector('.hero-card');
+    ui.slides.forEach((slide, i) => {
+      slide.style.transition = animate ? 'opacity .45s ease' : 'none';
+      slide.style.opacity = i === currentSlide ? '1' : '0';
+      slide.style.pointerEvents = i === currentSlide ? 'auto' : 'none';
+    });
 
-    if (hero && card) {
-      hero.addEventListener('mousemove', (e) => {
-        const rect = hero.getBoundingClientRect();
-        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
-        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
-        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
-      });
+    ui.thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle('active', i === currentSlide);
+    });
 
-      hero.addEventListener('mouseleave', () => {
-        card.style.transform = 'translate3d(0,0,0)';
-      });
+    updateColorState(currentSlide);
+  }
+
+  function renderSizeCarousel(animate = true) {
+    if (!ui.carousel) return;
+
+    sizeItems.forEach((el, i) => {
+      let rel = wrapIndex(i - currentSize, sizeItems.length);
+      if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+
+      el.className = 'size-item';
+
+      if (rel === 0) el.classList.add('pos-0');
+      else if (rel === 1) el.classList.add('pos-1');
+      else if (rel === -1) el.classList.add('pos-neg1');
+      else if (rel === 2) el.classList.add('pos-2');
+      else if (rel === -2) el.classList.add('pos-neg2');
+      else el.classList.add('pos-hidden');
+
+      if (!animate) {
+        el.style.transition = 'none';
+        requestAnimationFrame(() => { el.style.transition = ''; });
+      }
+    });
+
+    updateSizeState(currentSize);
+  }
+
+  function goToSize(index, animate = true) {
+    currentSize = wrapIndex(index, SIZES.length);
+    renderSizeCarousel(animate);
+  }
+
+  function applyDragOffset(frac) {
+    if (!sizeItems.length) return;
+
+    sizeItems.forEach((el, i) => {
+      let rel = wrapIndex(i - currentSize, sizeItems.length);
+      if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+
+      const adjRel = rel - frac;
+      el.className = 'size-item';
+      el.style.transition = 'none';
+
+      let tx, sc, op, bl;
+
+      if (adjRel >= -0.5 && adjRel <= 0.5) {
+        const t = adjRel;
+        if (t >= 0) {
+          tx = 130 * t;
+          sc = 1 - 0.15 * t;
+          op = 1 - 0.55 * t;
+          bl = 0.5 * t;
+        } else {
+          tx = 130 * t;
+          sc = 1 + 0.15 * t;
+          op = 1 + 0.55 * t;
+          bl = 0.5 * (-t);
+        }
+        sc = clamp(sc, 0.85, 1);
+        op = clamp(op, 0.45, 1);
+        bl = clamp(bl, 0, 0.5);
+      } else if (adjRel > 0.5 && adjRel <= 1.5) {
+        const t = adjRel - 1;
+        tx = 130 + 80 * t;
+        sc = .85 - .2 * t;
+        op = .45 - .25 * t;
+        bl = .5 + t;
+        sc = clamp(sc, 0.65, .85);
+        op = clamp(op, 0.2, .45);
+        bl = clamp(bl, 0.5, 1.5);
+      } else if (adjRel < -0.5 && adjRel >= -1.5) {
+        const t = -(adjRel + 1);
+        tx = -130 - 80 * t;
+        sc = .85 - .2 * t;
+        op = .45 - .25 * t;
+        bl = .5 + t;
+        sc = clamp(sc, 0.65, .85);
+        op = clamp(op, 0.2, .45);
+        bl = clamp(bl, 0.5, 1.5);
+      } else {
+        el.style.opacity = 0;
+        return;
+      }
+
+      if (window.innerWidth <= 640) {
+        tx *= 0.77;
+      }
+
+      el.style.transform = `translateX(${tx}px) scale(${sc}) translateZ(0)`;
+      el.style.opacity = op;
+      el.style.filter = 'none';
+      el.style.zIndex = adjRel === 0 ? 10 : (Math.abs(adjRel) < 1 ? 5 : 2);
+    });
+  }
+
+  function createFetchTimeout() {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    return { controller, timer };
+  }
+
+  async function submitOrder() {
+    const name = ui.fName?.value.trim() || '';
+    const phone = ui.fPhone?.value.trim() || '';
+    const color = ui.fColor?.value || '';
+    const size = ui.fSize?.value || '';
+    const qty = ui.fQty?.value || '';
+    const city = ui.fCity?.value.trim() || '';
+    const notes = ui.fNotes?.value.trim() || '';
+
+    if (!name || !phone || !city) {
+      alert('الرجاء ملء جميع الحقول المطلوبة.');
+      return;
     }
 
-    // Order button transition
-    document.querySelectorAll('.order-btn').forEach(btn => {
-      btn.addEventListener('click', e => {
-        e.preventDefault();
+    if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
+      alert('ضع رابط السيرفر الحقيقي داخل ORDER_API أولاً.');
+      return;
+    }
 
-        const overlay = document.querySelector('.page-transition') || document.createElement('div');
-        if (!overlay.classList.contains('page-transition')) {
-          overlay.className = 'page-transition';
-          document.body.appendChild(overlay);
-        }
+    const btn = ui.submitBtn;
+    const oldText = btn ? btn.textContent : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'جارٍ الإرسال...';
+    }
 
-        overlay.style.opacity = '1';
-        overlay.style.transform = 'translate(-50%,-50%) scale(0)';
+    const { controller, timer } = createFetchTimeout();
 
-        document.body.style.overflow = 'hidden';
-
-        requestAnimationFrame(() => {
-          overlay.style.transform = 'translate(-50%,-50%) scale(30)';
-        });
-
-        setTimeout(() => {
-          window.location.href = btn.getAttribute('href');
-        }, 700);
+    try {
+      const res = await fetch(ORDER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          name,
+          phone,
+          color,
+          size,
+          qty,
+          city,
+          notes
+        })
       });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'FAILED');
+      }
+
+      if (ui.formWrap) ui.formWrap.style.display = 'none';
+      if (ui.successMsg) ui.successMsg.classList.add('show');
+    } catch (err) {
+      if (err?.name === 'AbortError') {
+        alert('انتهى وقت الإرسال. حاول مرة أخرى.');
+      } else {
+        alert('تعذر إرسال الطلب. تحقق من رابط الخادم أو إعدادات البوت.');
+      }
+    } finally {
+      clearTimeout(timer);
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
+    }
+  }
+
+  function changeQty(delta) {
+    if (!ui.fQty || !ui.qtyNum) return;
+
+    let val = parseInt(ui.fQty.value, 10);
+    if (Number.isNaN(val)) val = 1;
+
+    val = clamp(val + delta, 1, 10);
+    ui.fQty.value = String(val);
+    ui.qtyNum.textContent = String(val);
+
+    ui.qtyNum.classList.remove('bump-up', 'bump-down');
+    void ui.qtyNum.offsetWidth;
+    ui.qtyNum.classList.add(delta > 0 ? 'bump-up' : 'bump-down');
+  }
+
+  function resetForm() {
+    if (ui.fName) ui.fName.value = '';
+    if (ui.fPhone) ui.fPhone.value = '';
+    if (ui.fCity) ui.fCity.value = '';
+    if (ui.fNotes) ui.fNotes.value = '';
+
+    if (ui.fQty) ui.fQty.value = '1';
+    if (ui.qtyNum) ui.qtyNum.textContent = '1';
+
+    currentSlide = 0;
+    currentSize = 0;
+
+    showSlide(0, false);
+    goToSize(0, false);
+
+    if (ui.formWrap) ui.formWrap.style.display = '';
+    if (ui.successMsg) ui.successMsg.classList.remove('show');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const sizeItems = SIZES.map((s) => {
+    const el = document.createElement('div');
+    el.className = 'size-item';
+    el.textContent = s;
+    ui.carousel?.appendChild(el);
+    return el;
+  });
+
+  let slideStartX = 0;
+  let slideDragging = false;
+
+  function slideStart(x) {
+    slideDragging = true;
+    slideStartX = x;
+  }
+
+  function slideEnd(x) {
+    if (!slideDragging) return;
+    slideDragging = false;
+
+    const dx = slideStartX - x;
+    if (dx > 40 && currentSlide < ui.slides.length - 1) showSlide(currentSlide + 1, true);
+    else if (dx < -40 && currentSlide > 0) showSlide(currentSlide - 1, true);
+  }
+
+  if (ui.wrap) {
+    ui.wrap.addEventListener('mousedown', (e) => { e.preventDefault(); slideStart(e.clientX); });
+    window.addEventListener('mouseup', (e) => slideEnd(e.clientX));
+    ui.wrap.addEventListener('touchstart', (e) => slideStart(e.touches[0].clientX), { passive: true });
+    window.addEventListener('touchend', (e) => {
+      if (e.changedTouches && e.changedTouches[0]) slideEnd(e.changedTouches[0].clientX);
     });
-  </script>
+  }
+
+  if (ui.thumbRow) {
+    ui.thumbRow.addEventListener('mousedown', (e) => { e.preventDefault(); slideStart(e.clientX); });
+    ui.thumbRow.addEventListener('touchstart', (e) => slideStart(e.touches[0].clientX), { passive: true });
+  }
+
+  let sizeStartX = 0;
+  let sizeDragging = false;
+  let dragRel = 0;
+
+  function sizeStart(x) {
+    sizeDragging = true;
+    sizeStartX = x;
+    dragRel = 0;
+  }
+
+  function sizeMove(x) {
+    if (!sizeDragging) return;
+    const dx = sizeStartX - x;
+    dragRel = dx / SIZE_STEP;
+    applyDragOffset(dragRel);
+  }
+
+  function sizeEnd() {
+    if (!sizeDragging) return;
+    sizeDragging = false;
+    const snap = Math.round(dragRel);
+    goToSize(currentSize + snap, true);
+    dragRel = 0;
+  }
+
+  if (ui.carousel) {
+    ui.carousel.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      sizeStart(e.clientX);
+    });
+
+    window.addEventListener('mousemove', (e) => sizeMove(e.clientX));
+    window.addEventListener('mouseup', () => sizeEnd());
+
+    ui.carousel.addEventListener('touchstart', (e) => {
+      sizeStart(e.touches[0].clientX);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!sizeDragging || !e.touches[0]) return;
+      sizeMove(e.touches[0].clientX);
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => sizeEnd());
+  }
+
+  window.changeQty = changeQty;
+  window.submitOrder = submitOrder;
+  window.resetForm = resetForm;
+
+  showSlide(0, false);
+  goToSize(0, false);
+
+  const revEls = document.querySelectorAll('.reveal');
+  const revIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    },
+    { threshold: 0.08 }
+  );
+  revEls.forEach((el) => revIO.observe(el));
+
+  window.addEventListener('resize', () => {
+    renderSizeCarousel(false);
+  });
+})();
+</script>
 </body>
 </html>
