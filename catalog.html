@@ -1,0 +1,855 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ZAKVELA | المنتجات</title>
+<style>
+:root{
+  --bg:#050505;
+  --text:#f5f5f5;
+  --muted:rgba(255,255,255,.62);
+  --line:rgba(255,255,255,.10);
+  --shadow:0 20px 60px rgba(0,0,0,.5);
+  --radius:24px;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  background:
+    radial-gradient(circle at top,rgba(255,255,255,.07),transparent 26%),
+    linear-gradient(180deg,#0a0a0a 0%,#050505 55%,#030303 100%);
+  color:var(--text);
+  overflow-x:hidden;
+  min-height:100vh;
+}
+a{color:inherit;text-decoration:none}
+.container{width:min(1100px,calc(100% - 32px));margin-inline:auto}
+
+/* NAV */
+.topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(5,5,5,.55);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:74px}
+.brand{display:flex;align-items:center;gap:12px}
+.mark{width:40px;height:40px;border:1px solid rgba(255,255,255,.16);border-radius:13px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));font-weight:800;letter-spacing:.06em;font-size:.9rem}
+.brand-text strong{display:block;font-size:.9rem;letter-spacing:.32em}
+.brand-text span{display:block;font-size:.68rem;letter-spacing:.24em;color:var(--muted);margin-top:4px}
+.back-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-size:.88rem;color:var(--muted);transition:.2s ease}
+.back-btn:hover{color:#fff;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.07)}
+
+/* PAGE HEADER */
+.page-header{padding:56px 0 36px;text-align:center}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;color:var(--muted);font-size:.78rem;letter-spacing:.28em;text-transform:uppercase;margin-bottom:16px}
+.eyebrow::before,.eyebrow::after{content:"";flex:none;width:32px;height:1px;background:rgba(255,255,255,.3)}
+.page-header h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:700;letter-spacing:.04em}
+.page-header p{margin:14px auto 0;max-width:50ch;color:var(--muted);line-height:1.85;font-size:.95rem}
+
+/* ═══════════════════════════
+   PRODUCT VIEWER FRAME
+═══════════════════════════ */
+.product-viewer{
+  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
+  border-radius:34px;
+  overflow:hidden;
+  box-shadow:var(--shadow);
+  max-width:780px;
+  margin:0 auto 18px;
+  position:relative;
+}
+
+/* الـ Slider الرئيسي */
+.slider-track-wrap{
+  overflow:hidden;
+  border-radius:26px 26px 0 0;
+  position:relative;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.12),transparent 22%),
+    linear-gradient(180deg,#0f0f0f,#060606);
+  touch-action:none;
+  user-select:none;
+}
+.slider-track{
+  display:grid;
+  will-change:transform;
+}
+.slide{
+  grid-area: 1/1;
+  width:100%;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:48px 32px;
+  min-height:480px;
+  opacity:0;
+  pointer-events:none;
+}
+@media(max-width:600px){.slide{min-height:340px;padding:32px 20px}}
+
+
+
+/* Label اللون */
+.slide-label{
+  position:absolute;
+  bottom:22px;left:50%;
+  transform:translateX(-50%);
+  font-size:.72rem;letter-spacing:.24em;
+  color:var(--muted);text-transform:uppercase;
+  padding:6px 18px;border-radius:999px;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.09);
+  backdrop-filter:blur(8px);
+  white-space:nowrap;
+}
+
+/* ── THUMBNAILS ── */
+.thumb-row{
+  padding:20px 24px;
+  border-top:1px solid rgba(255,255,255,.07);
+  display:flex;
+  justify-content:center;
+  gap:14px;
+  background:rgba(0,0,0,.15);
+  position:relative;
+  overflow:hidden;
+  touch-action:none;
+  user-select:none;
+  cursor:grab;
+}
+.thumb-row:active{cursor:grabbing}
+.thumb-inner{
+  display:flex;
+  gap:14px;
+  will-change:transform;
+  transition:none;
+}
+.thumb{
+  flex:none;
+  width:72px;height:72px;
+  border-radius:16px;
+  border:1.5px solid rgba(255,255,255,.12);
+  overflow:hidden;
+  position:relative;
+  transition:border-color .3s ease, transform .3s ease, opacity .3s ease;
+  opacity:.5;
+  transform:scale(.92);
+  display:flex;align-items:center;justify-content:center;
+}
+.thumb.active{
+  border-color:rgba(255,255,255,.55);
+  opacity:1;
+  transform:scale(1);
+  box-shadow:0 4px 20px rgba(255,255,255,.08);
+}
+.thumb-white{background:linear-gradient(160deg,#e8e8e8,#fff)}
+.thumb-black{background:linear-gradient(160deg,#1c1c1c,#111)}
+.thumb-lbl{font-size:.55rem;letter-spacing:.18em;font-weight:700;text-transform:uppercase}
+.thumb-white .thumb-lbl{color:rgba(0,0,0,.35)}
+.thumb-black .thumb-lbl{color:rgba(255,255,255,.35)}
+
+/* hint سحب */
+.drag-hint{
+  text-align:center;
+  padding:10px 0 4px;
+  font-size:.72rem;letter-spacing:.14em;
+  color:rgba(255,255,255,.22);
+}
+
+/* ═══════════════════════════
+   3D SIZE SELECTOR
+═══════════════════════════ */
+.size-section{
+  max-width:780px;
+  margin:0 auto 22px;
+  border:1px solid rgba(255,255,255,.10);
+  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;
+  padding:28px 24px 32px;
+  box-shadow:var(--shadow);
+}
+.size-title{
+  text-align:center;
+  font-size:.75rem;letter-spacing:.26em;
+  color:var(--muted);text-transform:uppercase;
+  margin-bottom:24px;
+}
+
+.size-carousel-wrap{
+  position:relative;
+  height:130px;
+  perspective:600px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+  touch-action:none;
+  user-select:none;
+  cursor:grab;
+}
+.size-carousel-wrap:active{cursor:grabbing}
+
+.size-item{
+  position:absolute;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:50%;
+  font-weight:800;
+  letter-spacing:.08em;
+  will-change:transform;
+  transition:transform .55s cubic-bezier(.22,1,.36,1),
+             opacity .55s cubic-bezier(.22,1,.36,1),
+             filter .55s cubic-bezier(.22,1,.36,1),
+             box-shadow .55s cubic-bezier(.22,1,.36,1);
+  cursor:pointer;
+  user-select:none;
+  /* glass */
+  backdrop-filter:blur(4px);
+}
+
+/* حالة active (المنتصف) */
+.size-item.pos-0{
+  width:104px;height:104px;
+  font-size:1.3rem;
+  opacity:1;
+  transform:translateX(0) scale(1) translateZ(0);
+  border:2px solid rgba(255,255,255,.55);
+  background:
+    radial-gradient(circle at 40% 30%,rgba(255,255,255,.18),rgba(255,255,255,.06) 60%),
+    rgba(255,255,255,.08);
+  box-shadow:
+    0 0 0 8px rgba(255,255,255,.04),
+    0 12px 40px rgba(0,0,0,.4),
+    inset 0 1px 0 rgba(255,255,255,.2);
+  color:#fff;
+  z-index:10;
+}
+/* جانب يمين */
+.size-item.pos-1{
+  width:72px;height:72px;
+  font-size:.9rem;
+  opacity:.45;
+  transform:translateX(130px) scale(.85) translateZ(-60px);
+  border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  z-index:5;
+  filter:blur(.5px);
+}
+/* جانب يمين 2 */
+.size-item.pos-2{
+  width:52px;height:52px;
+  font-size:.75rem;
+  opacity:.2;
+  transform:translateX(210px) scale(.65) translateZ(-120px);
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  color:rgba(255,255,255,.4);
+  z-index:2;
+  filter:blur(1.5px);
+}
+/* جانب يسار */
+.size-item.pos-neg1{
+  width:72px;height:72px;
+  font-size:.9rem;
+  opacity:.45;
+  transform:translateX(-130px) scale(.85) translateZ(-60px);
+  border:1.5px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.04);
+  color:var(--muted);
+  z-index:5;
+  filter:blur(.5px);
+}
+/* جانب يسار 2 */
+.size-item.pos-neg2{
+  width:52px;height:52px;
+  font-size:.75rem;
+  opacity:.2;
+  transform:translateX(-210px) scale(.65) translateZ(-120px);
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.02);
+  color:rgba(255,255,255,.4);
+  z-index:2;
+  filter:blur(1.5px);
+}
+/* مخفي */
+.size-item.pos-hidden{
+  opacity:0;
+  transform:translateX(0) scale(.4) translateZ(-200px);
+  pointer-events:none;
+  z-index:0;
+}
+
+/* انعكاس ناعم تحت الكرة النشطة */
+.size-active-label{
+  text-align:center;
+  margin-top:14px;
+  font-size:.7rem;
+  letter-spacing:.22em;
+  color:rgba(255,255,255,.28);
+  text-transform:uppercase;
+}
+
+/* ═══════════════════════════
+   ORDER FORM
+═══════════════════════════ */
+.form-section{padding-bottom:80px}
+.form-card{
+  border:1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at top right,rgba(255,255,255,.06),transparent 28%),
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;
+  padding:36px;
+  box-shadow:var(--shadow);
+  max-width:780px;
+  margin-inline:auto;
+}
+.form-card h2{margin:0 0 6px;font-size:1.4rem;font-weight:700;letter-spacing:.04em}
+.form-subtitle{color:var(--muted);font-size:.88rem;margin-bottom:26px;line-height:1.7}
+
+.order-summary{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;border-radius:16px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.04);
+  margin-bottom:22px;
+}
+.sum-dot{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.2);flex:none;transition:.4s ease}
+.sum-dot.white{background:#f0f0f0}
+.sum-dot.black{background:#1a1a1a}
+.sum-info{font-size:.86rem;color:var(--muted);line-height:1.6}
+.sum-info strong{color:#fff;display:block}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.form-group{display:flex;flex-direction:column;gap:7px}
+.form-group.full{grid-column:1/-1}
+label{font-size:.76rem;letter-spacing:.14em;color:var(--muted);font-weight:600}
+input,select,textarea{
+  width:100%;padding:13px 16px;border-radius:13px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;font-size:.93rem;font-family:inherit;outline:none;
+  transition:.2s ease;-webkit-appearance:none;appearance:none;
+}
+input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.07)}
+input::placeholder,textarea::placeholder{color:rgba(255,255,255,.25)}
+select option{background:#111;color:#fff}
+textarea{resize:vertical;min-height:80px;line-height:1.7}
+
+.submit-btn{
+  display:block;width:100%;margin-top:20px;padding:16px;
+  border-radius:14px;border:none;background:#fff;color:#111;
+  font-size:.95rem;font-weight:700;letter-spacing:.12em;cursor:pointer;
+  transition:.25s ease;box-shadow:0 10px 30px rgba(255,255,255,.08);
+}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,255,255,.13)}
+.submit-btn:active{transform:scale(.97)}
+
+.success-msg{display:none;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 20px}
+.success-msg.show{display:flex}
+.success-icon{font-size:2.4rem;width:70px;height:70px;border-radius:50%;border:2px solid rgba(255,255,255,.2);display:grid;place-items:center;background:rgba(255,255,255,.06)}
+.success-msg h3{font-size:1.35rem}
+.success-msg p{color:var(--muted);line-height:1.8;max-width:38ch;font-size:.9rem}
+.reset-btn{margin-top:6px;padding:12px 28px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;font-size:.88rem;letter-spacing:.1em;transition:.2s ease}
+.reset-btn:hover{background:rgba(255,255,255,.09)}
+
+
+
+
+/* QTY SELECTOR */
+.qty-selector{
+  display:flex;
+  align-items:center;
+  gap:0;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:13px;
+  background:rgba(255,255,255,.04);
+  overflow:hidden;
+  height:50px;
+}
+.qty-btn{
+  flex:none;
+  width:50px;height:100%;
+  background:rgba(255,255,255,.05);
+  border:none;
+  color:#fff;
+  font-size:1.35rem;
+  font-weight:300;
+  cursor:pointer;
+  transition:background .2s ease, transform .1s ease;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+}
+.qty-btn:hover{ background:rgba(255,255,255,.11) }
+.qty-btn:active{
+  background:rgba(255,255,255,.18);
+  transform:scale(.92);
+}
+.qty-btn:first-child{
+  border-left:none;
+  border-right:1px solid rgba(255,255,255,.08);
+}
+.qty-btn:last-child{
+  border-right:none;
+  border-left:1px solid rgba(255,255,255,.08);
+}
+.qty-display{
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:1px;
+  position:relative;
+}
+.qty-num{
+  font-size:1.25rem;
+  font-weight:700;
+  letter-spacing:.04em;
+  line-height:1;
+  transition:transform .22s cubic-bezier(.22,1,.36,1), opacity .22s ease;
+}
+.qty-unit{
+  font-size:.6rem;
+  letter-spacing:.18em;
+  color:var(--muted);
+  text-transform:uppercase;
+}
+.qty-num.bump-up{
+  animation:bumpUp .22s cubic-bezier(.22,1,.36,1);
+}
+.qty-num.bump-down{
+  animation:bumpDown .22s cubic-bezier(.22,1,.36,1);
+}
+@keyframes bumpUp{
+  0%{transform:translateY(8px);opacity:0}
+  100%{transform:translateY(0);opacity:1}
+}
+@keyframes bumpDown{
+  0%{transform:translateY(-8px);opacity:0}
+  100%{transform:translateY(0);opacity:1}
+}
+
+/* FOOTER */
+footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:.88rem}
+.footer-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+
+/* REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
+.reveal.show{opacity:1;transform:translateY(0)}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  .form-grid{grid-template-columns:1fr}
+  .form-card{padding:22px 16px}
+  .size-item.pos-1{transform:translateX(100px) scale(.85) translateZ(-60px)}
+  .size-item.pos-neg1{transform:translateX(-100px) scale(.85) translateZ(-60px)}
+  .size-item.pos-2{transform:translateX(165px) scale(.65) translateZ(-120px)}
+  .size-item.pos-neg2{transform:translateX(-165px) scale(.65) translateZ(-120px)}
+}
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container">
+    <nav class="nav">
+      <a class="brand" href="index.html">
+        <div class="mark">ZV</div>
+        <div class="brand-text">
+          <strong>ZAKVELA</strong>
+          <span>MADE IN ALGERIA</span>
+        </div>
+      </a>
+      <a class="back-btn" href="index.html">← الرئيسية</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+<div class="container">
+
+  <div class="page-header reveal">
+    <div class="eyebrow">ZAKVELA Collection</div>
+    <h1>تشكيلتنا</h1>
+    <p>اسحب لاستعراض الألوان واختيار مقاسك بطريقة فاخرة.</p>
+  </div>
+
+  <!-- ═══ PRODUCT VIEWER ═══ -->
+  <div class="product-viewer reveal">
+
+    <!-- الـ Slider -->
+    <div class="slider-track-wrap" id="sliderWrap">
+      <div class="slider-track" id="sliderTrack">
+
+        <!-- أبيض -->
+        <div class="slide slide-white">
+          <div class="slide-label">أبيض — White</div>
+        </div>
+
+        <!-- أسود -->
+        <div class="slide slide-black">
+          <div class="slide-label">أسود — Black</div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- THUMBNAILS -->
+    <div class="thumb-row" id="thumbRow">
+      <div class="thumb-inner" id="thumbInner" dir="ltr">
+        <div class="thumb thumb-white active" data-idx="0">
+          <svg viewBox="0 0 100 110" width="44" height="44">
+            <path d="M50,12 C50,12 42,11 35,9 L20,20 L30,33 L37,28 L37,105 L63,105 L63,28 L70,33 L80,20 L65,9 C58,11 50,12 50,12 Z" fill="#f0f0f0" stroke="#ccc" stroke-width="1"/>
+            <path d="M37,13 C37,13 41,20 50,21 C59,20 63,13 63,13" fill="none" stroke="#bbb" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div class="thumb thumb-black" data-idx="1">
+          <svg viewBox="0 0 100 110" width="44" height="44">
+            <path d="M50,12 C50,12 42,11 35,9 L20,20 L30,33 L37,28 L37,105 L63,105 L63,28 L70,33 L80,20 L65,9 C58,11 50,12 50,12 Z" fill="#1a1a1a" stroke="#333" stroke-width="1"/>
+            <path d="M37,13 C37,13 41,20 50,21 C59,20 63,13 63,13" fill="none" stroke="#444" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="drag-hint">← اسحب للتبديل →</div>
+  </div>
+
+  <!-- ═══ 3D SIZE SELECTOR ═══ -->
+  <div class="size-section reveal">
+    <div class="size-title">اختر المقاس</div>
+    <div class="size-carousel-wrap" id="sizeCarousel">
+      <!-- تُنشأ بالـ JS -->
+    </div>
+    <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
+  </div>
+
+  <!-- ═══ ORDER FORM ═══ -->
+  <div class="form-section reveal">
+    <div class="form-card">
+      <h2>فورم الطلب</h2>
+      <p class="form-subtitle">أرسل طلبك وسنتواصل معك فوراً عبر WhatsApp.</p>
+
+      <div class="order-summary">
+        <div class="sum-dot white" id="sumDot"></div>
+        <div class="sum-info">
+          <strong id="sumColor">أبيض</strong>
+          المقاس: <span id="sumSize">M</span>
+        </div>
+      </div>
+
+      <div id="formWrap">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>الاسم الكامل</label>
+            <input type="text" id="fName" placeholder="مثال: أحمد بن علي">
+          </div>
+          <div class="form-group">
+            <label>رقم الهاتف</label>
+            <input type="tel" id="fPhone" placeholder="05xxxxxxxx">
+          </div>
+          <div class="form-group">
+            <label>اللون (محدد تلقائياً)</label>
+            <input type="text" id="fColor" value="أبيض" readonly style="opacity:.7;cursor:default">
+          </div>
+          <div class="form-group">
+            <label>الكمية</label>
+            <div class="qty-selector">
+              <button class="qty-btn" onclick="changeQty(-1)" type="button">−</button>
+              <div class="qty-display">
+                <span class="qty-num" id="qtyNum">1</span>
+                <span class="qty-unit">قطعة</span>
+              </div>
+              <button class="qty-btn" onclick="changeQty(1)" type="button">+</button>
+            </div>
+            <input type="hidden" id="fQty" value="1">
+          </div>
+          <div class="form-group">
+            <label>الولاية / المدينة</label>
+            <input type="text" id="fCity" placeholder="مثال: الجزائر العاصمة">
+          </div>
+          <div class="form-group">
+            <label>المقاس (محدد تلقائياً)</label>
+            <input type="text" id="fSize" value="M" readonly style="opacity:.7;cursor:default">
+          </div>
+          <div class="form-group full">
+            <label>ملاحظات (اختياري)</label>
+            <textarea id="fNotes" placeholder="أي تفاصيل إضافية..."></textarea>
+          </div>
+        </div>
+        <button class="submit-btn" onclick="submitOrder()">إرسال الطلب عبر WhatsApp ←</button>
+      </div>
+
+      <div class="success-msg" id="successMsg">
+        <div class="success-icon">✓</div>
+        <h3>تم إرسال الطلب!</h3>
+        <p>سيفتح WhatsApp لإتمام الطلب. سنتواصل معك قريباً.</p>
+        <button class="reset-btn" onclick="resetForm()">طلب جديد</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="container">
+    <div class="footer-row">
+      <div>© ZAKVELA — Luxury Minimal Design</div>
+      <div>Made in Algeria</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════
+   SLIDER
+══════════════════════════════════════ */
+(function(){
+  const slides  = document.querySelectorAll('.slide');
+  const thumbs  = document.querySelectorAll('.thumb');
+  const COLORS  = ['أبيض','أسود'];
+  const DOTS    = ['white','black'];
+  let idx = 0;
+
+  // عرض الـ slide بتغيير opacity بدل translate — أبسط وأضمن
+  function showSlide(i, animate){
+    idx = i;
+    slides.forEach((s, si) => {
+      s.style.transition = animate ? 'opacity .45s ease' : 'none';
+      s.style.opacity    = si === idx ? '1' : '0';
+      s.style.pointerEvents = si === idx ? 'auto' : 'none';
+    });
+    thumbs.forEach((t, ti) => t.classList.toggle('active', ti === idx));
+    document.getElementById('fColor').value        = COLORS[idx];
+    document.getElementById('sumColor').textContent = COLORS[idx];
+    document.getElementById('sumDot').className    = 'sum-dot ' + DOTS[idx];
+  }
+
+  // drag
+  let startX = 0, dragging = false;
+  const wrap = document.getElementById('sliderWrap');
+  const thumbRow = document.getElementById('thumbRow');
+
+  function onStart(x){ dragging = true; startX = x; }
+  function onEnd(x){
+    if(!dragging) return; dragging = false;
+    const dx = startX - x;  // موجب = سحب يسار، سالب = سحب يمين
+    if(dx > 40 && idx < slides.length-1) showSlide(idx+1, true);
+    else if(dx < -40 && idx > 0)         showSlide(idx-1, true);
+  }
+
+  wrap.addEventListener('mousedown',  e=>{ e.preventDefault(); onStart(e.clientX) });
+  window.addEventListener('mouseup',  e=>{ onEnd(e.clientX) });
+  wrap.addEventListener('touchstart', e=>{ onStart(e.touches[0].clientX) }, {passive:true});
+  window.addEventListener('touchend', e=>{ onEnd(e.changedTouches[0].clientX) });
+
+  thumbRow.addEventListener('mousedown',  e=>{ e.preventDefault(); onStart(e.clientX) });
+  thumbRow.addEventListener('touchstart', e=>{ onStart(e.touches[0].clientX) }, {passive:true});
+
+  // init
+  showSlide(0, false);
+})();
+
+
+/* ══════════════════════════════════════
+   3D SIZE CAROUSEL
+══════════════════════════════════════ */
+(function(){
+  const SIZES = ['M','L','XL','XXL'];  // أضف مقاسات هنا بسهولة
+  const N     = SIZES.length;
+  let current = 0;    // index of active size
+  let dragging= false;
+  let startX  = 0;
+  let accDelta= 0;
+  const STEP  = 150;   // px per size step
+
+  const carousel = document.getElementById('sizeCarousel');
+
+  // Build items
+  const items = SIZES.map((s,i)=>{
+    const el = document.createElement('div');
+    el.className = 'size-item';
+    el.textContent = s;
+    carousel.appendChild(el);
+    return el;
+  });
+
+  // position classes
+  const POS_CLASSES = ['pos-neg2','pos-neg1','pos-0','pos-1','pos-2'];
+
+  function render(animate){
+    items.forEach((el,i)=>{
+      // relative position to current
+      let rel = ((i - current) % N + N) % N;
+      if(rel > N/2) rel -= N;   // wrap so range is -2..2
+      // remove all pos classes
+      el.className = 'size-item';
+      if(rel === 0) el.classList.add('pos-0');
+      else if(rel === 1) el.classList.add('pos-1');
+      else if(rel === -1) el.classList.add('pos-neg1');
+      else if(rel === 2) el.classList.add('pos-2');
+      else if(rel === -2) el.classList.add('pos-neg2');
+      else el.classList.add('pos-hidden');
+
+      if(!animate){
+        el.style.transition='none';
+        requestAnimationFrame(()=>{ el.style.transition='' });
+      }
+    });
+    // update label & form
+    document.getElementById('sizeCurrent').textContent = SIZES[current];
+    document.getElementById('sumSize').textContent = SIZES[current];
+    document.getElementById('fSize').value = SIZES[current];
+  }
+
+  function goTo(i, anim){
+    current = ((i % N) + N) % N;
+    render(anim);
+  }
+
+  // live drag effect: interpolate between two snapshots
+  let dragRel = 0;  // fractional offset
+
+  function applyDragOffset(frac){
+    // frac: -1..1 fractional index offset
+    items.forEach((el,i)=>{
+      let rel = ((i - current) % N + N) % N;
+      if(rel > N/2) rel -= N;
+      const adjRel = rel - frac;
+
+      el.className = 'size-item';
+      el.style.transition = 'none';
+
+      // interpolate position
+      const absRel = Math.abs(adjRel);
+      let tx, sc, op, bl;
+
+      if(adjRel >= -0.5 && adjRel <= 0.5){
+        // near center
+        const t = adjRel;
+        if(t >= 0){
+          tx = 130 * t; sc = 1 - 0.15*t; op = 1 - 0.55*t; bl = 0.5*t;
+        } else {
+          tx = 130 * t; sc = 1 + 0.15*t; op = 1 + 0.55*t; bl = 0.5*(-t);
+        }
+        sc  = Math.max(.85, Math.min(1, sc));
+        op  = Math.max(.45, Math.min(1, op));
+        bl  = Math.max(0,  Math.min(.5, bl));
+      } else if(adjRel > 0.5 && adjRel <= 1.5){
+        const t = adjRel - 1;
+        tx = 130 + 80*t; sc = .85 - .2*t; op = .45 - .25*t; bl = .5 + t;
+        sc = Math.max(.65, sc); op = Math.max(.2, op); bl = Math.min(1.5, bl);
+      } else if(adjRel < -0.5 && adjRel >= -1.5){
+        const t = -(adjRel + 1);
+        tx = -130 - 80*t; sc = .85 - .2*t; op = .45 - .25*t; bl = .5 + t;
+        sc = Math.max(.65, sc); op = Math.max(.2, op); bl = Math.min(1.5, bl);
+      } else {
+        op = 0;
+        el.style.opacity = 0;
+        return;
+      }
+
+      const isMobile = window.innerWidth <= 640;
+      if(isMobile){ tx *= .77; }
+
+      el.style.transform = `translateX(${tx}px) scale(${sc}) translateZ(0)`;
+      el.style.opacity = op;
+      el.style.filter  = 'none';
+      el.style.zIndex  = adjRel === 0 ? 10 : (Math.abs(adjRel) < 1 ? 5 : 2);
+    });
+  }
+
+  carousel.addEventListener('mousedown', e=>{ dragging=true; startX=e.clientX; accDelta=0 });
+  window.addEventListener('mousemove', e=>{
+    if(!dragging) return;
+    const dx = startX - e.clientX;
+    dragRel  = dx / STEP;
+    applyDragOffset(dragRel);
+  });
+  window.addEventListener('mouseup', ()=>{
+    if(!dragging) return;
+    dragging = false;
+    const snap = Math.round(dragRel);
+    goTo(current + snap, true);
+    dragRel = 0;
+  });
+
+  carousel.addEventListener('touchstart', e=>{ dragging=true; startX=e.touches[0].clientX; accDelta=0 }, {passive:true});
+  window.addEventListener('touchmove', e=>{
+    if(!dragging) return;
+    const dx = startX - e.touches[0].clientX;
+    dragRel  = dx / STEP;
+    applyDragOffset(dragRel);
+  }, {passive:true});
+  window.addEventListener('touchend', ()=>{
+    if(!dragging) return;
+    dragging = false;
+    const snap = Math.round(dragRel);
+    goTo(current + snap, true);
+    dragRel = 0;
+  });
+
+  goTo(0, false);
+})();
+
+
+/* ══════════════════════════════════════
+   QTY SELECTOR
+══════════════════════════════════════ */
+function changeQty(delta){
+  const input = document.getElementById('fQty');
+  const numEl = document.getElementById('qtyNum');
+  let val = parseInt(input.value) + delta;
+  if(val < 1) val = 1;
+  if(val > 10) val = 10;
+  input.value = val;
+  numEl.textContent = val;
+  // animation
+  numEl.classList.remove('bump-up','bump-down');
+  void numEl.offsetWidth; // reflow to restart animation
+  numEl.classList.add(delta > 0 ? 'bump-up' : 'bump-down');
+}
+
+/* ══════════════════════════════════════
+   ORDER FORM
+══════════════════════════════════════ */
+function submitOrder(){
+  const name  = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.trim();
+  const color = document.getElementById('fColor').value;
+  const size  = document.getElementById('fSize').value;
+  const qty   = document.getElementById('fQty').value;
+  const city  = document.getElementById('fCity').value.trim();
+  const notes = document.getElementById('fNotes').value.trim();
+  if(!name||!phone||!city){ alert('الرجاء ملء جميع الحقول المطلوبة.'); return }
+  const msg =
+` طلب جديد — ZAKVELA
+━━━━━━━━━━━━━━━
+ الاسم: ${name}
+ الهاتف: ${phone}
+ اللون: ${color}
+ المقاس: ${size}
+ الكمية: ${qty}
+ المدينة: ${city}${notes?'\n ملاحظات: '+notes:''}
+━━━━━━━━━━━━━━━`;
+  window.open('https://wa.me/213774843237?text='+encodeURIComponent(msg),'_blank');
+  document.getElementById('formWrap').style.display='none';
+  document.getElementById('successMsg').classList.add('show');
+}
+
+function resetForm(){
+  ['fName','fPhone','fCity','fNotes'].forEach(id=>document.getElementById(id).value='');
+  document.getElementById('fQty').value='1';
+  document.getElementById('qtyNum').textContent='1';
+  document.getElementById('formWrap').style.display='';
+  document.getElementById('successMsg').classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* Reveal */
+const revEls = document.querySelectorAll('.reveal');
+const revIO  = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show') }),{threshold:.08});
+revEls.forEach(el=>revIO.observe(el));
+</script>
+</body>
+</html>
