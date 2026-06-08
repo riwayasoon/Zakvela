@@ -86,8 +86,6 @@ a{color:inherit;text-decoration:none}
 }
 @media(max-width:600px){.slide{min-height:340px;padding:32px 20px}}
 
-
-
 /* Label اللون */
 .slide-label{
   position:absolute;
@@ -186,6 +184,67 @@ a{color:inherit;text-decoration:none}
 }
 .size-carousel-wrap:active{cursor:grabbing}
 
+/* FX layer */
+.size-fx{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:15;
+  overflow:hidden;
+}
+.size-fx-trail{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:260px;
+  height:64px;
+  transform:translate(-50%,-50%) scale(.2);
+  opacity:0;
+  border-radius:999px;
+  filter:blur(14px);
+  mix-blend-mode:screen;
+  transition:opacity .12s ease, transform .08s linear;
+}
+.size-fx-burst{
+  position:absolute;
+  top:50%;
+  left:50%;
+  width:260px;
+  height:260px;
+  transform:translate(-50%,-50%) scale(.15);
+  opacity:0;
+  border-radius:50%;
+  filter:blur(24px);
+  background:radial-gradient(circle, rgba(255,255,255,.48) 0%, rgba(255,255,255,.18) 28%, transparent 70%);
+  transition:opacity .14s ease, transform .2s ease;
+}
+.size-carousel-wrap.drag-left .size-fx-trail{
+  background:linear-gradient(270deg,
+    transparent 0%,
+    rgba(255,255,255,.04) 14%,
+    rgba(255,255,255,.16) 28%,
+    rgba(255,255,255,.42) 48%,
+    rgba(255,255,255,.90) 54%,
+    rgba(255,255,255,.42) 60%,
+    rgba(255,255,255,.12) 74%,
+    transparent 100%);
+}
+.size-carousel-wrap.drag-right .size-fx-trail{
+  background:linear-gradient(90deg,
+    transparent 0%,
+    rgba(255,255,255,.04) 14%,
+    rgba(255,255,255,.16) 28%,
+    rgba(255,255,255,.42) 48%,
+    rgba(255,255,255,.90) 54%,
+    rgba(255,255,255,.42) 60%,
+    rgba(255,255,255,.12) 74%,
+    transparent 100%);
+}
+.size-carousel-wrap.drag-left .size-fx-burst,
+.size-carousel-wrap.drag-right .size-fx-burst{
+  opacity:1;
+}
+
 .size-item{
   position:absolute;
   display:flex;align-items:center;justify-content:center;
@@ -199,7 +258,6 @@ a{color:inherit;text-decoration:none}
              box-shadow .55s cubic-bezier(.22,1,.36,1);
   cursor:pointer;
   user-select:none;
-  /* glass */
   backdrop-filter:blur(4px);
 }
 
@@ -276,7 +334,6 @@ a{color:inherit;text-decoration:none}
   z-index:0;
 }
 
-/* انعكاس ناعم تحت الكرة النشطة */
 .size-active-label{
   text-align:center;
   margin-top:14px;
@@ -349,9 +406,6 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
 .success-msg p{color:var(--muted);line-height:1.8;max-width:38ch;font-size:.9rem}
 .reset-btn{margin-top:6px;padding:12px 28px;border-radius:999px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.05);color:#fff;cursor:pointer;font-size:.88rem;letter-spacing:.1em;transition:.2s ease}
 .reset-btn:hover{background:rgba(255,255,255,.09)}
-
-
-
 
 /* QTY SELECTOR */
 .qty-selector{
@@ -518,6 +572,10 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   <div class="size-section reveal">
     <div class="size-title">اختر المقاس</div>
     <div class="size-carousel-wrap" id="sizeCarousel">
+      <div class="size-fx" id="sizeFx" aria-hidden="true">
+        <div class="size-fx-trail"></div>
+        <div class="size-fx-burst"></div>
+      </div>
       <!-- تُنشأ بالـ JS -->
     </div>
     <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
@@ -576,7 +634,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
             <textarea id="fNotes" placeholder="أي تفاصيل إضافية..."></textarea>
           </div>
         </div>
-        <button class="submit-btn" onclick="submitOrder()">إرسال الطلب عبر WhatsApp ←</button>
+        <button class="submit-btn" onclick="submitOrder()">إرسال الطلب عبر Telegram ←</button>
       </div>
 
       <div class="success-msg" id="successMsg">
@@ -601,255 +659,394 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
 </footer>
 
 <script>
-/* ══════════════════════════════════════
-   SLIDER
-══════════════════════════════════════ */
-(function(){
-  const slides  = document.querySelectorAll('.slide');
-  const thumbs  = document.querySelectorAll('.thumb');
-  const COLORS  = ['أبيض','أسود'];
-  const DOTS    = ['white','black'];
-  let idx = 0;
+(() => {
+  'use strict';
 
-  // عرض الـ slide بتغيير opacity بدل translate — أبسط وأضمن
-  function showSlide(i, animate){
-    idx = i;
-    slides.forEach((s, si) => {
-      s.style.transition = animate ? 'opacity .45s ease' : 'none';
-      s.style.opacity    = si === idx ? '1' : '0';
-      s.style.pointerEvents = si === idx ? 'auto' : 'none';
+  const ORDER_API = "https://botzakvela.onrender.com/order";
+  const REQUEST_TIMEOUT_MS = 12000;
+  const COLORS = ['أبيض', 'أسود'];
+  const DOTS = ['white', 'black'];
+  const SIZES = ['M', 'L', 'XL', 'XXL'];
+  const SIZE_STEP = 150;
+
+  const $ = (id) => document.getElementById(id);
+  const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+  const wrapIndex = (i, length) => ((i % length) + length) % length;
+
+  const ui = {
+    slides: Array.from(document.querySelectorAll('.slide')),
+    thumbs: Array.from(document.querySelectorAll('.thumb')),
+    wrap: $('sliderWrap'),
+    thumbRow: $('thumbRow'),
+    carousel: $('sizeCarousel'),
+    fColor: $('fColor'),
+    sumColor: $('sumColor'),
+    sumDot: $('sumDot'),
+    sizeCurrent: $('sizeCurrent'),
+    sumSize: $('sumSize'),
+    fSize: $('fSize'),
+    fQty: $('fQty'),
+    qtyNum: $('qtyNum'),
+    formWrap: $('formWrap'),
+    successMsg: $('successMsg'),
+    submitBtn: document.querySelector('.submit-btn'),
+    fName: $('fName'),
+    fPhone: $('fPhone'),
+    fCity: $('fCity'),
+    fNotes: $('fNotes'),
+  };
+
+  if (typeof ORDER_API !== 'string' || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
+    console.warn('ORDER_API is still a placeholder. Replace it with your real server URL.');
+  }
+
+  let currentSlide = 0;
+  let currentSize = 0;
+
+  function updateColorState(index) {
+    const color = COLORS[index] || COLORS[0];
+    const dot = DOTS[index] || DOTS[0];
+
+    if (ui.fColor) ui.fColor.value = color;
+    if (ui.sumColor) ui.sumColor.textContent = color;
+    if (ui.sumDot) ui.sumDot.className = `sum-dot ${dot}`;
+  }
+
+  function updateSizeState(index) {
+    const size = SIZES[index] || SIZES[0];
+
+    if (ui.sizeCurrent) ui.sizeCurrent.textContent = size;
+    if (ui.sumSize) ui.sumSize.textContent = size;
+    if (ui.fSize) ui.fSize.value = size;
+  }
+
+  function showSlide(index, animate = true) {
+    if (!ui.slides.length) return;
+
+    currentSlide = wrapIndex(index, ui.slides.length);
+
+    ui.slides.forEach((slide, i) => {
+      slide.style.transition = animate ? 'opacity .45s ease' : 'none';
+      slide.style.opacity = i === currentSlide ? '1' : '0';
+      slide.style.pointerEvents = i === currentSlide ? 'auto' : 'none';
     });
-    thumbs.forEach((t, ti) => t.classList.toggle('active', ti === idx));
-    document.getElementById('fColor').value        = COLORS[idx];
-    document.getElementById('sumColor').textContent = COLORS[idx];
-    document.getElementById('sumDot').className    = 'sum-dot ' + DOTS[idx];
+
+    ui.thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle('active', i === currentSlide);
+    });
+
+    updateColorState(currentSlide);
   }
 
-  // drag
-  let startX = 0, dragging = false;
-  const wrap = document.getElementById('sliderWrap');
-  const thumbRow = document.getElementById('thumbRow');
+  function renderSizeCarousel(animate = true) {
+    if (!ui.carousel) return;
 
-  function onStart(x){ dragging = true; startX = x; }
-  function onEnd(x){
-    if(!dragging) return; dragging = false;
-    const dx = startX - x;  // موجب = سحب يسار، سالب = سحب يمين
-    if(dx > 40 && idx < slides.length-1) showSlide(idx+1, true);
-    else if(dx < -40 && idx > 0)         showSlide(idx-1, true);
-  }
+    sizeItems.forEach((el, i) => {
+      let rel = wrapIndex(i - currentSize, sizeItems.length);
+      if (rel > sizeItems.length / 2) rel -= sizeItems.length;
 
-  wrap.addEventListener('mousedown',  e=>{ e.preventDefault(); onStart(e.clientX) });
-  window.addEventListener('mouseup',  e=>{ onEnd(e.clientX) });
-  wrap.addEventListener('touchstart', e=>{ onStart(e.touches[0].clientX) }, {passive:true});
-  window.addEventListener('touchend', e=>{ onEnd(e.changedTouches[0].clientX) });
-
-  thumbRow.addEventListener('mousedown',  e=>{ e.preventDefault(); onStart(e.clientX) });
-  thumbRow.addEventListener('touchstart', e=>{ onStart(e.touches[0].clientX) }, {passive:true});
-
-  // init
-  showSlide(0, false);
-})();
-
-
-/* ══════════════════════════════════════
-   3D SIZE CAROUSEL
-══════════════════════════════════════ */
-(function(){
-  const SIZES = ['M','L','XL','XXL'];  // أضف مقاسات هنا بسهولة
-  const N     = SIZES.length;
-  let current = 0;    // index of active size
-  let dragging= false;
-  let startX  = 0;
-  let accDelta= 0;
-  const STEP  = 150;   // px per size step
-
-  const carousel = document.getElementById('sizeCarousel');
-
-  // Build items
-  const items = SIZES.map((s,i)=>{
-    const el = document.createElement('div');
-    el.className = 'size-item';
-    el.textContent = s;
-    carousel.appendChild(el);
-    return el;
-  });
-
-  // position classes
-  const POS_CLASSES = ['pos-neg2','pos-neg1','pos-0','pos-1','pos-2'];
-
-  function render(animate){
-    items.forEach((el,i)=>{
-      // relative position to current
-      let rel = ((i - current) % N + N) % N;
-      if(rel > N/2) rel -= N;   // wrap so range is -2..2
-      // remove all pos classes
       el.className = 'size-item';
-      if(rel === 0) el.classList.add('pos-0');
-      else if(rel === 1) el.classList.add('pos-1');
-      else if(rel === -1) el.classList.add('pos-neg1');
-      else if(rel === 2) el.classList.add('pos-2');
-      else if(rel === -2) el.classList.add('pos-neg2');
+
+      if (rel === 0) el.classList.add('pos-0');
+      else if (rel === 1) el.classList.add('pos-1');
+      else if (rel === -1) el.classList.add('pos-neg1');
+      else if (rel === 2) el.classList.add('pos-2');
+      else if (rel === -2) el.classList.add('pos-neg2');
       else el.classList.add('pos-hidden');
 
-      if(!animate){
-        el.style.transition='none';
-        requestAnimationFrame(()=>{ el.style.transition='' });
+      if (!animate) {
+        el.style.transition = 'none';
+        requestAnimationFrame(() => { el.style.transition = ''; });
       }
     });
-    // update label & form
-    document.getElementById('sizeCurrent').textContent = SIZES[current];
-    document.getElementById('sumSize').textContent = SIZES[current];
-    document.getElementById('fSize').value = SIZES[current];
+
+    updateSizeState(currentSize);
   }
 
-  function goTo(i, anim){
-    current = ((i % N) + N) % N;
-    render(anim);
+  function goToSize(index, animate = true) {
+    currentSize = wrapIndex(index, SIZES.length);
+    renderSizeCarousel(animate);
   }
 
-  // live drag effect: interpolate between two snapshots
-  let dragRel = 0;  // fractional offset
+  function applyDragOffset(frac) {
+    if (!sizeItems.length) return;
 
-  function applyDragOffset(frac){
-    // frac: -1..1 fractional index offset
-    items.forEach((el,i)=>{
-      let rel = ((i - current) % N + N) % N;
-      if(rel > N/2) rel -= N;
+    sizeItems.forEach((el, i) => {
+      let rel = wrapIndex(i - currentSize, sizeItems.length);
+      if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+
       const adjRel = rel - frac;
-
       el.className = 'size-item';
       el.style.transition = 'none';
 
-      // interpolate position
-      const absRel = Math.abs(adjRel);
       let tx, sc, op, bl;
 
-      if(adjRel >= -0.5 && adjRel <= 0.5){
-        // near center
+      if (adjRel >= -0.5 && adjRel <= 0.5) {
         const t = adjRel;
-        if(t >= 0){
-          tx = 130 * t; sc = 1 - 0.15*t; op = 1 - 0.55*t; bl = 0.5*t;
+        if (t >= 0) {
+          tx = 130 * t;
+          sc = 1 - 0.15 * t;
+          op = 1 - 0.55 * t;
+          bl = 0.5 * t;
         } else {
-          tx = 130 * t; sc = 1 + 0.15*t; op = 1 + 0.55*t; bl = 0.5*(-t);
+          tx = 130 * t;
+          sc = 1 + 0.15 * t;
+          op = 1 + 0.55 * t;
+          bl = 0.5 * (-t);
         }
-        sc  = Math.max(.85, Math.min(1, sc));
-        op  = Math.max(.45, Math.min(1, op));
-        bl  = Math.max(0,  Math.min(.5, bl));
-      } else if(adjRel > 0.5 && adjRel <= 1.5){
+        sc = clamp(sc, 0.85, 1);
+        op = clamp(op, 0.45, 1);
+        bl = clamp(bl, 0, 0.5);
+      } else if (adjRel > 0.5 && adjRel <= 1.5) {
         const t = adjRel - 1;
-        tx = 130 + 80*t; sc = .85 - .2*t; op = .45 - .25*t; bl = .5 + t;
-        sc = Math.max(.65, sc); op = Math.max(.2, op); bl = Math.min(1.5, bl);
-      } else if(adjRel < -0.5 && adjRel >= -1.5){
+        tx = 130 + 80 * t;
+        sc = .85 - .2 * t;
+        op = .45 - .25 * t;
+        bl = .5 + t;
+        sc = clamp(sc, 0.65, .85);
+        op = clamp(op, 0.2, .45);
+        bl = clamp(bl, 0.5, 1.5);
+      } else if (adjRel < -0.5 && adjRel >= -1.5) {
         const t = -(adjRel + 1);
-        tx = -130 - 80*t; sc = .85 - .2*t; op = .45 - .25*t; bl = .5 + t;
-        sc = Math.max(.65, sc); op = Math.max(.2, op); bl = Math.min(1.5, bl);
+        tx = -130 - 80 * t;
+        sc = .85 - .2 * t;
+        op = .45 - .25 * t;
+        bl = .5 + t;
+        sc = clamp(sc, 0.65, .85);
+        op = clamp(op, 0.2, .45);
+        bl = clamp(bl, 0.5, 1.5);
       } else {
-        op = 0;
         el.style.opacity = 0;
         return;
       }
 
-      const isMobile = window.innerWidth <= 640;
-      if(isMobile){ tx *= .77; }
+      if (window.innerWidth <= 640) {
+        tx *= 0.77;
+      }
 
       el.style.transform = `translateX(${tx}px) scale(${sc}) translateZ(0)`;
       el.style.opacity = op;
-      el.style.filter  = 'none';
-      el.style.zIndex  = adjRel === 0 ? 10 : (Math.abs(adjRel) < 1 ? 5 : 2);
+      el.style.filter = 'none';
+      el.style.zIndex = adjRel === 0 ? 10 : (Math.abs(adjRel) < 1 ? 5 : 2);
     });
   }
 
-  carousel.addEventListener('mousedown', e=>{ dragging=true; startX=e.clientX; accDelta=0 });
-  window.addEventListener('mousemove', e=>{
-    if(!dragging) return;
-    const dx = startX - e.clientX;
-    dragRel  = dx / STEP;
-    applyDragOffset(dragRel);
-  });
-  window.addEventListener('mouseup', ()=>{
-    if(!dragging) return;
-    dragging = false;
-    const snap = Math.round(dragRel);
-    goTo(current + snap, true);
-    dragRel = 0;
+  function createFetchTimeout() {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+    return { controller, timer };
+  }
+
+  async function submitOrder() {
+    const name = ui.fName?.value.trim() || '';
+    const phone = ui.fPhone?.value.trim() || '';
+    const color = ui.fColor?.value || '';
+    const size = ui.fSize?.value || '';
+    const qty = ui.fQty?.value || '';
+    const city = ui.fCity?.value.trim() || '';
+    const notes = ui.fNotes?.value.trim() || '';
+
+    if (!name || !phone || !city) {
+      alert('الرجاء ملء جميع الحقول المطلوبة.');
+      return;
+    }
+
+    if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
+      alert('ضع رابط السيرفر الحقيقي داخل ORDER_API أولاً.');
+      return;
+    }
+
+    const btn = ui.submitBtn;
+    const oldText = btn ? btn.textContent : '';
+    if (btn) {
+      btn.disabled = true;
+      btn.textContent = 'جارٍ الإرسال...';
+    }
+
+    const { controller, timer } = createFetchTimeout();
+
+    try {
+      const res = await fetch(ORDER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          name,
+          phone,
+          color,
+          size,
+          qty,
+          city,
+          notes
+        })
+      });
+
+      const data = await res.json().catch(() => ({}));
+
+      if (!res.ok || !data.success) {
+        throw new Error(data.error || 'FAILED');
+      }
+
+      if (ui.formWrap) ui.formWrap.style.display = 'none';
+      if (ui.successMsg) ui.successMsg.classList.add('show');
+    } catch (err) {
+      if (err?.name === 'AbortError') {
+        alert('انتهى وقت الإرسال. حاول مرة أخرى.');
+      } else {
+        alert('تعذر إرسال الطلب. تحقق من رابط الخادم أو إعدادات البوت.');
+      }
+    } finally {
+      clearTimeout(timer);
+      if (btn) {
+        btn.disabled = false;
+        btn.textContent = oldText;
+      }
+    }
+  }
+
+  function changeQty(delta) {
+    if (!ui.fQty || !ui.qtyNum) return;
+
+    let val = parseInt(ui.fQty.value, 10);
+    if (Number.isNaN(val)) val = 1;
+
+    val = clamp(val + delta, 1, 10);
+    ui.fQty.value = String(val);
+    ui.qtyNum.textContent = String(val);
+
+    ui.qtyNum.classList.remove('bump-up', 'bump-down');
+    void ui.qtyNum.offsetWidth;
+    ui.qtyNum.classList.add(delta > 0 ? 'bump-up' : 'bump-down');
+  }
+
+  function resetForm() {
+    if (ui.fName) ui.fName.value = '';
+    if (ui.fPhone) ui.fPhone.value = '';
+    if (ui.fCity) ui.fCity.value = '';
+    if (ui.fNotes) ui.fNotes.value = '';
+
+    if (ui.fQty) ui.fQty.value = '1';
+    if (ui.qtyNum) ui.qtyNum.textContent = '1';
+
+    currentSlide = 0;
+    currentSize = 0;
+
+    showSlide(0, false);
+    goToSize(0, false);
+
+    if (ui.formWrap) ui.formWrap.style.display = '';
+    if (ui.successMsg) ui.successMsg.classList.remove('show');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  const sizeItems = SIZES.map((s) => {
+    const el = document.createElement('div');
+    el.className = 'size-item';
+    el.textContent = s;
+    ui.carousel?.appendChild(el);
+    return el;
   });
 
-  carousel.addEventListener('touchstart', e=>{ dragging=true; startX=e.touches[0].clientX; accDelta=0 }, {passive:true});
-  window.addEventListener('touchmove', e=>{
-    if(!dragging) return;
-    const dx = startX - e.touches[0].clientX;
-    dragRel  = dx / STEP;
-    applyDragOffset(dragRel);
-  }, {passive:true});
-  window.addEventListener('touchend', ()=>{
-    if(!dragging) return;
-    dragging = false;
-    const snap = Math.round(dragRel);
-    goTo(current + snap, true);
-    dragRel = 0;
-  });
+  let slideStartX = 0;
+  let slideDragging = false;
 
-  goTo(0, false);
+  function slideStart(x) {
+    slideDragging = true;
+    slideStartX = x;
+  }
+
+  function slideEnd(x) {
+    if (!slideDragging) return;
+    slideDragging = false;
+
+    const dx = slideStartX - x;
+    if (dx > 40 && currentSlide < ui.slides.length - 1) showSlide(currentSlide + 1, true);
+    else if (dx < -40 && currentSlide > 0) showSlide(currentSlide - 1, true);
+  }
+
+  if (ui.wrap) {
+    ui.wrap.addEventListener('mousedown', (e) => { e.preventDefault(); slideStart(e.clientX); });
+    window.addEventListener('mouseup', (e) => slideEnd(e.clientX));
+    ui.wrap.addEventListener('touchstart', (e) => slideStart(e.touches[0].clientX), { passive: true });
+    window.addEventListener('touchend', (e) => {
+      if (e.changedTouches && e.changedTouches[0]) slideEnd(e.changedTouches[0].clientX);
+    });
+  }
+
+  if (ui.thumbRow) {
+    ui.thumbRow.addEventListener('mousedown', (e) => { e.preventDefault(); slideStart(e.clientX); });
+    ui.thumbRow.addEventListener('touchstart', (e) => slideStart(e.touches[0].clientX), { passive: true });
+  }
+
+  let sizeStartX = 0;
+  let sizeDragging = false;
+  let dragRel = 0;
+
+  function sizeStart(x) {
+    sizeDragging = true;
+    sizeStartX = x;
+    dragRel = 0;
+  }
+
+  function sizeMove(x) {
+    if (!sizeDragging) return;
+    const dx = sizeStartX - x;
+    dragRel = dx / SIZE_STEP;
+    applyDragOffset(dragRel);
+  }
+
+  function sizeEnd() {
+    if (!sizeDragging) return;
+    sizeDragging = false;
+    const snap = Math.round(dragRel);
+    goToSize(currentSize + snap, true);
+    dragRel = 0;
+  }
+
+  if (ui.carousel) {
+    ui.carousel.addEventListener('mousedown', (e) => {
+      e.preventDefault();
+      sizeStart(e.clientX);
+    });
+
+    window.addEventListener('mousemove', (e) => sizeMove(e.clientX));
+    window.addEventListener('mouseup', () => sizeEnd());
+
+    ui.carousel.addEventListener('touchstart', (e) => {
+      sizeStart(e.touches[0].clientX);
+    }, { passive: true });
+
+    window.addEventListener('touchmove', (e) => {
+      if (!sizeDragging || !e.touches[0]) return;
+      sizeMove(e.touches[0].clientX);
+    }, { passive: true });
+
+    window.addEventListener('touchend', () => sizeEnd());
+  }
+
+  window.changeQty = changeQty;
+  window.submitOrder = submitOrder;
+  window.resetForm = resetForm;
+
+  showSlide(0, false);
+  goToSize(0, false);
+
+  const revEls = document.querySelectorAll('.reveal');
+  const revIO = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    },
+    { threshold: 0.08 }
+  );
+  revEls.forEach((el) => revIO.observe(el));
+
+  window.addEventListener('resize', () => {
+    renderSizeCarousel(false);
+  });
 })();
-
-
-/* ══════════════════════════════════════
-   QTY SELECTOR
-══════════════════════════════════════ */
-function changeQty(delta){
-  const input = document.getElementById('fQty');
-  const numEl = document.getElementById('qtyNum');
-  let val = parseInt(input.value) + delta;
-  if(val < 1) val = 1;
-  if(val > 10) val = 10;
-  input.value = val;
-  numEl.textContent = val;
-  // animation
-  numEl.classList.remove('bump-up','bump-down');
-  void numEl.offsetWidth; // reflow to restart animation
-  numEl.classList.add(delta > 0 ? 'bump-up' : 'bump-down');
-}
-
-/* ══════════════════════════════════════
-   ORDER FORM
-══════════════════════════════════════ */
-function submitOrder(){
-  const name  = document.getElementById('fName').value.trim();
-  const phone = document.getElementById('fPhone').value.trim();
-  const color = document.getElementById('fColor').value;
-  const size  = document.getElementById('fSize').value;
-  const qty   = document.getElementById('fQty').value;
-  const city  = document.getElementById('fCity').value.trim();
-  const notes = document.getElementById('fNotes').value.trim();
-  if(!name||!phone||!city){ alert('الرجاء ملء جميع الحقول المطلوبة.'); return }
-  const msg =
-` طلب جديد — ZAKVELA
-━━━━━━━━━━━━━━━
- الاسم: ${name}
- الهاتف: ${phone}
- اللون: ${color}
- المقاس: ${size}
- الكمية: ${qty}
- المدينة: ${city}${notes?'\n ملاحظات: '+notes:''}
-━━━━━━━━━━━━━━━`;
-  window.open('https://wa.me/213774843237?text='+encodeURIComponent(msg),'_blank');
-  document.getElementById('formWrap').style.display='none';
-  document.getElementById('successMsg').classList.add('show');
-}
-
-function resetForm(){
-  ['fName','fPhone','fCity','fNotes'].forEach(id=>document.getElementById(id).value='');
-  document.getElementById('fQty').value='1';
-  document.getElementById('qtyNum').textContent='1';
-  document.getElementById('formWrap').style.display='';
-  document.getElementById('successMsg').classList.remove('show');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-/* Reveal */
-const revEls = document.querySelectorAll('.reveal');
-const revIO  = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('show') }),{threshold:.08});
-revEls.forEach(el=>revIO.observe(el));
 </script>
 </body>
 </html>
