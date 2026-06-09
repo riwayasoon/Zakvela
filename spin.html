@@ -4,6 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
 <title>ZAKVELA | 360° View</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 /* ══════════════════════════════════════
    TOKENS
@@ -24,7 +27,11 @@
 a{color:var(--text) !important;text-decoration:none !important}
 html,body{height:100%;overflow:hidden}
 body{
-  font-family:system-ui,-apple-system,sans-serif;
+  font-family:
+    "Tajawal",
+    system-ui,
+    -apple-system,
+    sans-serif;
   background:var(--bg);
   color:var(--text);
   display:flex;flex-direction:column;
@@ -404,8 +411,8 @@ body{
         <div class="loader-pct" id="loaderPct">0%</div>
       </div>
 
-      
-      
+ 
+
       <!-- صورة العرض -->
       <img class="frame-img hidden" id="frameImg" alt="ZAKVELA T-Shirt" draggable="false"/>
       <!-- صورة للـ preload المسبق -->
