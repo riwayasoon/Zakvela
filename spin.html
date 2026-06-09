@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+<title>ZAKVELA | 360° View</title>
+<style>
+/* ══════════════════════════════════════
+   TOKENS
+══════════════════════════════════════ */
+:root{
+  --bg:#050505;
+  --text:#f5f5f5;
+  --muted:rgba(255,255,255,.55);
+  --line:rgba(255,255,255,.08);
+  --glass:rgba(255,255,255,.04);
+  --shadow:0 24px 70px rgba(0,0,0,.6);
+}
+
+/* ══════════════════════════════════════
+   RESET
+══════════════════════════════════════ */
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
+a{color:var(--text) !important;text-decoration:none !important}
+html,body{height:100%;overflow:hidden}
+body{
+  font-family:system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  position:relative;
+  overflow:hidden;
+  user-select:none;
+}
+
+/* ══════════════════════════════════════
+   AMBIENT
+══════════════════════════════════════ */
+#ambient{
+  position:fixed;inset:0;pointer-events:none;z-index:0;
+}
+.amb{
+  position:absolute;border-radius:50%;filter:blur(90px);
+  transition:opacity 1.4s ease, background .8s ease;
+}
+.amb-top{
+  width:700px;height:500px;
+  top:-200px;left:50%;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%);
+  opacity:.9;
+}
+.amb-bot{
+  width:500px;height:300px;
+  bottom:-140px;left:50%;transform:translateX(-50%);
+  background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%);
+  opacity:.7;
+}
+
+/* ══════════════════════════════════════
+   TOPBAR
+══════════════════════════════════════ */
+.topbar{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  height:62px;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 22px;
+  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
+  background:rgba(5,5,5,.65);
+  border-bottom:1px solid var(--line);
+}
+.brand{display:flex;align-items:center;gap:10px}
+.mark{
+  width:36px;height:36px;border-radius:11px;
+  border:1px solid rgba(255,255,255,.15);
+  display:grid;place-items:center;
+  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));
+  font-weight:800;font-size:.82rem;letter-spacing:.06em;
+  color:var(--text) !important;
+}
+.brand-name{font-size:.88rem;letter-spacing:.3em;font-weight:700;color:var(--text) !important}
+.brand-sub{font-size:.6rem;letter-spacing:.22em;color:var(--muted) !important;margin-top:2px}
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.11);
+  background:var(--glass);
+  font-size:.78rem;color:var(--muted) !important;
+  transition:.2s ease;
+}
+.back-btn:hover{color:var(--text) !important;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.07)}
+
+/* ══════════════════════════════════════
+   STAGE
+══════════════════════════════════════ */
+.stage{
+  position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  width:100%;
+  height:100vh;
+  padding-top:62px;
+  justify-content:center;
+  gap:0;
+}
+
+/* ══════════════════════════════════════
+   VIEWER
+══════════════════════════════════════ */
+.viewer-wrap{
+  position:relative;
+  width:min(88vw,380px);
+  flex:none;
+}
+
+/* container صورة مع zoom */
+.viewer{
+  position:relative;
+  width:100%;
+  aspect-ratio:3/4;
+  border-radius:24px;
+  overflow:hidden;
+  background:
+    radial-gradient(circle at 50% 10%,rgba(255,255,255,.10),transparent 55%),
+    linear-gradient(180deg,#111,#060606);
+  box-shadow:
+    0 30px 80px rgba(0,0,0,.65),
+    inset 0 1px 0 rgba(255,255,255,.06);
+  touch-action:none;
+  cursor:grab;
+}
+.viewer:active{cursor:grabbing}
+
+/* الصورة الحالية */
+.frame-img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:contain;
+  display:block;
+  transform-origin:center center;
+  will-change:transform;
+  transition:opacity .18s ease;
+  pointer-events:none;
+  padding:16px;
+}
+.frame-img.hidden{opacity:0}
+
+/* Preload canvas */
+.frame-preload{display:none}
+
+/* ظل أرضي */
+.ground{
+  position:absolute;bottom:-10px;left:50%;
+  transform:translateX(-50%);
+  width:60%;height:18px;
+  border-radius:50%;
+  background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%);
+  filter:blur(6px);
+  pointer-events:none;
+  transition:opacity .3s ease;
+}
+
+/* overlay عند اللمس المزدوج للزووم */
+.zoom-badge{
+  position:absolute;top:12px;left:12px;
+  display:flex;align-items:center;gap:5px;
+  padding:5px 11px;border-radius:999px;
+  background:rgba(0,0,0,.45);
+  backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.09);
+  font-size:.62rem;letter-spacing:.14em;color:var(--muted);
+  opacity:0;transition:opacity .3s ease;
+  pointer-events:none;
+  z-index:5;
+}
+.zoom-badge.show{opacity:1}
+
+/* Badge 360 */
+.badge360{
+  position:absolute;top:12px;right:12px;
+  width:42px;height:42px;border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.14);
+  background:rgba(0,0,0,.4);
+  backdrop-filter:blur(8px);
+  display:grid;place-items:center;
+  font-size:.56rem;font-weight:800;letter-spacing:.04em;
+  color:rgba(255,255,255,.5);line-height:1.1;text-align:center;
+  z-index:5;
+}
+
+/* hint اسحب */
+.drag-hint-overlay{
+  position:absolute;
+  bottom:14px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(0,0,0,.45);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.08);
+  font-size:.64rem;letter-spacing:.14em;color:var(--muted);
+  pointer-events:none;
+  transition:opacity .5s ease;
+  z-index:5;
+}
+.drag-hint-overlay.fade{opacity:0}
+
+/* ══════════════════════════════════════
+   LOADER
+══════════════════════════════════════ */
+.loader-wrap{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;z-index:20;
+  background:rgba(5,5,5,.85);
+  border-radius:24px;
+  transition:opacity .5s ease;
+}
+.loader-wrap.done{opacity:0;pointer-events:none}
+.loader-ring{
+  width:48px;height:48px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.08);
+  border-top-color:rgba(255,255,255,.7);
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loader-pct{font-size:.78rem;letter-spacing:.2em;color:var(--muted)}
+.loader-bar-wrap{
+  width:120px;height:2px;border-radius:999px;
+  background:rgba(255,255,255,.08);overflow:hidden;
+}
+.loader-bar{
+  height:100%;border-radius:999px;
+  background:rgba(255,255,255,.7);
+  width:0%;transition:width .2s ease;
+}
+
+/* Placeholder SVG عند غياب الصور */
+.placeholder-svg{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:12px;
+}
+.placeholder-svg svg{opacity:.18}
+.placeholder-note{
+  font-size:.7rem;letter-spacing:.14em;color:var(--muted);
+  text-align:center;padding:0 24px;line-height:1.7;
+  max-width:240px;
+}
+
+/* ══════════════════════════════════════
+   CONTROLS
+══════════════════════════════════════ */
+.controls{
+  display:flex;flex-direction:column;align-items:center;
+  gap:12px;
+  margin-top:16px;
+  width:min(88vw,380px);
+}
+
+/* ألوان */
+.color-row{
+  display:flex;align-items:center;gap:10px;
+}
+.cdot{
+  width:24px;height:24px;border-radius:50%;
+  cursor:pointer;transition:.25s ease;
+  position:relative;border:2px solid transparent;
+}
+.cdot::after{
+  content:'';position:absolute;inset:-4px;
+  border-radius:50%;border:1.5px solid transparent;
+  transition:.25s ease;
+}
+.cdot:hover{transform:scale(1.15)}
+.cdot.active{transform:scale(1.15)}
+.cdot.active::after{border-color:rgba(255,255,255,.5)}
+.cdot-white{background:linear-gradient(145deg,#eee,#fff);box-shadow:0 2px 8px rgba(255,255,255,.1)}
+.cdot-black{background:linear-gradient(145deg,#1c1c1c,#111)}
+
+/* info bar */
+.info-bar{
+  display:flex;align-items:center;gap:24px;
+  padding:12px 24px;border-radius:18px;
+  border:1px solid var(--line);
+  background:var(--glass);
+  backdrop-filter:blur(12px);
+}
+.inf{display:flex;flex-direction:column;align-items:center;gap:2px}
+.inf-lbl{font-size:.58rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
+.inf-val{font-size:.88rem;font-weight:700;letter-spacing:.04em}
+.inf-sep{width:1px;height:24px;background:var(--line)}
+
+/* شريط التقدم / السحب */
+.scrub-wrap{
+  position:relative;width:100%;height:40px;
+  border-radius:999px;
+  border:1px solid var(--line);
+  background:var(--glass);
+  backdrop-filter:blur(10px);
+  overflow:hidden;
+  touch-action:none;cursor:grab;
+}
+.scrub-wrap:active{cursor:grabbing}
+.scrub-fill{
+  position:absolute;inset:0;right:auto;
+  background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.09));
+  border-radius:999px;
+  pointer-events:none;
+  transition:width .04s linear;
+}
+.scrub-thumb{
+  position:absolute;top:50%;
+  width:30px;height:30px;
+  transform:translateY(-50%);
+  border-radius:50%;
+  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));
+  border:1.5px solid rgba(255,255,255,.22);
+  box-shadow:0 4px 14px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);
+  display:grid;place-items:center;
+  font-size:.65rem;color:rgba(255,255,255,.4);
+  will-change:left;pointer-events:none;
+  transition:transform .1s ease;
+}
+.scrub-wrap:active .scrub-thumb{transform:translateY(-50%) scale(1.1)}
+.scrub-label{
+  position:absolute;inset:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.62rem;letter-spacing:.16em;color:rgba(255,255,255,.18);
+  pointer-events:none;transition:opacity .3s ease;
+}
+.scrub-label.fade{opacity:0}
+
+/* زر auto spin */
+.auto-btn{
+  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+  z-index:50;
+  display:flex;align-items:center;gap:7px;
+  padding:10px 22px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(8,8,8,.82);
+  backdrop-filter:blur(16px);
+  color:var(--muted) !important;
+  font-size:.76rem;letter-spacing:.14em;
+  cursor:pointer;transition:.25s ease;
+}
+.auto-btn:hover{color:var(--text) !important;border-color:rgba(255,255,255,.22)}
+.auto-btn.on .spin-ico{animation:spinIco .7s linear infinite}
+@keyframes spinIco{to{transform:rotate(360deg)}}
+.spin-ico{display:inline-block;font-size:.9rem}
+
+/* zoom controls */
+.zoom-bar{
+  position:absolute;right:10px;top:50%;transform:translateY(-50%);
+  display:flex;flex-direction:column;gap:6px;z-index:6;
+}
+.zoom-btn{
+  width:30px;height:30px;border-radius:50%;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
+  color:rgba(255,255,255,.6);font-size:.95rem;
+  display:grid;place-items:center;cursor:pointer;
+  transition:.2s ease;
+}
+.zoom-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
+.zoom-btn:active{transform:scale(.92)}
+
+/* RESPONSIVE */
+@media(max-width:400px){
+  .info-bar{gap:14px;padding:10px 16px}
+  .topbar{padding:0 14px}
+}
+@media(max-height:680px){
+  .controls{gap:8px;margin-top:10px}
+  .info-bar{padding:9px 18px}
+}
+</style>
+</head>
+<body>
+
+<div id="ambient">
+  <div class="amb amb-top" id="ambTop"></div>
+  <div class="amb amb-bot"></div>
+</div>
+
+<header class="topbar">
+  <a class="brand" href="index.html">
+    <div class="mark">ZV</div>
+    <div>
+      <div class="brand-name">ZAKVELA</div>
+      <div class="brand-sub">MADE IN ALGERIA</div>
+    </div>
+  </a>
+  <a class="back-btn" href="index.html">← رجوع</a>
+</header>
+
+<div class="stage">
+
+  <!-- VIEWER -->
+  <div class="viewer-wrap">
+    <div class="viewer" id="viewer">
+
+      <!-- Loader -->
+      <div class="loader-wrap" id="loaderWrap">
+        <div class="loader-ring"></div>
+        <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
+        <div class="loader-pct" id="loaderPct">0%</div>
+      </div>
+
+      
+      
+      <!-- صورة العرض -->
+      <img class="frame-img hidden" id="frameImg" alt="ZAKVELA T-Shirt" draggable="false"/>
+      <!-- صورة للـ preload المسبق -->
+      <img class="frame-img hidden" id="frameImgNext" alt="" draggable="false" aria-hidden="true"/>
+
+      <!-- badges -->
+      <div class="badge360">360°</div>
+      <div class="zoom-badge" id="zoomBadge">🔍 <span id="zoomPct">100%</span></div>
+
+      <!-- hint -->
+      <div class="drag-hint-overlay" id="dragHintOverlay">← اسحب للدوران →</div>
+
+      <!-- ظل -->
+      <div class="ground" id="ground"></div>
+
+      <!-- zoom controls -->
+      <div class="zoom-bar">
+        <div class="zoom-btn" onclick="doZoom(0.25)" title="تكبير">+</div>
+        <div class="zoom-btn" onclick="doZoom(-0.25)" title="تصغير">−</div>
+        <div class="zoom-btn" onclick="resetZoom()" title="إعادة" style="font-size:.6rem;letter-spacing:.02em">FIT</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTROLS -->
+  <div class="controls">
+
+    <div class="color-row">
+      <div class="cdot cdot-white active" onclick="setColor('white',this)" title="أبيض"></div>
+      <div class="cdot cdot-black"        onclick="setColor('black',this)" title="أسود"></div>
+    </div>
+
+    <div class="info-bar">
+      <div class="inf">
+        <span class="inf-lbl">اللون</span>
+        <span class="inf-val" id="infoColor">أبيض</span>
+      </div>
+      <div class="inf-sep"></div>
+      <div class="inf">
+        <span class="inf-lbl">الزاوية</span>
+        <span class="inf-val" id="infoDeg">0°</span>
+      </div>
+      <div class="inf-sep"></div>
+      <div class="inf">
+        <span class="inf-lbl">القماش</span>
+        <span class="inf-val">تويل</span>
+      </div>
+    </div>
+
+    <div class="scrub-wrap" id="scrubWrap">
+      <div class="scrub-fill" id="scrubFill"></div>
+      <div class="scrub-thumb" id="scrubThumb">‹ ›</div>
+      <div class="scrub-label" id="scrubLabel">اسحب للدوران 360°</div>
+    </div>
+
+  </div>
+</div>
+
+<button class="auto-btn" id="autoBtn" onclick="toggleAuto()">
+  <span class="spin-ico" id="spinIco">↻</span>
+  <span id="autoTxt">دوران تلقائي</span>
+</button>
+
+<script>
+/* ══════════════════════════════════════════════
+   ⚙️  CONFIG — عدّل هنا فقط
+══════════════════════════════════════════════ */
+const CFG = {
+  // مجلد الصور لكل لون (مسار نسبي من موقع HTML)
+  dirs: {
+    white: 'images/360/white/',
+    black: 'images/360/black/',
+  },
+  // نمط اسم الملف — {n} يُستبدل برقم الإطار (مع صفر بادئ)
+  filePattern: 'frame-{n}.webp',
+  // عدد أرقام الترقيم  (001 = 3)
+  digits: 3,
+  // عدد الإطارات الإجمالي لكل لون
+  totalFrames: 72,
+  // سرعة Auto-Spin (ms بين إطارين)
+  spinInterval: 55,
+  // حد الـ momentum (كلما زاد كلما انزلق أكثر)
+  momentumFactor: 0.88,
+  // بيكسل لكل إطار أثناء السحب
+  pxPerFrame: 12,
+  // حد الـ zoom
+  minZoom: 1,
+  maxZoom: 4,
+};
+
+/* ══════════════════════════════════════════════
+   STATE
+══════════════════════════════════════════════ */
+let frame      = 0;
+let color      = 'white';
+let autoSpin   = false;
+let autoRaf    = null;
+let lastAutoTs = 0;
+
+let isDragging  = false;
+let dragStartX  = 0;
+let dragStartF  = 0;
+let dragLastX   = 0;
+let dragVel     = 0;   // velocity for momentum
+let momentumRaf = null;
+
+let zoomLevel  = 1;
+let panX       = 0;
+let panY       = 0;
+let isPanning  = false;
+let panStartX  = 0;
+let panStartY  = 0;
+let panOriginX = 0;
+let panOriginY = 0;
+
+// pinch-to-zoom
+let pinchDist0 = 0;
+let pinchZoom0 = 1;
+
+// frames cache: { white: [Image,...], black: [...] }
+const cache = { white: [], black: [] };
+let loadedCount = { white: 0, black: 0 };
+let totalFrames = CFG.totalFrames;
+
+/* ══════════════════════════════════════════════
+   DOM
+══════════════════════════════════════════════ */
+const viewer      = document.getElementById('viewer');
+const frameImg    = document.getElementById('frameImg');
+const loaderWrap  = document.getElementById('loaderWrap');
+const loaderBar   = document.getElementById('loaderBar');
+const loaderPct   = document.getElementById('loaderPct');
+const placeholder = document.getElementById('placeholder');
+const scrubWrap   = document.getElementById('scrubWrap');
+const scrubFill   = document.getElementById('scrubFill');
+const scrubThumb  = document.getElementById('scrubThumb');
+const scrubLabel  = document.getElementById('scrubLabel');
+const infoDeg     = document.getElementById('infoDeg');
+const infoColor   = document.getElementById('infoColor');
+const dragHint    = document.getElementById('dragHintOverlay');
+const zoomBadge   = document.getElementById('zoomBadge');
+const zoomPct     = document.getElementById('zoomPct');
+const ambTop      = document.getElementById('ambTop');
+const autoBtn     = document.getElementById('autoBtn');
+const autoTxt     = document.getElementById('autoTxt');
+const spinIco     = document.getElementById('spinIco');
+
+/* ══════════════════════════════════════════════
+   HELPERS
+══════════════════════════════════════════════ */
+function padNum(n, digits){
+  return String(n).padStart(digits, '0');
+}
+function framePath(col, idx){
+  // idx: 0-based
+  const n = padNum(idx + 1, CFG.digits);
+  return CFG.dirs[col] + CFG.filePattern.replace('{n}', n);
+}
+function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
+function wrapFrame(f){ return ((f % totalFrames) + totalFrames) % totalFrames; }
+
+/* ══════════════════════════════════════════════
+   PRELOAD
+══════════════════════════════════════════════ */
+function preloadColor(col, onProgress, onDone){
+  cache[col] = new Array(totalFrames).fill(null);
+  loadedCount[col] = 0;
+  let done = 0;
+
+  for(let i = 0; i < totalFrames; i++){
+    const img = new Image();
+    img.onload = () => {
+      cache[col][i] = img;
+      done++;
+      loadedCount[col] = done;
+      onProgress(done / totalFrames);
+      if(done === totalFrames) onDone();
+    };
+    img.onerror = () => {
+      done++;
+      loadedCount[col] = done;
+      onProgress(done / totalFrames);
+      if(done === totalFrames) onDone();
+    };
+    img.src = framePath(col, i);
+  }
+}
+
+function startLoad(){
+  // Load white first, then black
+  let phase = 0;
+
+  function updateProgress(pct){
+    const overall = (phase * 0.5 + pct * 0.5) * 100;
+    loaderBar.style.width = overall.toFixed(0) + '%';
+    loaderPct.textContent = overall.toFixed(0) + '%';
+  }
+
+  preloadColor('white',
+    p => updateProgress(p),
+    () => {
+      phase = 1;
+      // check if any white frame loaded
+      const hasFrames = cache['white'].some(img => img && img.complete && img.naturalWidth > 0);
+      if(!hasFrames){
+        // No images found — show placeholder
+        loaderWrap.classList.add('done');
+        placeholder.style.display = 'flex';
+        return;
+      }
+      placeholder.style.display = 'none';
+      frameImg.classList.remove('hidden');
+      renderFrame(0);
+      // Now load black
+      preloadColor('black',
+        p => updateProgress(p),
+        () => {
+          loaderWrap.classList.add('done');
+        }
+      );
+    }
+  );
+}
+
+/* ══════════════════════════════════════════════
+   RENDER
+══════════════════════════════════════════════ */
+function renderFrame(f){
+  frame = wrapFrame(f);
+  const img = cache[color][frame];
+  if(img && img.naturalWidth > 0){
+    frameImg.src = img.src;
+    frameImg.classList.remove('hidden');
+  }
+
+  // update UI
+  const deg = Math.round(frame * (360 / totalFrames));
+  infoDeg.textContent = deg + '°';
+  updateScrub();
+}
+
+function updateScrub(){
+  const trackW = scrubWrap.offsetWidth;
+  const thumbW = scrubThumb.offsetWidth;
+  const maxL   = trackW - thumbW - 10;
+  const pct    = frame / totalFrames;
+  const left   = 5 + pct * maxL;
+  scrubThumb.style.left = left.toFixed(1) + 'px';
+  scrubFill.style.width = (left + thumbW / 2) + 'px';
+}
+
+/* ══════════════════════════════════════════════
+   ZOOM & PAN
+══════════════════════════════════════════════ */
+function applyTransform(){
+  frameImg.style.transform =
+    `translate(${panX}px,${panY}px) scale(${zoomLevel})`;
+  zoomPct.textContent = Math.round(zoomLevel * 100) + '%';
+  if(zoomLevel > 1){
+    zoomBadge.classList.add('show');
+  } else {
+    zoomBadge.classList.remove('show');
+    panX = 0; panY = 0;
+    frameImg.style.transform = `scale(1)`;
+  }
+}
+
+function doZoom(delta){
+  zoomLevel = clamp(zoomLevel + delta, CFG.minZoom, CFG.maxZoom);
+  applyTransform();
+}
+
+function resetZoom(){
+  zoomLevel = 1; panX = 0; panY = 0;
+  applyTransform();
+}
+
+/* ══════════════════════════════════════════════
+   DRAG TO SPIN
+══════════════════════════════════════════════ */
+function onDragStart(x, y){
+  if(zoomLevel > 1){
+    // pan mode
+    isPanning = true;
+    panStartX = x; panStartY = y;
+    panOriginX = panX; panOriginY = panY;
+    return;
+  }
+  cancelMomentum();
+  isDragging = true;
+  dragStartX = x; dragLastX = x;
+  dragStartF = frame;
+  dragVel = 0;
+  if(autoSpin) toggleAuto();
+  scrubLabel.classList.add('fade');
+  dragHint.classList.add('fade');
+}
+
+function onDragMove(x, y){
+  if(isPanning){
+    panX = panOriginX + (x - panStartX);
+    panY = panOriginY + (y - panStartY);
+    applyTransform();
+    return;
+  }
+  if(!isDragging) return;
+  dragVel = x - dragLastX;
+  dragLastX = x;
+  const dx     = dragStartX - x;
+  const df     = Math.round(dx / CFG.pxPerFrame);
+  renderFrame(dragStartF + df);
+}
+
+function onDragEnd(){
+  if(isPanning){ isPanning = false; return; }
+  if(!isDragging) return;
+  isDragging = false;
+  startMomentum(dragVel);
+}
+
+function startMomentum(vel){
+  cancelMomentum();
+  let v = -vel / CFG.pxPerFrame;
+  function step(){
+    if(Math.abs(v) < 0.05) return;
+    frame = wrapFrame(frame + v);
+    renderFrame(frame);
+    v *= CFG.momentumFactor;
+    momentumRaf = requestAnimationFrame(step);
+  }
+  momentumRaf = requestAnimationFrame(step);
+}
+function cancelMomentum(){
+  if(momentumRaf){ cancelAnimationFrame(momentumRaf); momentumRaf = null; }
+}
+
+/* ══════════════════════════════════════════════
+   AUTO SPIN
+══════════════════════════════════════════════ */
+function autoLoop(ts){
+  if(!autoSpin) return;
+  if(ts - lastAutoTs >= CFG.spinInterval){
+    frame = wrapFrame(frame + 1);
+    renderFrame(frame);
+    lastAutoTs = ts;
+  }
+  autoRaf = requestAnimationFrame(autoLoop);
+}
+
+function toggleAuto(){
+  autoSpin = !autoSpin;
+  if(autoSpin){
+    autoBtn.classList.add('on');
+    autoTxt.textContent = 'إيقاف';
+    cancelMomentum();
+    autoRaf = requestAnimationFrame(autoLoop);
+  } else {
+    autoBtn.classList.remove('on');
+    autoTxt.textContent = 'دوران تلقائي';
+    if(autoRaf){ cancelAnimationFrame(autoRaf); autoRaf = null; }
+  }
+}
+
+/* ══════════════════════════════════════════════
+   COLOR SWITCH
+══════════════════════════════════════════════ */
+function setColor(c, el){
+  color = c;
+  document.querySelectorAll('.cdot').forEach(d => d.classList.remove('active'));
+  el.classList.add('active');
+  infoColor.textContent = c === 'white' ? 'أبيض' : 'أسود';
+  ambTop.style.opacity = c === 'white' ? '.9' : '.3';
+  renderFrame(frame);
+}
+
+/* ══════════════════════════════════════════════
+   EVENTS — VIEWER
+══════════════════════════════════════════════ */
+// Mouse
+viewer.addEventListener('mousedown', e=>{
+  e.preventDefault();
+  onDragStart(e.clientX, e.clientY);
+});
+window.addEventListener('mousemove', e=>{ onDragMove(e.clientX, e.clientY); });
+window.addEventListener('mouseup',   ()=>{ onDragEnd(); });
+
+// Wheel zoom
+viewer.addEventListener('wheel', e=>{
+  e.preventDefault();
+  const delta = e.deltaY > 0 ? -0.15 : 0.15;
+  zoomLevel = clamp(zoomLevel + delta, CFG.minZoom, CFG.maxZoom);
+  applyTransform();
+}, { passive: false });
+
+// Double-tap / double-click reset zoom
+let lastTap = 0;
+viewer.addEventListener('dblclick', ()=>{ zoomLevel > 1 ? resetZoom() : doZoom(1); });
+viewer.addEventListener('touchstart', e=>{
+  const now = Date.now();
+  if(now - lastTap < 300 && e.touches.length === 1){
+    zoomLevel > 1 ? resetZoom() : doZoom(1);
+  }
+  lastTap = now;
+
+  if(e.touches.length === 1){
+    onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+  }
+  if(e.touches.length === 2){
+    // pinch start
+    isDragging = false;
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    pinchDist0 = Math.hypot(dx, dy);
+    pinchZoom0 = zoomLevel;
+  }
+}, { passive: true });
+
+window.addEventListener('touchmove', e=>{
+  if(e.touches.length === 2){
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.hypot(dx, dy);
+    zoomLevel = clamp(pinchZoom0 * (dist / pinchDist0), CFG.minZoom, CFG.maxZoom);
+    applyTransform();
+    return;
+  }
+  if(e.touches.length === 1){
+    onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+  }
+}, { passive: true });
+
+window.addEventListener('touchend', ()=>{ onDragEnd(); });
+
+/* ══════════════════════════════════════════════
+   SCRUB BAR drag
+══════════════════════════════════════════════ */
+let scrubDragging = false;
+let scrubStartX = 0;
+let scrubStartF = 0;
+
+scrubWrap.addEventListener('mousedown', e=>{
+  e.preventDefault();
+  scrubDragging = true;
+  scrubStartX = e.clientX;
+  scrubStartF = frame;
+  if(autoSpin) toggleAuto();
+  cancelMomentum();
+});
+window.addEventListener('mousemove', e=>{
+  if(!scrubDragging) return;
+  const dx = e.clientX - scrubStartX;
+  const df = Math.round(dx / (scrubWrap.offsetWidth / totalFrames));
+  renderFrame(scrubStartF + df);
+});
+window.addEventListener('mouseup', ()=>{ scrubDragging = false; });
+
+scrubWrap.addEventListener('touchstart', e=>{
+  scrubDragging = true;
+  scrubStartX = e.touches[0].clientX;
+  scrubStartF = frame;
+  if(autoSpin) toggleAuto();
+  cancelMomentum();
+}, { passive: true });
+window.addEventListener('touchmove', e=>{
+  if(!scrubDragging) return;
+  const dx = e.touches[0].clientX - scrubStartX;
+  const df = Math.round(dx / (scrubWrap.offsetWidth / totalFrames));
+  renderFrame(scrubStartF + df);
+}, { passive: true });
+window.addEventListener('touchend', ()=>{ scrubDragging = false; });
+
+/* ══════════════════════════════════════════════
+   RESIZE
+══════════════════════════════════════════════ */
+window.addEventListener('resize', ()=>{ updateScrub(); });
+
+/* ══════════════════════════════════════════════
+   EXPOSE GLOBALS
+══════════════════════════════════════════════ */
+window.setColor  = setColor;
+window.toggleAuto= toggleAuto;
+window.doZoom    = doZoom;
+window.resetZoom = resetZoom;
+
+/* ══════════════════════════════════════════════
+   INIT
+══════════════════════════════════════════════ */
+startLoad();
+</script>
+</body>
+</html>
