@@ -4,6 +4,9 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ZAKVELA | المنتجات</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#050505;
@@ -16,7 +19,13 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+  font-family:
+    "Tajawal",
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    sans-serif;
   background:
     radial-gradient(circle at top,rgba(255,255,255,.07),transparent 26%),
     linear-gradient(180deg,#0a0a0a 0%,#050505 55%,#030303 100%);
@@ -540,7 +549,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   <div class="form-section reveal">
     <div class="form-card">
       <h2>فورم الطلب</h2>
-      <p class="form-subtitle">أرسل طلبك وسنتواصل معك فوراً عبر WhatsApp.</p>
+      <p class="form-subtitle">أرسل طلبك وسنتواصل معك إن شاء الله عبر Telegram</p>
 
       <div class="order-summary">
         <div class="sum-dot white" id="sumDot"></div>
@@ -595,7 +604,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
       <div class="success-msg" id="successMsg">
         <div class="success-icon">✓</div>
         <h3>تم إرسال الطلب!</h3>
-        <p>سيفتح Telegram لإتمام الطلب، سنتواصل معك قريبا</p>
+        <p>سيفتح WhatsApp لإتمام الطلب. سنتواصل معك قريباً.</p>
         <button class="reset-btn" onclick="resetForm()">طلب جديد</button>
       </div>
     </div>
