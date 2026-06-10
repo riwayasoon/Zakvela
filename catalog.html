@@ -1396,7 +1396,8 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
         headers: { 'Content-Type': 'application/json' },
         signal: controller.signal,
         body: JSON.stringify({ name, phone, color, size, qty, city, notes,
-          items: itemSpecs.length > 1 ? itemSpecs : null })
+          items: itemSpecs.length > 0 ? itemSpecs : null
+           })
       });
       const data = await res.json().catch(() => ({}));
       if (!res.ok || !data.success) throw new Error(data.error || 'FAILED');
