@@ -104,6 +104,15 @@ a{color:inherit;text-decoration:none}
   white-space:nowrap;
 }
 
+/* PRODUCT VIEWER IMAGE */
+.product-img{
+  display:block;
+  width:min(100%,420px);
+  max-width:420px;
+  height:auto;
+  object-fit:contain;
+}
+
 /* THUMBNAILS */
 .thumb-row{
   padding:20px 24px;
@@ -850,12 +859,12 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     <div class="slider-track-wrap" id="sliderWrap">
       <div class="slider-track" id="sliderTrack">
         <div class="slide slide-white">
-  <img src="images/white" alt="⚪" class="product-img">
+  <img src="images/white.png" alt="" class="product-img">
   <div class="slide-label">أبيض — White</div>  
 </div>
 
 <div class="slide slide-black">
-  <img src="images/black" alt="⚫" class="product-img">
+  <img src="images/black.png" alt="" class="product-img">
 <div class="slide-label">أسود — Black</div>    
 </div>
       </div>
@@ -955,6 +964,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
               <!-- تُنشأ ديناميكياً -->
             </div>
           </div>
+          <div class="form-group">
             <label>الولاية / المدينة</label>
             <input type="text" id="fCity" placeholder="مثال: الجزائر العاصمة">
           </div>
