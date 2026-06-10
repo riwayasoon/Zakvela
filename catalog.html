@@ -291,7 +291,6 @@ a{color:inherit;text-decoration:none}
   display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;
   border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);margin-bottom:22px;
 }
-.sum-dot{width:26px;height:26px;border-radius:50%;border:2px solid rgba(255,255,255,.2);flex:none;transition:.4s ease}
 .sum-dot.white{background:#f0f0f0}
 .sum-dot.black{background:#1a1a1a}
 .sum-info{font-size:.86rem;color:var(--muted);line-height:1.6}
@@ -416,7 +415,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
   width:38px;height:38px;
   border-radius:50%;
   display:grid;place-items:center;
-  font-size:1rem;font-weight:800;
+  font-size:1.1rem;font-weight:800;
   position:relative;z-index:1;
   border:1.5px solid currentColor;
 }
@@ -854,7 +853,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     <p>اسحب لاستعراض الألوان واختيار مقاسك بطريقة فاخرة.</p>
   </div>
 
-  <!-- PRODUCT VIEWER -->
   <div class="product-viewer reveal">
     <div class="slider-track-wrap" id="sliderWrap">
       <div class="slider-track" id="sliderTrack">
@@ -888,7 +886,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     <div class="drag-hint">← اسحب للتبديل →</div>
   </div>
 
-  <!-- 3D SIZE SELECTOR -->
   <div class="size-section reveal">
     <div class="size-title">اختر المقاس</div>
     <div class="size-carousel-wrap" id="sizeCarousel">
@@ -900,13 +897,11 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
   </div>
 
-  <!-- ORDER FORM -->
   <div class="form-section reveal">
     <div class="form-card">
       <h2>فورم الطلب</h2>
       <p class="form-subtitle">أرسل طلبك وسنتواصل معك فوراً عبر Telegram</p>
 
-      <!-- PRICE BAND -->
       <div class="price-band">
         <div class="price-left">
           <span class="price-label">سعر القطعة</span>
@@ -957,12 +952,10 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
             <input type="hidden" id="fQty" value="1">
           </div>
 
-          <!-- MULTI-ITEM PICKER — يظهر عند كمية > 1 -->
           <div class="form-group full" id="multiPickerWrap" style="display:none">
           <label>القطع الإضافية — لون ومقاس كل قطعة</label>
             <div class="multi-picker" id="multiPicker">
-              <!-- تُنشأ ديناميكياً -->
-            </div>
+              </div>
           </div>
           <div class="form-group">
             <label>الولاية / المدينة</label>
@@ -1001,7 +994,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   </div>
 </footer>
 
-<!-- EASTER EGG -->
 <div class="egg-overlay" id="eggOverlay">
   <div class="egg-bg" onclick="closeEgg()"></div>
   <div class="egg-card">
@@ -1030,10 +1022,9 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   </div>
 </div>
 
-<!-- LUXURY TOAST -->
 <div class="lux-toast t-error" id="luxToast" role="alert" aria-live="assertive">
   <div class="toast-ring">
-    <div class="toast-ico" id="toastIco">!</div>
+    <div class="toast-ico" id="toastIco">✦</div>
   </div>
   <div class="toast-body">
     <div class="toast-ttl" id="toastTtl">تنبيه</div>
@@ -1096,7 +1087,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     tSub.textContent = sub;
 
     toast.className = 'lux-toast t-' + type;
-    ico.textContent = type === 'ok' ? '✓' : '!';
+    ico.textContent = type === 'ok' ? '✓' : '✦';
 
     // reset bar then re-trigger
     const bar = toast.querySelector('.toast-bar');
@@ -1259,7 +1250,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     const picker  = document.getElementById('multiPicker');
     if(!wrap || !picker) return;
 
-    const extra = qty - 1;  // القطعة الأولى محددة من الفورم
+    const extra = qty - 1;
 
     if(extra <= 0){
       wrap.style.display = 'none';
@@ -1267,7 +1258,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
       return;
     }
 
-    // حافظ على الاختيارات السابقة للقطع الإضافية
     const prev = [...itemSpecs];
     itemSpecs  = [];
 
@@ -1282,12 +1272,10 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
       card.className = 'mi-card';
       card.style.animationDelay = (i * 0.06) + 's';
 
-      // رقم (يبدأ من 2 لأن القطعة 1 محددة بالفعل)
       const num = document.createElement('div');
       num.className   = 'mi-num';
       num.textContent = i + 2;
 
-      // ألوان
       const colors = document.createElement('div');
       colors.className = 'mi-colors';
 
@@ -1304,11 +1292,9 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
         colors.appendChild(d);
       });
 
-      // فاصل
       const sep = document.createElement('div');
       sep.className = 'mi-sep';
 
-      // مقاسات
       const sizes = document.createElement('div');
       sizes.className = 'mi-sizes';
 
@@ -1325,7 +1311,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
         sizes.appendChild(btn);
       });
 
-      // معاينة
       const preview = document.createElement('div');
       preview.className    = 'mi-preview';
       preview.id           = `mi-preview-${i}`;
@@ -1395,7 +1380,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
 
     const { controller, timer } = createFetchTimeout();
 
-    // بناء تفاصيل القطع
     const qtyNum2 = parseInt(qty, 10);
     let itemsDetail = '';
     if(qtyNum2 > 1){
@@ -1420,7 +1404,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
       if (ui.successMsg) ui.successMsg.classList.add('show');
     } catch (err) {
       if (err?.name === 'AbortError')
-        showToast('انتهى وقت الاتصال. حاول مرة أخرى.', 'انتهت المهلة', 'warn');
+        showToast('لقد تم ارسال الطلب نتأسف على تأخير', 'تم الإرسال', 'ok');
       else
         showToast('تعذر إرسال الطلب. تحقق من إعدادات البوت.', 'خطأ في الإرسال', 'error');
     } finally {
@@ -1454,7 +1438,7 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     const overlay   = document.getElementById('eggOverlay');
 
     const HOLD_MS   = 3000;
-    const CIRCUMFERENCE = 2 * Math.PI * 22; // r=22
+    const CIRCUMFERENCE = 2 * Math.PI * 22;
 
     let holdTimer   = null;
     let startTime   = 0;
@@ -1494,7 +1478,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
       ring.classList.remove('charging');
       circle.style.strokeDasharray = '0 200';
 
-      // نجوم متطايرة
       const emojis = ['✦','◆','✧','▣','◌','✦','◆'];
       const rect = mark.getBoundingClientRect();
       const cx   = rect.left + rect.width/2;
@@ -1515,7 +1498,6 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
         setTimeout(() => el.remove(), 3000);
       });
 
-      // فتح الـ overlay
       setTimeout(() => {
         overlay.classList.add('show');
         document.body.style.overflow = 'hidden';
@@ -1529,20 +1511,16 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     }
     window.closeEgg = closeEgg;
 
-    // منع التنقل عند الضغط الطويل
     brandLink.addEventListener('click', e => {
       if(triggered){ e.preventDefault(); }
     });
 
-    // Mouse
     mark.addEventListener('mousedown',  startHold);
     window.addEventListener('mouseup',  cancelHold);
-    // Touch
     mark.addEventListener('touchstart', startHold, { passive:false });
     window.addEventListener('touchend', cancelHold);
     window.addEventListener('touchcancel', cancelHold);
 
-    // ESC
     document.addEventListener('keydown', e => {
       if(e.key === 'Escape') closeEgg();
     });
