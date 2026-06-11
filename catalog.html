@@ -1062,7 +1062,12 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
 'use strict';
 
 const ORDER_API = "https://botzakvela.onrender.com/order";
-const REQUEST_TIMEOUT_MS = 12000;
+const ORDER_STATUS_API = "https://botzakvela.onrender.com/order/status";
+const SOFT_WAIT_MS = 12000;
+const HARD_TIMEOUT_MS = 25000;
+const STATUS_POLL_INTERVAL_MS = 2000;
+const STATUS_POLL_TRIES = 6;
+const ORDER_ID_KEY = 'zakvela_order_id_v1';
 const COLORS = ['أبيض','أسود'];
 const DOTS   = ['white','black'];
 const SIZES  = ['M','L','XL','XXL'];
@@ -1473,6 +1478,125 @@ function showToast(sub, ttl, type) {
 function hideToast() { $('luxToast')?.classList.remove('show'); clearTimeout(_toastTimer); }
 window.hideToast = hideToast;
 
+
+let submitLock = false;
+
+function makeFallbackUuid() {
+  return `order-${Date.now()}-${Math.random().toString(36).slice(2, 12)}`;
+}
+
+function generateOrderId() {
+  try {
+    if (window.crypto && typeof window.crypto.randomUUID === 'function') {
+      return window.crypto.randomUUID();
+    }
+  } catch (_) {}
+  return makeFallbackUuid();
+}
+
+function ensureOrderId() {
+  let id = '';
+  try {
+    id = sessionStorage.getItem(ORDER_ID_KEY) || '';
+  } catch (_) {
+    id = '';
+  }
+
+  if (!id) {
+    id = generateOrderId();
+    try {
+      sessionStorage.setItem(ORDER_ID_KEY, id);
+    } catch (_) {}
+  }
+
+  return id;
+}
+
+function clearOrderId() {
+  try {
+    sessionStorage.removeItem(ORDER_ID_KEY);
+  } catch (_) {}
+}
+
+function newOrderId() {
+  clearOrderId();
+  return ensureOrderId();
+}
+
+ensureOrderId();
+
+function createFetchTimeout(ms) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), ms);
+  return { controller, timer };
+}
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fetchOrderStatus(orderId) {
+  const url = `${ORDER_STATUS_API}/${encodeURIComponent(orderId)}`;
+
+  try {
+    const res = await fetch(url, {
+      method: 'GET',
+      cache: 'no-store'
+    });
+
+    if (!res.ok) return null;
+    return await res.json().catch(() => null);
+  } catch (_) {
+    return null;
+  }
+}
+
+async function waitForOrderSettlement(orderId) {
+  for (let i = 0; i < STATUS_POLL_TRIES; i++) {
+    await sleep(STATUS_POLL_INTERVAL_MS);
+    const data = await fetchOrderStatus(orderId);
+    if (!data) continue;
+
+    if (data.status === 'success') {
+      return { state: 'success', data };
+    }
+
+    if (data.status === 'failed') {
+      return { state: 'failed', data };
+    }
+  }
+
+  return { state: 'timeout', data: null };
+}
+
+function showSuccessUI() {
+  if (ui.formWrap) ui.formWrap.style.display = 'none';
+  if (ui.successMsg) ui.successMsg.classList.add('show');
+  showToast('تم استلام الطلب بنجاح.', 'تم الإرسال', 'ok');
+}
+
+function showTimeoutUI() {
+  showToast('انتهت مهلة الطلب ولم يصل تأكيد الاستلام.', 'انتهت مهلة الطلب', 'error');
+}
+
+async function resolveAfterUncertainOutcome(orderId) {
+  const result = await waitForOrderSettlement(orderId);
+
+  if (result.state === 'success') {
+    clearOrderId();
+    showSuccessUI();
+    return true;
+  }
+
+  if (result.state === 'failed') {
+    showTimeoutUI();
+    return false;
+  }
+
+  showTimeoutUI();
+  return false;
+}
+
 /* ── COLOR / SIZE STATE ── */
 let currentSlide = 0, currentSize = 0;
 
@@ -1677,63 +1801,158 @@ function changeQty(delta) {
 }
 
 /* ── SUBMIT ── */
-function createFetchTimeout() {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-  return { controller, timer };
-}
+
 async function submitOrder() {
-  const name   = ui.fName?.value.trim()   || '';
-  const phone  = ui.fPhone?.value.trim()  || '';
-  const color  = ui.fColor?.value         || '';
+  if (submitLock) return;
+  submitLock = true;
+
+  const name   = ui.fName?.value.trim() || '';
+  const phone  = ui.fPhone?.value.trim() || '';
+  const color  = ui.fColor?.value || '';
   const size   = ui.sizeCurrent?.textContent || 'M';
-  const qty    = ui.fQty?.value           || '';
-  const wilaya = ui.fWilaya?.value        || '';
-  const region = ui.fRegion?.value        || '';
-  const notes  = ui.fNotes?.value.trim()  || '';
-  if (!name || !phone) { showToast('الرجاء ملء الاسم ورقم الهاتف.','حقول مطلوبة','error'); return; }
-  if (!wilaya || !region) { showToast('الرجاء اختيار الولاية والمنطقة.','بيانات الموقع ناقصة','error'); return; }
-  if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) { showToast('ضع رابط السيرفر داخل ORDER_API.','إعداد مطلوب','warn'); return; }
+  const qty    = ui.fQty?.value || '';
+  const wilaya = ui.fWilaya?.value || '';
+  const region = ui.fRegion?.value || '';
+  const notes  = ui.fNotes?.value.trim() || '';
+
+  if (!name || !phone) {
+    showToast('الرجاء ملء الاسم ورقم الهاتف.', 'حقول مطلوبة', 'error');
+    submitLock = false;
+    return;
+  }
+
+  if (!wilaya || !region) {
+    showToast('الرجاء اختيار الولاية والمنطقة.', 'بيانات الموقع ناقصة', 'error');
+    submitLock = false;
+    return;
+  }
+
+  if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
+    showToast('ضع رابط السيرفر داخل ORDER_API.', 'إعداد مطلوب', 'warn');
+    submitLock = false;
+    return;
+  }
+
   const city = `${wilaya} - ${region}`;
-  const btn = ui.submitBtn; const oldText = btn?.textContent || '';
-  if (btn) { btn.disabled=true; btn.textContent='جارٍ الإرسال...'; }
-  const { controller, timer } = createFetchTimeout();
+  const orderId = ensureOrderId();
+
+  const btn = ui.submitBtn;
+  const oldText = btn?.textContent || '';
+
+  if (btn) {
+    btn.disabled = true;
+    btn.textContent = 'جارٍ الإرسال...';
+  }
+
+  const softNoticeTimer = setTimeout(() => {
+    showToast('ما زال الطلب قيد الإرسال، انتظر قليلاً.', 'جارٍ الإرسال', 'warn');
+  }, SOFT_WAIT_MS);
+
+  const { controller, timer } = createFetchTimeout(HARD_TIMEOUT_MS);
+
   try {
-    const res  = await fetch(ORDER_API,{ method:'POST', headers:{'Content-Type':'application/json'}, signal:controller.signal, body:JSON.stringify({name,phone,color,size,qty,city,notes,items:itemSpecs.length>0?itemSpecs:null}) });
-    const data = await res.json().catch(()=>({}));
-    if (!res.ok || !data.success) throw new Error(data.error||'FAILED');
-    if (ui.formWrap)   ui.formWrap.style.display='none';
-    if (ui.successMsg) ui.successMsg.classList.add('show');
-  } catch(err) {
-    if (err?.name==='AbortError') showToast('لقد تم ارسال الطلب نتأسف على التأخير','تم الإرسال','ok');
-    else showToast('تعذر إرسال الطلب. تحقق من إعدادات البوت.','خطأ في الإرسال','error');
+    const res = await fetch(ORDER_API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      signal: controller.signal,
+      body: JSON.stringify({
+        orderId,
+        name,
+        phone,
+        color,
+        size,
+        qty,
+        city,
+        notes,
+        items: itemSpecs.length > 0 ? itemSpecs : null
+      })
+    });
+
+    let data = {};
+    try {
+      data = await res.json();
+    } catch (_) {
+      data = {};
+    }
+
+    if (res.ok && data.success) {
+      clearOrderId();
+      showSuccessUI();
+      return;
+    }
+
+    if (data?.status === 'processing' || data?.error === 'ORDER_PROCESSING') {
+      await resolveAfterUncertainOutcome(orderId);
+      return;
+    }
+
+    if (
+      data?.error === 'TELEGRAM_TIMEOUT' ||
+      data?.error === 'TELEGRAM_SEND_FAILED' ||
+      data?.error === 'SERVER_ERROR'
+    ) {
+      await resolveAfterUncertainOutcome(orderId);
+      return;
+    }
+
+    await resolveAfterUncertainOutcome(orderId);
+  } catch (err) {
+    await resolveAfterUncertainOutcome(orderId);
   } finally {
-    clearTimeout(timer); if(btn){ btn.disabled=false; btn.textContent=oldText; }
+    clearTimeout(timer);
+    clearTimeout(softNoticeTimer);
+
+    if (btn) {
+      btn.disabled = false;
+      btn.textContent = oldText;
+    }
+
+    submitLock = false;
   }
 }
 
 /* ── RESET ── */
 function resetForm() {
-  if(ui.fName)  ui.fName.value='';
-  if(ui.fPhone) ui.fPhone.value='';
-  ui.fWilaya.value=''; ui.fRegion.value='';
-  wilayaTriggerText.textContent='اختر الولاية...'; wilayaTriggerText.classList.add('placeholder');
-  regionTriggerText.textContent='اختر الولاية أولاً...'; regionTriggerText.classList.add('placeholder');
+  if (ui.fName) ui.fName.value = '';
+  if (ui.fPhone) ui.fPhone.value = '';
+  if (ui.fNotes) ui.fNotes.value = '';
+
+  ui.fWilaya.value = '';
+  ui.fRegion.value = '';
+
+  wilayaTriggerText.textContent = 'اختر الولاية...';
+  wilayaTriggerText.classList.add('placeholder');
+
+  regionTriggerText.textContent = 'اختر الولاية أولاً...';
+  regionTriggerText.classList.add('placeholder');
+
   regionTrigger.classList.add('disabled');
   ui.regionAnim.classList.remove('show');
   hideDeliveryPrice();
-  if(ui.fNotes)  ui.fNotes.value='';
-  if(ui.fQty)    ui.fQty.value='1';
-  if(ui.qtyNum)  ui.qtyNum.textContent='1';
+
+  if (ui.fQty) ui.fQty.value = '1';
+  if (ui.qtyNum) ui.qtyNum.textContent = '1';
+
+  if (ui.fColor) ui.fColor.value = 'أبيض';
+  if (ui.sumColor) ui.sumColor.textContent = 'أبيض';
+  if (ui.sumDot) ui.sumDot.className = 'sum-dot white';
+  if (ui.sumSize) ui.sumSize.textContent = 'M';
+  if (ui.sizeCurrent) ui.sizeCurrent.textContent = 'M';
+
   buildPicker(1);
   updatePriceDisplay(1);
-  currentSlide=0; currentSize=0;
-  showSlide(0,false); goToSize(0,false);
-  if(ui.formWrap)   ui.formWrap.style.display='';
-  if(ui.successMsg) ui.successMsg.classList.remove('show');
-  window.scrollTo({top:0,behavior:'smooth'});
-}
 
+  currentSlide = 0;
+  currentSize = 0;
+  showSlide(0, false);
+  goToSize(0, false);
+
+  if (ui.formWrap) ui.formWrap.style.display = '';
+  if (ui.successMsg) ui.successMsg.classList.remove('show');
+
+  newOrderId();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
 /* ── EASTER EGG ── */
 (() => {
   const mark      = $('brandMark');
