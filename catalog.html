@@ -1160,7 +1160,7 @@ const ORDER_STATUS_API = "https://botzakvela.onrender.com/order/status";
 const SOFT_WAIT_MS = 12000;
 const HARD_TIMEOUT_MS = 25000;
 const STATUS_POLL_INTERVAL_MS = 2000;
-const STATUS_POLL_TRIES = 6;
+const STATUS_POLL_TRIES = 15;
 const ORDER_ID_KEY = 'zakvela_order_id_v1';
 const COLORS = ['أبيض','أسود'];
 const DOTS   = ['white','black'];
@@ -1957,7 +1957,19 @@ function changeQty(delta) {
   buildPicker(val);
   updatePriceDisplay(val);
 }
+/* ── BRING DELIVERY ── */
 
+function getSelectedDeliveryPrice() {
+  const wilaya = ui.fWilaya?.value || '';
+  const info = DELIVERY_PRICES[wilaya];
+  if (!info) return null;
+
+  if (deliveryMode === 'home') {
+    return info.home ?? null;
+  }
+
+  return info.desk ?? info.home ?? null;
+}
 /* ── SUBMIT ── */
 
 async function submitOrder() {
@@ -1972,6 +1984,7 @@ async function submitOrder() {
   const wilaya = ui.fWilaya?.value || '';
   const region = ui.fRegion?.value || '';
   const notes  = ui.fNotes?.value.trim() || '';
+const deliveryPrice = getSelectedDeliveryPrice();
 
   if (!name || !phone) {
     showToast('الرجاء ملء الاسم ورقم الهاتف.', 'حقول مطلوبة', 'error');
@@ -2013,19 +2026,20 @@ async function submitOrder() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       signal: controller.signal,
-      body: JSON.stringify({
-        orderId,
-        name,
-        phone,
-        color,
-        size,
-        qty,
-        city,
-        notes,
-        deliveryMode,
-        deliveryPrice,
-        items: itemSpecs.length > 0 ?  itemSpecs : null
-      })
+    
+  body: JSON.stringify({
+  orderId,
+  name,
+  phone,
+  color,
+  size,
+  qty,
+  city,
+  notes,
+  deliveryMode,
+  deliveryPrice,
+  items: itemSpecs.length > 0 ? itemSpecs : null
+})
     });
 
     let data = {};
