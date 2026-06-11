@@ -1992,20 +1992,21 @@ const deliveryPrice = getSelectedDeliveryPrice();
     return;
   }
 
-  if (!wilaya || !region) {
-    showToast('الرجاء اختيار الولاية والمنطقة.', 'بيانات الموقع ناقصة', 'error');
-    submitLock = false;
-    return;
-  }
+  if (!wilaya) {
+  showToast('الرجاء اختيار الولاية.', 'بيانات الموقع ناقصة', 'error');
+  submitLock = false;
+  return;
+}
 
-  if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
-    showToast('ضع رابط السيرفر داخل ORDER_API.', 'إعداد مطلوب', 'warn');
-    submitLock = false;
-    return;
-  }
+if (deliveryMode === 'home' && !region) {
+  showToast('الرجاء اختيار المنطقة / البلدية للتوصيل إلى المنزل.', 'بيانات الموقع ناقصة', 'error');
+  submitLock = false;
+  return;
+}
 
-  const city = `${wilaya} - ${region}`;
-  const orderId = ensureOrderId();
+const city = deliveryMode === 'home'
+  ? `${wilaya} - ${region}`
+  : wilaya;    const orderId = ensureOrderId();
 
   const btn = ui.submitBtn;
   const oldText = btn?.textContent || '';
