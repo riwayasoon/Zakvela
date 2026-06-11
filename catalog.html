@@ -19,13 +19,7 @@
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
 html{scroll-behavior:smooth}
 body{
-  font-family:
-    "Tajawal",
-    system-ui,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    sans-serif;
+  font-family:"Tajawal",system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   background:
     radial-gradient(circle at top,rgba(255,255,255,.07),transparent 26%),
     linear-gradient(180deg,#0a0a0a 0%,#050505 55%,#030303 100%);
@@ -40,7 +34,7 @@ a{color:inherit;text-decoration:none}
 .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(18px);background:rgba(5,5,5,.55);border-bottom:1px solid rgba(255,255,255,.06)}
 .nav{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:74px}
 .brand{display:flex;align-items:center;gap:12px}
-.mark{width:40px;height:40px;border:1px solid rgba(255,255,255,.16);border-radius:13px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));font-weight:800;letter-spacing:.06em;font-size:.9rem}
+.mark{width:40px;height:40px;border:1px solid rgba(255,255,255,.16);border-radius:13px;display:grid;place-items:center;background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));font-weight:800;letter-spacing:.06em;font-size:.9rem;position:relative;overflow:visible!important}
 .brand-text strong{display:block;font-size:.9rem;letter-spacing:.32em}
 .brand-text span{display:block;font-size:.68rem;letter-spacing:.24em;color:var(--muted);margin-top:4px}
 .back-btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:999px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);font-size:.88rem;color:var(--muted);transition:.2s ease}
@@ -53,244 +47,52 @@ a{color:inherit;text-decoration:none}
 .page-header h1{font-size:clamp(2rem,5vw,3.4rem);font-weight:700;letter-spacing:.04em}
 .page-header p{margin:14px auto 0;max-width:50ch;color:var(--muted);line-height:1.85;font-size:.95rem}
 
-/* PRODUCT VIEWER FRAME */
-.product-viewer{
-  border:1px solid rgba(255,255,255,.10);
-  background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));
-  border-radius:34px;
-  overflow:hidden;
-  box-shadow:var(--shadow);
-  max-width:780px;
-  margin:0 auto 18px;
-  position:relative;
-}
-.slider-track-wrap{
-  overflow:hidden;
-  border-radius:26px 26px 0 0;
-  position:relative;
-  background:
-    radial-gradient(circle at 50% 0%,rgba(255,255,255,.12),transparent 22%),
-    linear-gradient(180deg,#0f0f0f,#060606);
-  touch-action:none;
-  user-select:none;
-}
-.slider-track{
-  display:grid;
-  will-change:transform;
-}
-.slide{
-  grid-area: 1/1;
-  width:100%;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  padding:48px 32px;
-  min-height:480px;
-  opacity:0;
-  pointer-events:none;
-}
+/* PRODUCT VIEWER */
+.product-viewer{border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03));border-radius:34px;overflow:hidden;box-shadow:var(--shadow);max-width:780px;margin:0 auto 18px;position:relative}
+.slider-track-wrap{overflow:hidden;border-radius:26px 26px 0 0;position:relative;background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.12),transparent 22%),linear-gradient(180deg,#0f0f0f,#060606);touch-action:none;user-select:none}
+.slider-track{display:grid;will-change:transform}
+.slide{grid-area:1/1;width:100%;display:flex;align-items:center;justify-content:center;padding:48px 32px;min-height:480px;opacity:0;pointer-events:none}
 @media(max-width:600px){.slide{min-height:340px;padding:32px 20px}}
-
-.slide-label{
-  position:absolute;
-  bottom:22px;left:50%;
-  transform:translateX(-50%);
-  font-size:.72rem;letter-spacing:.24em;
-  color:var(--muted);text-transform:uppercase;
-  padding:6px 18px;border-radius:999px;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.09);
-  backdrop-filter:blur(8px);
-  white-space:nowrap;
-}
-
-/* PRODUCT VIEWER IMAGE */
-.product-img{
-  display:block;
-  width:min(100%,420px);
-  max-width:420px;
-  height:auto;
-  object-fit:contain;
-}
-
-/* THUMBNAILS */
-.thumb-row{
-  padding:20px 24px;
-  border-top:1px solid rgba(255,255,255,.07);
-  display:flex;
-  justify-content:center;
-  gap:14px;
-  background:rgba(0,0,0,.15);
-  position:relative;
-  overflow:hidden;
-  touch-action:none;
-  user-select:none;
-  cursor:grab;
-}
+.slide-label{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);font-size:.72rem;letter-spacing:.24em;color:var(--muted);text-transform:uppercase;padding:6px 18px;border-radius:999px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.09);backdrop-filter:blur(8px);white-space:nowrap}
+.product-img{display:block;width:min(100%,420px);max-width:420px;height:auto;object-fit:contain}
+.thumb-row{padding:20px 24px;border-top:1px solid rgba(255,255,255,.07);display:flex;justify-content:center;gap:14px;background:rgba(0,0,0,.15);position:relative;overflow:hidden;touch-action:none;user-select:none;cursor:grab}
 .thumb-row:active{cursor:grabbing}
-.thumb-inner{
-  display:flex;
-  gap:14px;
-  will-change:transform;
-  transition:none;
-}
-.thumb{
-  flex:none;
-  width:72px;height:72px;
-  border-radius:16px;
-  border:1.5px solid rgba(255,255,255,.12);
-  overflow:hidden;
-  position:relative;
-  transition:border-color .3s ease, transform .3s ease, opacity .3s ease;
-  opacity:.5;
-  transform:scale(.92);
-  display:flex;align-items:center;justify-content:center;
-}
-.thumb.active{
-  border-color:rgba(255,255,255,.55);
-  opacity:1;
-  transform:scale(1);
-  box-shadow:0 4px 20px rgba(255,255,255,.08);
-}
+.thumb-inner{display:flex;gap:14px;will-change:transform;transition:none}
+.thumb{flex:none;width:72px;height:72px;border-radius:16px;border:1.5px solid rgba(255,255,255,.12);overflow:hidden;position:relative;transition:border-color .3s ease,transform .3s ease,opacity .3s ease;opacity:.5;transform:scale(.92);display:flex;align-items:center;justify-content:center}
+.thumb.active{border-color:rgba(255,255,255,.55);opacity:1;transform:scale(1);box-shadow:0 4px 20px rgba(255,255,255,.08)}
 .thumb-white{background:linear-gradient(160deg,#e8e8e8,#fff)}
 .thumb-black{background:linear-gradient(160deg,#1c1c1c,#111)}
 .thumb-lbl{font-size:.55rem;letter-spacing:.18em;font-weight:700;text-transform:uppercase}
 .thumb-white .thumb-lbl{color:rgba(0,0,0,.35)}
 .thumb-black .thumb-lbl{color:rgba(255,255,255,.35)}
+.drag-hint{text-align:center;padding:10px 0 4px;font-size:.72rem;letter-spacing:.14em;color:rgba(255,255,255,.22)}
 
-.drag-hint{
-  text-align:center;
-  padding:10px 0 4px;
-  font-size:.72rem;letter-spacing:.14em;
-  color:rgba(255,255,255,.22);
-}
-
-/* 3D SIZE SELECTOR */
-.size-section{
-  max-width:780px;
-  margin:0 auto 22px;
-  border:1px solid rgba(255,255,255,.10);
-  background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  border-radius:30px;
-  padding:28px 24px 32px;
-  box-shadow:var(--shadow);
-}
-.size-title{
-  text-align:center;
-  font-size:.75rem;letter-spacing:.26em;
-  color:var(--muted);text-transform:uppercase;
-  margin-bottom:24px;
-}
-.size-carousel-wrap{
-  position:relative;
-  height:130px;
-  perspective:600px;
-  display:flex;align-items:center;justify-content:center;
-  overflow:hidden;
-  touch-action:none;
-  user-select:none;
-  cursor:grab;
-}
+/* SIZE SECTION */
+.size-section{max-width:780px;margin:0 auto 22px;border:1px solid rgba(255,255,255,.10);background:linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-radius:30px;padding:28px 24px 32px;box-shadow:var(--shadow)}
+.size-title{text-align:center;font-size:.75rem;letter-spacing:.26em;color:var(--muted);text-transform:uppercase;margin-bottom:24px}
+.size-carousel-wrap{position:relative;height:130px;perspective:600px;display:flex;align-items:center;justify-content:center;overflow:hidden;touch-action:none;user-select:none;cursor:grab}
 .size-carousel-wrap:active{cursor:grabbing}
-
 .size-fx{position:absolute;inset:0;pointer-events:none;z-index:15;overflow:hidden}
-.size-fx-trail{
-  position:absolute;top:50%;left:50%;
-  width:260px;height:64px;
-  transform:translate(-50%,-50%) scale(.2);
-  opacity:0;border-radius:999px;
-  filter:blur(14px);mix-blend-mode:screen;
-  transition:opacity .12s ease, transform .08s linear;
-}
-.size-fx-burst{
-  position:absolute;top:50%;left:50%;
-  width:260px;height:260px;
-  transform:translate(-50%,-50%) scale(.15);
-  opacity:0;border-radius:50%;
-  filter:blur(24px);
-  background:radial-gradient(circle, rgba(255,255,255,.48) 0%, rgba(255,255,255,.18) 28%, transparent 70%);
-  transition:opacity .14s ease, transform .2s ease;
-}
-.size-carousel-wrap.drag-left .size-fx-trail{
-  background:linear-gradient(270deg,transparent 0%,rgba(255,255,255,.04) 14%,rgba(255,255,255,.16) 28%,rgba(255,255,255,.42) 48%,rgba(255,255,255,.90) 54%,rgba(255,255,255,.42) 60%,rgba(255,255,255,.12) 74%,transparent 100%);
-}
-.size-carousel-wrap.drag-right .size-fx-trail{
-  background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 14%,rgba(255,255,255,.16) 28%,rgba(255,255,255,.42) 48%,rgba(255,255,255,.90) 54%,rgba(255,255,255,.42) 60%,rgba(255,255,255,.12) 74%,transparent 100%);
-}
-.size-carousel-wrap.drag-left .size-fx-burst,
-.size-carousel-wrap.drag-right .size-fx-burst{opacity:1}
+.size-fx-trail{position:absolute;top:50%;left:50%;width:260px;height:64px;transform:translate(-50%,-50%) scale(.2);opacity:0;border-radius:999px;filter:blur(14px);mix-blend-mode:screen;transition:opacity .12s ease,transform .08s linear}
+.size-fx-burst{position:absolute;top:50%;left:50%;width:260px;height:260px;transform:translate(-50%,-50%) scale(.15);opacity:0;border-radius:50%;filter:blur(24px);background:radial-gradient(circle,rgba(255,255,255,.48) 0%,rgba(255,255,255,.18) 28%,transparent 70%);transition:opacity .14s ease,transform .2s ease}
+.size-carousel-wrap.drag-left .size-fx-trail{background:linear-gradient(270deg,transparent 0%,rgba(255,255,255,.04) 14%,rgba(255,255,255,.16) 28%,rgba(255,255,255,.42) 48%,rgba(255,255,255,.90) 54%,rgba(255,255,255,.42) 60%,rgba(255,255,255,.12) 74%,transparent 100%)}
+.size-carousel-wrap.drag-right .size-fx-trail{background:linear-gradient(90deg,transparent 0%,rgba(255,255,255,.04) 14%,rgba(255,255,255,.16) 28%,rgba(255,255,255,.42) 48%,rgba(255,255,255,.90) 54%,rgba(255,255,255,.42) 60%,rgba(255,255,255,.12) 74%,transparent 100%)}
+.size-carousel-wrap.drag-left .size-fx-burst,.size-carousel-wrap.drag-right .size-fx-burst{opacity:1}
+.size-item{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;letter-spacing:.08em;will-change:transform;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .55s cubic-bezier(.22,1,.36,1),filter .55s cubic-bezier(.22,1,.36,1),box-shadow .55s cubic-bezier(.22,1,.36,1);cursor:pointer;user-select:none;backdrop-filter:blur(4px)}
+.size-item.pos-0{width:104px;height:104px;font-size:1.3rem;opacity:1;transform:translateX(0) scale(1) translateZ(0);border:2px solid rgba(255,255,255,.55);background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.18),rgba(255,255,255,.06) 60%),rgba(255,255,255,.08);box-shadow:0 0 0 8px rgba(255,255,255,.04),0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.2);color:#fff;z-index:10}
+.size-item.pos-1{width:72px;height:72px;font-size:.9rem;opacity:.45;transform:translateX(130px) scale(.85) translateZ(-60px);border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:var(--muted);z-index:5;filter:blur(.5px)}
+.size-item.pos-2{width:52px;height:52px;font-size:.75rem;opacity:.2;transform:translateX(210px) scale(.65) translateZ(-120px);border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);color:rgba(255,255,255,.4);z-index:2;filter:blur(1.5px)}
+.size-item.pos-neg1{width:72px;height:72px;font-size:.9rem;opacity:.45;transform:translateX(-130px) scale(.85) translateZ(-60px);border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:var(--muted);z-index:5;filter:blur(.5px)}
+.size-item.pos-neg2{width:52px;height:52px;font-size:.75rem;opacity:.2;transform:translateX(-210px) scale(.65) translateZ(-120px);border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);color:rgba(255,255,255,.4);z-index:2;filter:blur(1.5px)}
+.size-item.pos-hidden{opacity:0;transform:translateX(0) scale(.4) translateZ(-200px);pointer-events:none;z-index:0}
+.size-active-label{text-align:center;margin-top:14px;font-size:.7rem;letter-spacing:.22em;color:rgba(255,255,255,.28);text-transform:uppercase}
 
-.size-item{
-  position:absolute;
-  display:flex;align-items:center;justify-content:center;
-  border-radius:50%;
-  font-weight:800;
-  letter-spacing:.08em;
-  will-change:transform;
-  transition:transform .55s cubic-bezier(.22,1,.36,1),
-             opacity .55s cubic-bezier(.22,1,.36,1),
-             filter .55s cubic-bezier(.22,1,.36,1),
-             box-shadow .55s cubic-bezier(.22,1,.36,1);
-  cursor:pointer;
-  user-select:none;
-  backdrop-filter:blur(4px);
-}
-.size-item.pos-0{
-  width:104px;height:104px;font-size:1.3rem;opacity:1;
-  transform:translateX(0) scale(1) translateZ(0);
-  border:2px solid rgba(255,255,255,.55);
-  background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.18),rgba(255,255,255,.06) 60%),rgba(255,255,255,.08);
-  box-shadow:0 0 0 8px rgba(255,255,255,.04),0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.2);
-  color:#fff;z-index:10;
-}
-.size-item.pos-1{
-  width:72px;height:72px;font-size:.9rem;opacity:.45;
-  transform:translateX(130px) scale(.85) translateZ(-60px);
-  border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);
-  color:var(--muted);z-index:5;filter:blur(.5px);
-}
-.size-item.pos-2{
-  width:52px;height:52px;font-size:.75rem;opacity:.2;
-  transform:translateX(210px) scale(.65) translateZ(-120px);
-  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);
-  color:rgba(255,255,255,.4);z-index:2;filter:blur(1.5px);
-}
-.size-item.pos-neg1{
-  width:72px;height:72px;font-size:.9rem;opacity:.45;
-  transform:translateX(-130px) scale(.85) translateZ(-60px);
-  border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);
-  color:var(--muted);z-index:5;filter:blur(.5px);
-}
-.size-item.pos-neg2{
-  width:52px;height:52px;font-size:.75rem;opacity:.2;
-  transform:translateX(-210px) scale(.65) translateZ(-120px);
-  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);
-  color:rgba(255,255,255,.4);z-index:2;filter:blur(1.5px);
-}
-.size-item.pos-hidden{
-  opacity:0;transform:translateX(0) scale(.4) translateZ(-200px);
-  pointer-events:none;z-index:0;
-}
-.size-active-label{
-  text-align:center;margin-top:14px;
-  font-size:.7rem;letter-spacing:.22em;
-  color:rgba(255,255,255,.28);text-transform:uppercase;
-}
-
-/* ORDER FORM */
+/* FORM SECTION */
 .form-section{padding-bottom:80px}
-.form-card{
-  border:1px solid rgba(255,255,255,.10);
-  background:radial-gradient(circle at top right,rgba(255,255,255,.06),transparent 28%),linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  border-radius:30px;padding:36px;box-shadow:var(--shadow);
-  max-width:780px;margin-inline:auto;
-}
+.form-card{border:1px solid rgba(255,255,255,.10);background:radial-gradient(circle at top right,rgba(255,255,255,.06),transparent 28%),linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));border-radius:30px;padding:36px;box-shadow:var(--shadow);max-width:780px;margin-inline:auto}
 .form-card h2{margin:0 0 6px;font-size:1.4rem;font-weight:700;letter-spacing:.04em}
 .form-subtitle{color:var(--muted);font-size:.88rem;margin-bottom:26px;line-height:1.7}
-.order-summary{
-  display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;
-  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);margin-bottom:22px;
-}
+.order-summary{display:flex;align-items:center;gap:14px;padding:14px 18px;border-radius:16px;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);margin-bottom:22px}
 .sum-dot.white{background:#f0f0f0}
 .sum-dot.black{background:#1a1a1a}
 .sum-info{font-size:.86rem;color:var(--muted);line-height:1.6}
@@ -300,22 +102,11 @@ a{color:inherit;text-decoration:none}
 .form-group label{margin-bottom:0;padding-top:8px}
 .form-group.full{grid-column:1/-1}
 label{font-size:.76rem;letter-spacing:.14em;color:var(--muted);font-weight:600}
-input,select,textarea{
-  width:100%;padding:13px 16px;border-radius:13px;
-  border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);
-  color:#fff;font-size:.93rem;font-family:inherit;outline:none;
-  transition:.2s ease;-webkit-appearance:none;appearance:none;
-}
-input:focus,select:focus,textarea:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.07)}
+input,textarea{width:100%;padding:13px 16px;border-radius:13px;border:1px solid rgba(255,255,255,.12);background:rgba(255,255,255,.04);color:#fff;font-size:.93rem;font-family:inherit;outline:none;transition:.2s ease;-webkit-appearance:none;appearance:none}
+input:focus,textarea:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.07)}
 input::placeholder,textarea::placeholder{color:rgba(255,255,255,.25)}
-select option{background:#111;color:#fff}
 textarea{resize:vertical;min-height:80px;line-height:1.7}
-.submit-btn{
-  display:block;width:100%;margin-top:20px;padding:16px;
-  border-radius:14px;border:none;background:#fff;color:#111;
-  font-size:.95rem;font-weight:700;letter-spacing:.12em;cursor:pointer;
-  transition:.25s ease;box-shadow:0 10px 30px rgba(255,255,255,.08);
-}
+.submit-btn{display:block;width:100%;margin-top:20px;padding:16px;border-radius:14px;border:none;background:#fff;color:#111;font-size:.95rem;font-weight:700;letter-spacing:.12em;cursor:pointer;transition:.25s ease;box-shadow:0 10px 30px rgba(255,255,255,.08)}
 .submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,255,255,.13)}
 .submit-btn:active{transform:scale(.97)}
 .success-msg{display:none;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 20px}
@@ -327,481 +118,624 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
 .reset-btn:hover{background:rgba(255,255,255,.09)}
 
 /* QTY SELECTOR */
-.qty-selector{
-  display:flex;align-items:center;gap:0;
-  border:1px solid rgba(255,255,255,.12);border-radius:13px;
-  background:rgba(255,255,255,.04);overflow:hidden;height:50px;
-}
-.qty-btn{
-  flex:none;width:50px;height:100%;
-  background:rgba(255,255,255,.05);border:none;color:#fff;
-  font-size:1.35rem;font-weight:300;cursor:pointer;
-  transition:background .2s ease, transform .1s ease;
-  display:flex;align-items:center;justify-content:center;
-  user-select:none;-webkit-tap-highlight-color:transparent;
-}
+.qty-selector{display:flex;align-items:center;gap:0;border:1px solid rgba(255,255,255,.12);border-radius:13px;background:rgba(255,255,255,.04);overflow:hidden;height:50px}
+.qty-btn{flex:none;width:50px;height:100%;background:rgba(255,255,255,.05);border:none;color:#fff;font-size:1.35rem;font-weight:300;cursor:pointer;transition:background .2s ease,transform .1s ease;display:flex;align-items:center;justify-content:center;user-select:none;-webkit-tap-highlight-color:transparent}
 .qty-btn:hover{background:rgba(255,255,255,.11)}
 .qty-btn:active{background:rgba(255,255,255,.18);transform:scale(.92)}
 .qty-btn:first-child{border-left:none;border-right:1px solid rgba(255,255,255,.08)}
 .qty-btn:last-child{border-right:none;border-left:1px solid rgba(255,255,255,.08)}
 .qty-display{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;position:relative}
-.qty-num{font-size:1.25rem;font-weight:700;letter-spacing:.04em;line-height:1;transition:transform .22s cubic-bezier(.22,1,.36,1), opacity .22s ease}
+.qty-num{font-size:1.25rem;font-weight:700;letter-spacing:.04em;line-height:1;transition:transform .22s cubic-bezier(.22,1,.36,1),opacity .22s ease}
 .qty-unit{font-size:.6rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
 .qty-num.bump-up{animation:bumpUp .22s cubic-bezier(.22,1,.36,1)}
 .qty-num.bump-down{animation:bumpDown .22s cubic-bezier(.22,1,.36,1)}
 @keyframes bumpUp{0%{transform:translateY(8px);opacity:0}100%{transform:translateY(0);opacity:1}}
 @keyframes bumpDown{0%{transform:translateY(-8px);opacity:0}100%{transform:translateY(0);opacity:1}}
 
+/* ══════════════════════════════════════════
+   LUXURY CUSTOM SELECT — BOTTOM SHEET
+══════════════════════════════════════════ */
+
+/* The trigger button — replaces <select> visually */
+.lux-select-trigger{
+  width:100%;
+  padding:13px 16px;
+  border-radius:13px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);
+  color:#fff;
+  font-size:.93rem;
+  font-family:inherit;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:10px;
+  transition:border-color .25s ease, background .25s ease;
+  user-select:none;
+  -webkit-tap-highlight-color:transparent;
+  text-align:right;
+}
+.lux-select-trigger:hover{
+  border-color:rgba(255,255,255,.24);
+  background:rgba(255,255,255,.07);
+}
+.lux-select-trigger.open{
+  border-color:rgba(255,255,255,.32);
+  background:rgba(255,255,255,.07);
+}
+.lux-select-trigger.disabled{
+  opacity:.4;
+  cursor:not-allowed;
+  pointer-events:none;
+}
+.lux-select-trigger-text{
+  flex:1;
+  overflow:hidden;
+  text-overflow:ellipsis;
+  white-space:nowrap;
+}
+.lux-select-trigger-text.placeholder{
+  color:rgba(255,255,255,.25);
+}
+.lux-select-chevron{
+  flex:none;
+  width:18px;height:18px;
+  display:grid;place-items:center;
+  color:rgba(255,255,255,.35);
+  transition:transform .35s cubic-bezier(.22,1,.36,1), color .2s ease;
+}
+.lux-select-chevron svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.lux-select-trigger.open .lux-select-chevron{
+  transform:rotate(180deg);
+  color:rgba(255,255,255,.7);
+}
+
+/* Bottom Sheet Overlay */
+.lux-sheet-overlay{
+  position:fixed;
+  inset:0;
+  z-index:9000;
+  background:rgba(0,0,0,0);
+  transition:background .35s ease;
+  pointer-events:none;
+}
+.lux-sheet-overlay.show{
+  background:rgba(0,0,0,.7);
+  pointer-events:auto;
+  backdrop-filter:blur(6px);
+  -webkit-backdrop-filter:blur(6px);
+}
+
+/* Sheet Panel */
+.lux-sheet{
+  position:absolute;
+  bottom:0;left:0;right:0;
+  border-radius:28px 28px 0 0;
+  background:
+    radial-gradient(circle at 50% 0%,rgba(255,255,255,.09),transparent 40%),
+    linear-gradient(180deg,#111111,#0a0a0a);
+  border:1px solid rgba(255,255,255,.1);
+  border-bottom:none;
+  box-shadow:0 -24px 80px rgba(0,0,0,.8);
+  transform:translateY(100%);
+  transition:transform .45s cubic-bezier(.22,1,.36,1);
+  display:flex;
+  flex-direction:column;
+  max-height:82vh;
+  will-change:transform;
+}
+.lux-sheet-overlay.show .lux-sheet{
+  transform:translateY(0);
+}
+
+/* Sheet Handle */
+.lux-sheet-handle{
+  width:40px;height:4px;
+  border-radius:99px;
+  background:rgba(255,255,255,.15);
+  margin:14px auto 0;
+  flex:none;
+  cursor:grab;
+}
+
+/* Sheet Header */
+.lux-sheet-header{
+  padding:16px 20px 12px;
+  flex:none;
+  border-bottom:1px solid rgba(255,255,255,.06);
+}
+.lux-sheet-title{
+  font-size:.72rem;
+  letter-spacing:.28em;
+  color:rgba(255,255,255,.35);
+  text-transform:uppercase;
+  text-align:center;
+  margin-bottom:12px;
+}
+
+/* Search inside sheet */
+.lux-sheet-search{
+  position:relative;
+}
+.lux-sheet-search-icon{
+  position:absolute;
+  right:13px;top:50%;
+  transform:translateY(-50%);
+  color:rgba(255,255,255,.3);
+  font-size:.85rem;
+  pointer-events:none;
+}
+/* زر المسح المخصص */
+.lux-search-clear{
+  position:absolute;
+  left:10px;top:50%;
+  transform:translateY(-50%);
+  width:22px;height:22px;
+  border-radius:50%;
+  background:rgba(255,255,255,.10);
+  border:1px solid rgba(255,255,255,.15);
+  color:rgba(255,255,255,.55);
+  font-size:.65rem;
+  display:none;
+  align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:all .2s ease;
+  line-height:1;
+  letter-spacing:0;
+  z-index:2;
+}
+.lux-search-clear:hover{
+  background:rgba(255,255,255,.18);
+  color:#fff;
+  border-color:rgba(255,255,255,.3);
+  transform:translateY(-50%) scale(1.1);
+}
+.lux-search-clear.visible{
+  display:flex;
+}
+.lux-sheet-search-input{
+  width:100%;
+  padding:11px 36px 11px 40px;
+  border-radius:12px;
+  border:1px solid rgba(255,255,255,.10);
+  background:rgba(255,255,255,.05);
+  color:#fff;
+  font-size:.9rem;
+  font-family:inherit;
+  outline:none;
+  transition:border-color .2s ease, background .2s ease;
+  direction:rtl;
+  /* إخفاء زر المسح الافتراضي من المتصفح */
+  -webkit-appearance:none;
+  appearance:none;
+}
+.lux-sheet-search-input::-webkit-search-cancel-button,
+.lux-sheet-search-input::-webkit-search-decoration,
+.lux-sheet-search-input::-ms-clear{
+  display:none;
+  -webkit-appearance:none;
+  appearance:none;
+}
+.lux-sheet-search-input:focus{
+  border-color:rgba(255,255,255,.24);
+  background:rgba(255,255,255,.08);
+}
+.lux-sheet-search-input::placeholder{
+  color:rgba(255,255,255,.2);
+}
+
+/* Options list */
+.lux-sheet-list{
+  flex:1;
+  overflow-y:auto;
+  padding:8px 12px 24px;
+  -webkit-overflow-scrolling:touch;
+  scrollbar-width:none;
+}
+.lux-sheet-list::-webkit-scrollbar{display:none}
+
+.lux-sheet-item{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:13px 12px;
+  border-radius:13px;
+  cursor:pointer;
+  transition:background .18s ease;
+  gap:12px;
+  position:relative;
+}
+.lux-sheet-item:hover{
+  background:rgba(255,255,255,.05);
+}
+.lux-sheet-item.selected{
+  background:rgba(255,255,255,.07);
+}
+.lux-sheet-item + .lux-sheet-item{
+  border-top:1px solid rgba(255,255,255,.04);
+}
+/* Remove border after a selected item so it looks clean */
+.lux-sheet-item.selected + .lux-sheet-item{
+  border-top-color:transparent;
+}
+
+.lux-sheet-item-label{
+  font-size:.93rem;
+  color:rgba(255,255,255,.8);
+  flex:1;
+  line-height:1.4;
+}
+.lux-sheet-item.selected .lux-sheet-item-label{
+  color:#fff;
+  font-weight:600;
+}
+
+/* Checkmark */
+.lux-sheet-check{
+  flex:none;
+  width:22px;height:22px;
+  border-radius:50%;
+  border:1.5px solid rgba(255,255,255,.14);
+  display:grid;place-items:center;
+  transition:all .25s cubic-bezier(.22,1,.36,1);
+  background:transparent;
+}
+.lux-sheet-item.selected .lux-sheet-check{
+  border-color:rgba(255,255,255,.7);
+  background:rgba(255,255,255,.12);
+  box-shadow:0 0 12px rgba(255,255,255,.12);
+}
+.lux-sheet-check-dot{
+  width:7px;height:7px;
+  border-radius:50%;
+  background:#fff;
+  opacity:0;
+  transform:scale(0);
+  transition:all .22s cubic-bezier(.22,1,.36,1);
+}
+.lux-sheet-item.selected .lux-sheet-check-dot{
+  opacity:1;
+  transform:scale(1);
+}
+
+/* Empty state */
+.lux-sheet-empty{
+  text-align:center;
+  padding:32px 16px;
+  color:rgba(255,255,255,.2);
+  font-size:.85rem;
+  letter-spacing:.1em;
+}
+
+/* Region reveal */
+.region-reveal{
+  opacity:0;
+  transform:translateY(15px) scale(0.97);
+  pointer-events:none;
+  transition:all 0.5s cubic-bezier(0.22,1,0.36,1);
+  filter:blur(4px);
+}
+.region-reveal.show{
+  opacity:1;
+  transform:translateY(0) scale(1);
+  pointer-events:auto;
+  filter:blur(0);
+}
+
 /* ══════════════════════
    LUXURY TOAST
 ══════════════════════ */
-.lux-toast{
-  position:fixed;
-  bottom:28px;
-  left:50%;
-  transform:translateX(-50%) translateY(110px);
-  z-index:9999;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  padding:15px 20px 15px 18px;
-  border-radius:22px;
-  border:1px solid rgba(255,255,255,.11);
-  background:linear-gradient(145deg,rgba(18,18,18,.97),rgba(10,10,10,.99));
-  backdrop-filter:blur(28px);
-  -webkit-backdrop-filter:blur(28px);
-  box-shadow:
-    0 28px 70px rgba(0,0,0,.75),
-    0 0 0 1px rgba(255,255,255,.04) inset,
-    0 1px 0 rgba(255,255,255,.07) inset;
-  min-width:270px;
-  max-width:min(88vw,380px);
-  opacity:0;
-  transition:
-    transform .5s cubic-bezier(.22,1,.36,1),
-    opacity .38s ease;
-  pointer-events:none;
-  will-change:transform,opacity;
-}
-.lux-toast.show{
-  transform:translateX(-50%) translateY(0);
-  opacity:1;
-  pointer-events:auto;
-}
-
-/* النبض خلف الأيقونة */
-.toast-ring{
-  flex:none;
-  position:relative;
-  width:38px;height:38px;
-  display:grid;place-items:center;
-}
-.toast-ring::before{
-  content:'';
-  position:absolute;inset:-4px;
-  border-radius:50%;
-  opacity:.22;
-  animation:ringPulse 2s ease infinite;
-}
+.lux-toast{position:fixed;bottom:28px;left:50%;transform:translateX(-50%) translateY(110px);z-index:9999;display:flex;align-items:center;gap:14px;padding:15px 20px 15px 18px;border-radius:22px;border:1px solid rgba(255,255,255,.11);background:linear-gradient(145deg,rgba(18,18,18,.97),rgba(10,10,10,.99));backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px);box-shadow:0 28px 70px rgba(0,0,0,.75),0 0 0 1px rgba(255,255,255,.04) inset,0 1px 0 rgba(255,255,255,.07) inset;min-width:270px;max-width:min(88vw,380px);opacity:0;transition:transform .5s cubic-bezier(.22,1,.36,1),opacity .38s ease;pointer-events:none;will-change:transform,opacity}
+.lux-toast.show{transform:translateX(-50%) translateY(0);opacity:1;pointer-events:auto}
+.toast-ring{flex:none;position:relative;width:38px;height:38px;display:grid;place-items:center}
+.toast-ring::before{content:'';position:absolute;inset:-4px;border-radius:50%;opacity:.22;animation:ringPulse 2s ease infinite}
 .lux-toast.t-error .toast-ring::before{background:rgba(255,90,90,.6)}
 .lux-toast.t-warn  .toast-ring::before{background:rgba(255,190,50,.6)}
 .lux-toast.t-ok    .toast-ring::before{background:rgba(60,220,130,.6)}
-@keyframes ringPulse{
-  0%,100%{transform:scale(1);opacity:.22}
-  50%{transform:scale(1.35);opacity:.08}
-}
-
-.toast-ico{
-  width:38px;height:38px;
-  border-radius:50%;
-  display:grid;place-items:center;
-  font-size:1.1rem;font-weight:800;
-  position:relative;z-index:1;
-  border:1.5px solid currentColor;
-}
+@keyframes ringPulse{0%,100%{transform:scale(1);opacity:.22}50%{transform:scale(1.35);opacity:.08}}
+.toast-ico{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:1.1rem;font-weight:800;position:relative;z-index:1;border:1.5px solid currentColor}
 .lux-toast.t-error .toast-ico{color:#ff6060;background:rgba(255,80,80,.10)}
 .lux-toast.t-warn  .toast-ico{color:#ffbe32;background:rgba(255,180,40,.10)}
 .lux-toast.t-ok    .toast-ico{color:#3cdc82;background:rgba(50,220,120,.10)}
-
 .toast-body{flex:1;min-width:0}
-.toast-ttl{
-  font-size:.8rem;font-weight:700;
-  letter-spacing:.1em;color:#fff;
-  margin-bottom:3px;
-  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
-}
-.toast-sub{
-  font-size:.74rem;color:var(--muted);line-height:1.45;
-}
-
-/* شريط تقدم الإغلاق التلقائي */
-.toast-bar{
-  position:absolute;
-  bottom:0;left:0;right:0;
-  height:2px;
-  border-radius:0 0 22px 22px;
-  transform-origin:left;
-  transform:scaleX(1);
-  transition:none;
-}
-.lux-toast.show .toast-bar{
-  transform:scaleX(0);
-  transition:transform 4s linear;
-}
+.toast-ttl{font-size:.8rem;font-weight:700;letter-spacing:.1em;color:#fff;margin-bottom:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.toast-sub{font-size:.74rem;color:var(--muted);line-height:1.45}
+.toast-bar{position:absolute;bottom:0;left:0;right:0;height:2px;border-radius:0 0 22px 22px;transform-origin:left;transform:scaleX(1);transition:none}
+.lux-toast.show .toast-bar{transform:scaleX(0);transition:transform 4s linear}
 .lux-toast.t-error .toast-bar{background:linear-gradient(90deg,#ff4040,#ff8080)}
 .lux-toast.t-warn  .toast-bar{background:linear-gradient(90deg,#ffaa00,#ffdd66)}
 .lux-toast.t-ok    .toast-bar{background:linear-gradient(90deg,#22cc66,#66ffaa)}
-
-.toast-x{
-  flex:none;width:26px;height:26px;
-  border-radius:50%;
-  border:1px solid rgba(255,255,255,.10);
-  background:rgba(255,255,255,.04);
-  color:rgba(255,255,255,.4);
-  font-size:.7rem;
-  display:grid;place-items:center;
-  cursor:pointer;
-  transition:.2s ease;
-  line-height:1;
-}
+.toast-x{flex:none;width:26px;height:26px;border-radius:50%;border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);color:rgba(255,255,255,.4);font-size:.7rem;display:grid;place-items:center;cursor:pointer;transition:.2s ease;line-height:1}
 .toast-x:hover{background:rgba(255,255,255,.10);color:#fff}
 
-/* ══════════════════════
-   EASTER EGG — LONG PRESS
-══════════════════════ */
-
-/* حلقة التقدم حول الشعار */
-.mark{position:relative;overflow:visible !important}
-.mark-ring{
-  position:absolute;
-  inset:-5px;
-  border-radius:17px;
-  pointer-events:none;
-  z-index:10;
-}
-.mark-ring svg{
-  width:100%;height:100%;
-  transform:rotate(-90deg);
-}
-.mark-ring circle{
-  fill:none;
-  stroke:rgba(255,255,255,.0);
-  stroke-width:2.5;
-  stroke-linecap:round;
-  stroke-dasharray:0 200;
-  transition:stroke-dasharray .05s linear, stroke .2s ease;
-}
-.mark-ring.charging circle{
-  stroke:rgba(255,255,255,.85);
-}
-
-/* الـ overlay الرئيسي */
-.egg-overlay{
-  position:fixed;inset:0;z-index:99998;
-  display:flex;align-items:center;justify-content:center;
-  opacity:0;pointer-events:none;
-  transition:opacity .6s ease;
-}
-.egg-overlay.show{
-  opacity:1;pointer-events:auto;
-}
-
-/* خلفية ضبابية */
-.egg-bg{
-  position:absolute;inset:0;
-  background:rgba(2,2,2,.92);
-  backdrop-filter:blur(28px);
-  -webkit-backdrop-filter:blur(28px);
-}
-
-/* البطاقة المركزية */
-.egg-card{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;align-items:center;
-  gap:0;
-  max-width:min(88vw,380px);
-  text-align:center;
-  transform:scale(.88) translateY(24px);
-  transition:transform .6s cubic-bezier(.22,1,.36,1);
-}
-.egg-overlay.show .egg-card{
-  transform:scale(1) translateY(0);
-}
-
-/* حرف ZV الكبير */
-.egg-monogram{
-  width:100px;height:100px;
-  border-radius:28px;
-  border:1.5px solid rgba(255,255,255,.18);
-  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
-  display:grid;place-items:center;
-  font-size:2.2rem;font-weight:800;letter-spacing:.06em;
-  box-shadow:
-    0 0 0 12px rgba(255,255,255,.03),
-    0 24px 60px rgba(0,0,0,.6),
-    inset 0 1px 0 rgba(255,255,255,.12);
-  margin-bottom:28px;
-  animation:eggFloat 4s ease-in-out infinite;
-}
-@keyframes eggFloat{
-  0%,100%{transform:translateY(0)}
-  50%{transform:translateY(-8px)}
-}
-
-/* النبضات حول المونوغرام */
-.egg-pulse{
-  position:absolute;
-  top:0;left:50%;transform:translateX(-50%);
-  width:100px;height:100px;
-  border-radius:28px;
-  border:1px solid rgba(255,255,255,.12);
-  animation:eggPulse 2.4s ease-out infinite;
-}
+/* EASTER EGG */
+.mark-ring{position:absolute;inset:-5px;border-radius:17px;pointer-events:none;z-index:10}
+.mark-ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.mark-ring circle{fill:none;stroke:rgba(255,255,255,.0);stroke-width:2.5;stroke-linecap:round;stroke-dasharray:0 200;transition:stroke-dasharray .05s linear,stroke .2s ease}
+.mark-ring.charging circle{stroke:rgba(255,255,255,.85)}
+.egg-overlay{position:fixed;inset:0;z-index:99998;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .6s ease}
+.egg-overlay.show{opacity:1;pointer-events:auto}
+.egg-bg{position:absolute;inset:0;background:rgba(2,2,2,.92);backdrop-filter:blur(28px);-webkit-backdrop-filter:blur(28px)}
+.egg-card{position:relative;z-index:1;display:flex;flex-direction:column;align-items:center;gap:0;max-width:min(88vw,380px);text-align:center;transform:scale(.88) translateY(24px);transition:transform .6s cubic-bezier(.22,1,.36,1)}
+.egg-overlay.show .egg-card{transform:scale(1) translateY(0)}
+.egg-monogram{width:100px;height:100px;border-radius:28px;border:1.5px solid rgba(255,255,255,.18);background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.03));display:grid;place-items:center;font-size:2.2rem;font-weight:800;letter-spacing:.06em;box-shadow:0 0 0 12px rgba(255,255,255,.03),0 24px 60px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.12);margin-bottom:28px;animation:eggFloat 4s ease-in-out infinite}
+@keyframes eggFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.egg-pulse{position:absolute;top:0;left:50%;transform:translateX(-50%);width:100px;height:100px;border-radius:28px;border:1px solid rgba(255,255,255,.12);animation:eggPulse 2.4s ease-out infinite}
 .egg-pulse:nth-child(2){animation-delay:.8s}
 .egg-pulse:nth-child(3){animation-delay:1.6s}
-@keyframes eggPulse{
-  0%{transform:translateX(-50%) scale(1);opacity:.5}
-  100%{transform:translateX(-50%) scale(2.2);opacity:0}
-}
+@keyframes eggPulse{0%{transform:translateX(-50%) scale(1);opacity:.5}100%{transform:translateX(-50%) scale(2.2);opacity:0}}
+.egg-title{font-size:1.45rem;font-weight:800;letter-spacing:.28em;margin-bottom:10px}
+.egg-sub{font-size:.78rem;letter-spacing:.16em;color:var(--muted);line-height:1.7;margin-bottom:24px;max-width:32ch}
+.egg-line{width:48px;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);margin:0 auto 22px}
+.egg-details{display:flex;gap:28px;margin-bottom:30px}
+.egg-detail{display:flex;flex-direction:column;gap:4px;align-items:center}
+.egg-detail-lbl{font-size:.6rem;letter-spacing:.2em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.egg-detail-val{font-size:.88rem;font-weight:700;letter-spacing:.08em}
+.egg-close{padding:11px 32px;border-radius:999px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.05);color:var(--muted);font-size:.78rem;letter-spacing:.18em;cursor:pointer;transition:.25s ease;font-family:inherit}
+.egg-close:hover{color:#fff;border-color:rgba(255,255,255,.28);background:rgba(255,255,255,.09)}
+.egg-star{position:absolute;pointer-events:none;font-size:.9rem;animation:starFly 2.5s ease-out forwards;opacity:0}
+@keyframes starFly{0%{opacity:1;transform:translate(0,0) scale(0)}30%{opacity:1;transform:translate(var(--tx),var(--ty)) scale(1.2)}100%{opacity:0;transform:translate(calc(var(--tx)*2.2),calc(var(--ty)*2.2)) scale(.4)}}
 
-.egg-title{
-  font-size:1.45rem;font-weight:800;
-  letter-spacing:.28em;
-  margin-bottom:10px;
-}
-.egg-sub{
-  font-size:.78rem;letter-spacing:.16em;
-  color:var(--muted);line-height:1.7;
-  margin-bottom:24px;
-  max-width:32ch;
-}
-
-/* الخط الفاصل */
-.egg-line{
-  width:48px;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.3),transparent);
-  margin:0 auto 22px;
-}
-
-/* تفاصيل فاخرة */
-.egg-details{
-  display:flex;gap:28px;
-  margin-bottom:30px;
-}
-.egg-detail{
-  display:flex;flex-direction:column;gap:4px;align-items:center;
-}
-.egg-detail-lbl{
-  font-size:.6rem;letter-spacing:.2em;
-  color:rgba(255,255,255,.3);text-transform:uppercase;
-}
-.egg-detail-val{
-  font-size:.88rem;font-weight:700;letter-spacing:.08em;
-}
-
-/* زر الإغلاق */
-.egg-close{
-  padding:11px 32px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.05);
-  color:var(--muted);
-  font-size:.78rem;letter-spacing:.18em;
-  cursor:pointer;transition:.25s ease;
-  font-family:inherit;
-}
-.egg-close:hover{
-  color:#fff;
-  border-color:rgba(255,255,255,.28);
-  background:rgba(255,255,255,.09);
-}
-
-/* نجوم متطايرة */
-.egg-star{
-  position:absolute;
-  pointer-events:none;
-  font-size:.9rem;
-  animation:starFly 2.5s ease-out forwards;
-  opacity:0;
-}
-@keyframes starFly{
-  0%{opacity:1;transform:translate(0,0) scale(0)}
-  30%{opacity:1;transform:translate(var(--tx),var(--ty)) scale(1.2)}
-  100%{opacity:0;transform:translate(calc(var(--tx)*2.2),calc(var(--ty)*2.2)) scale(.4)}
-}
-
-/* ══════════════════════
-   MULTI-ITEM PICKER
-══════════════════════ */
-.multi-picker{
-  display:flex;
-  flex-direction:column;
-  gap:10px;
-  margin-top:2px;
-}
-
-.mi-card{
-  border:1px solid rgba(255,255,255,.10);
-  border-radius:16px;
-  padding:14px 16px;
-  background:rgba(255,255,255,.03);
-  display:flex;
-  align-items:center;
-  gap:14px;
-  transition:border-color .3s ease, background .3s ease;
-  animation:miSlideIn .35s cubic-bezier(.22,1,.36,1) both;
-}
-.mi-card:hover{
-  border-color:rgba(255,255,255,.18);
-  background:rgba(255,255,255,.05);
-}
-@keyframes miSlideIn{
-  from{opacity:0;transform:translateY(-10px)}
-  to  {opacity:1;transform:translateY(0)}
-}
-
-/* رقم القطعة */
-.mi-num{
-  flex:none;
-  width:28px;height:28px;
-  border-radius:50%;
-  border:1.5px solid rgba(255,255,255,.16);
-  background:rgba(255,255,255,.05);
-  display:grid;place-items:center;
-  font-size:.72rem;font-weight:800;
-  letter-spacing:.04em;
-  color:var(--muted);
-}
-
-/* اختيار اللون */
-.mi-colors{
-  display:flex;gap:7px;align-items:center;
-  flex:none;
-}
-.mi-dot{
-  width:22px;height:22px;border-radius:50%;
-  cursor:pointer;
-  border:2px solid transparent;
-  transition:.2s ease;
-  position:relative;
-}
-.mi-dot::after{
-  content:'';position:absolute;inset:-3px;
-  border-radius:50%;border:1.5px solid transparent;
-  transition:.2s ease;
-}
+/* MULTI-ITEM PICKER */
+.multi-picker{display:flex;flex-direction:column;gap:10px;margin-top:2px}
+.mi-card{border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:14px 16px;background:rgba(255,255,255,.03);display:flex;align-items:center;gap:14px;transition:border-color .3s ease,background .3s ease;animation:miSlideIn .35s cubic-bezier(.22,1,.36,1) both}
+.mi-card:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.05)}
+@keyframes miSlideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.mi-num{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);display:grid;place-items:center;font-size:.72rem;font-weight:800;letter-spacing:.04em;color:var(--muted)}
+.mi-colors{display:flex;gap:7px;align-items:center;flex:none}
+.mi-dot{width:22px;height:22px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:.2s ease;position:relative}
+.mi-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1.5px solid transparent;transition:.2s ease}
 .mi-dot:hover{transform:scale(1.15)}
 .mi-dot.active{transform:scale(1.15)}
 .mi-dot.active::after{border-color:rgba(255,255,255,.5)}
 .mi-dot-white{background:linear-gradient(145deg,#eee,#fff);box-shadow:0 1px 6px rgba(255,255,255,.08)}
 .mi-dot-black{background:linear-gradient(145deg,#1c1c1c,#111)}
-
-/* فاصل */
 .mi-sep{width:1px;height:28px;background:rgba(255,255,255,.08);flex:none}
-
-/* اختيار المقاس */
-.mi-sizes{
-  display:flex;gap:5px;flex-wrap:wrap;
-  flex:1;
-}
-.mi-size{
-  padding:4px 10px;border-radius:8px;
-  border:1.5px solid rgba(255,255,255,.12);
-  background:rgba(255,255,255,.03);
-  font-size:.7rem;font-weight:700;letter-spacing:.1em;
-  color:var(--muted);cursor:pointer;
-  transition:.2s ease;
-  user-select:none;
-}
+.mi-sizes{display:flex;gap:5px;flex-wrap:wrap;flex:1}
+.mi-size{padding:4px 10px;border-radius:8px;border:1.5px solid rgba(255,255,255,.12);background:rgba(255,255,255,.03);font-size:.7rem;font-weight:700;letter-spacing:.1em;color:var(--muted);cursor:pointer;transition:.2s ease;user-select:none}
 .mi-size:hover{border-color:rgba(255,255,255,.25);color:#fff}
-.mi-size.active{
-  border-color:rgba(255,255,255,.5);
-  background:rgba(255,255,255,.08);
-  color:#fff;
-  box-shadow:0 2px 10px rgba(255,255,255,.06);
+.mi-size.active{border-color:rgba(255,255,255,.5);background:rgba(255,255,255,.08);color:#fff;box-shadow:0 2px 10px rgba(255,255,255,.06)}
+.mi-preview{flex:none;font-size:.65rem;letter-spacing:.14em;color:rgba(255,255,255,.28);white-space:nowrap}
+
+/* PRICE BADGE */
+.price-band{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:18px 22px;border-radius:20px;border:1px solid rgba(255,255,255,.10);background:radial-gradient(circle at 0% 50%,rgba(255,255,255,.07),transparent 55%),linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));margin-bottom:22px;position:relative;overflow:hidden}
+.price-band::before{content:'';position:absolute;top:0;left:-60%;width:40%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);animation:priceSweep 4s ease-in-out infinite;pointer-events:none}
+@keyframes priceSweep{0%,100%{left:-60%}50%{left:120%}}
+.price-left{display:flex;flex-direction:column;gap:4px}
+.price-label{font-size:.62rem;letter-spacing:.22em;color:rgba(255,255,255,.3);text-transform:uppercase}
+.price-main{display:flex;align-items:baseline;gap:6px}
+.price-amount{font-size:1.7rem;font-weight:800;letter-spacing:.02em;color:#fff;line-height:1}
+.price-currency{font-size:.78rem;font-weight:500;color:rgba(255,255,255,.55);letter-spacing:.1em}
+.price-old{font-size:.82rem;color:rgba(255,255,255,.28);text-decoration:line-through;letter-spacing:.04em}
+.price-right{display:flex;flex-direction:column;align-items:flex-end;gap:6px}
+.price-badge{padding:4px 12px;border-radius:999px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.14);font-size:.65rem;font-weight:700;letter-spacing:.14em;color:rgba(255,255,255,.7);text-transform:uppercase}
+.price-ship{font-size:.64rem;letter-spacing:.1em;color:rgba(255,255,255,.28)}
+
+/* ══════════════════════════════════════
+   DELIVERY CARD
+══════════════════════════════════════ */
+.delivery-reveal{
+  grid-column: 1 / -1;
+  opacity: 0;
+  transform: translateY(18px) scale(0.97);
+  pointer-events: none;
+  transition: opacity .55s cubic-bezier(.22,1,.36,1),
+              transform .55s cubic-bezier(.22,1,.36,1),
+              filter .4s ease;
+  filter: blur(5px);
+  max-height: 0;
+  overflow: hidden;
+  transition: opacity .55s cubic-bezier(.22,1,.36,1),
+              transform .55s cubic-bezier(.22,1,.36,1),
+              filter .4s ease,
+              max-height .5s cubic-bezier(.22,1,.36,1);
+}
+.delivery-reveal.show{
+  opacity: 1;
+  transform: translateY(0) scale(1);
+  pointer-events: auto;
+  filter: blur(0);
+  max-height: 200px;
 }
 
-/* معاينة صغيرة */
-.mi-preview{
-  flex:none;
-  font-size:.65rem;letter-spacing:.14em;
-  color:rgba(255,255,255,.28);
-  white-space:nowrap;
-}
-
-/* ══════════════════════
-   PRICE BADGE
-══════════════════════ */
-.price-band{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:16px;
-  padding:18px 22px;
-  border-radius:20px;
-  border:1px solid rgba(255,255,255,.10);
+.delivery-card{
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
   background:
-    radial-gradient(circle at 0% 50%,rgba(255,255,255,.07),transparent 55%),
-    linear-gradient(135deg,rgba(255,255,255,.05),rgba(255,255,255,.02));
-  margin-bottom:22px;
-  position:relative;
-  overflow:hidden;
-}
-/* خط ضوئي */
-.price-band::before{
-  content:'';
-  position:absolute;
-  top:0;left:-60%;
-  width:40%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);
-  animation:priceSweep 4s ease-in-out infinite;
-  pointer-events:none;
-}
-@keyframes priceSweep{
-  0%,100%{left:-60%}
-  50%{left:120%}
+    radial-gradient(circle at 100% 50%, rgba(255,255,255,.06), transparent 55%),
+    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  overflow: hidden;
+  margin-top: 2px;
 }
 
-.price-left{
-  display:flex;flex-direction:column;gap:4px;
+/* خط بريق متحرك */
+.delivery-card::before{
+  content: '';
+  position: absolute;
+  top: 0; left: -80%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+  animation: deliverySweep 3.5s ease-in-out infinite;
+  pointer-events: none;
 }
-.price-label{
-  font-size:.62rem;letter-spacing:.22em;
-  color:rgba(255,255,255,.3);text-transform:uppercase;
-}
-.price-main{
-  display:flex;align-items:baseline;gap:6px;
-}
-.price-amount{
-  font-size:1.7rem;font-weight:800;
-  letter-spacing:.02em;color:#fff;
-  line-height:1;
-}
-.price-currency{
-  font-size:.78rem;font-weight:500;
-  color:rgba(255,255,255,.55);
-  letter-spacing:.1em;
-}
-.price-old{
-  font-size:.82rem;
-  color:rgba(255,255,255,.28);
-  text-decoration:line-through;
-  letter-spacing:.04em;
+@keyframes deliverySweep{
+  0%,100%{ left:-80% }
+  55%{ left:130% }
 }
 
-.price-right{
-  display:flex;flex-direction:column;align-items:flex-end;gap:6px;
+.delivery-icon{
+  flex: none;
+  width: 42px; height: 42px;
+  border-radius: 13px;
+  border: 1px solid rgba(255,255,255,.12);
+  background: linear-gradient(145deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+  display: grid; place-items: center;
+  position: relative;
 }
-.price-badge{
-  padding:4px 12px;border-radius:999px;
-  background:rgba(255,255,255,.08);
-  border:1px solid rgba(255,255,255,.14);
-  font-size:.65rem;font-weight:700;
-  letter-spacing:.14em;color:rgba(255,255,255,.7);
-  text-transform:uppercase;
+/* نبضة خلف الأيقونة */
+.delivery-icon::after{
+  content: '';
+  position: absolute; inset: -5px;
+  border-radius: 17px;
+  border: 1px solid rgba(255,255,255,.06);
+  animation: delPulse 2.8s ease-out infinite;
 }
-.price-ship{
-  font-size:.64rem;letter-spacing:.1em;
-  color:rgba(255,255,255,.28);
+@keyframes delPulse{
+  0%{ transform: scale(1); opacity: .45 }
+  100%{ transform: scale(1.55); opacity: 0 }
+}
+/* SVG أيقونة التوصيل */
+.delivery-icon svg{
+  width: 22px; height: 22px;
+  stroke: rgba(255,255,255,.7);
+  fill: none;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.delivery-info{
+  flex: 1;
+  min-width: 0;
+}
+.delivery-label{
+  font-size: .6rem;
+  letter-spacing: .22em;
+  color: rgba(255,255,255,.28);
+  text-transform: uppercase;
+  margin-bottom: 5px;
+}
+.delivery-wilaya-name{
+  font-size: .82rem;
+  color: rgba(255,255,255,.6);
+  letter-spacing: .06em;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* الجانب الأيمن — سعران جنباً لجنب */
+.delivery-price-wrap{
+  flex: none;
+  display: flex;
+  gap: 8px;
+  align-items: stretch;
+}
+.delivery-price-col{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  padding: 7px 10px;
+  border-radius: 11px;
+  border: 1px solid rgba(255,255,255,.08);
+  background: rgba(255,255,255,.04);
+  min-width: 68px;
+  transition: border-color .3s ease, background .3s ease;
+}
+.delivery-price-col.home-col{
+  border-color: rgba(255,255,255,.10);
+}
+.delivery-price-col.desk-col{
+  border-color: rgba(255,255,255,.06);
+  background: rgba(255,255,255,.02);
+}
+.delivery-col-icon{
+  font-size: .65rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  color: rgba(255,255,255,.28);
+  letter-spacing: .04em;
+}
+.delivery-col-icon svg{
+  width: 11px; height: 11px;
+  stroke: currentColor; fill: none;
+  stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round;
+}
+.delivery-amount{
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: .01em;
+  color: #fff;
+  line-height: 1;
+  transition: transform .3s cubic-bezier(.22,1,.36,1), opacity .25s ease;
+  white-space: nowrap;
+}
+.delivery-currency{
+  font-size: .58rem;
+  color: rgba(255,255,255,.35);
+  letter-spacing: .1em;
+  margin-top: -1px;
+}
+.delivery-tier{
+  font-size: .58rem;
+  letter-spacing: .14em;
+  padding: 2px 8px;
+  border-radius: 999px;
+  border: 1px solid;
+  text-transform: uppercase;
+  font-weight: 700;
+  margin-top: 2px;
+  grid-column: 1 / -1;
+  align-self: center;
+}
+.delivery-tier.proche{
+  color: #3cdc82;
+  border-color: rgba(60,220,130,.3);
+  background: rgba(60,220,130,.08);
+}
+.delivery-tier.moyen{
+  color: #ffbe32;
+  border-color: rgba(255,190,50,.3);
+  background: rgba(255,190,50,.08);
+}
+.delivery-tier.loin{
+  color: #ff8060;
+  border-color: rgba(255,120,80,.3);
+  background: rgba(255,120,80,.08);
+}
+.delivery-tier.sud{
+  color: #c97cff;
+  border-color: rgba(180,100,255,.3);
+  background: rgba(160,80,255,.08);
+}
+/* تعديل layout البطاقة ليستوعب العمودين */
+.delivery-card{
+  position: relative;
+  border-radius: 18px;
+  border: 1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at 100% 50%, rgba(255,255,255,.06), transparent 55%),
+    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+  padding: 14px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  overflow: hidden;
+  margin-top: 2px;
+}
+.delivery-card::before{
+  content: '';
+  position: absolute;
+  top: 0; left: -80%;
+  width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.04), transparent);
+  animation: deliverySweep 3.5s ease-in-out infinite;
+  pointer-events: none;
+}
+@keyframes deliverySweep{
+  0%,100%{ left:-80% }
+  55%{ left:130% }
 }
 
 /* FOOTER */
@@ -857,14 +791,13 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     <div class="slider-track-wrap" id="sliderWrap">
       <div class="slider-track" id="sliderTrack">
         <div class="slide slide-white">
-  <img src="images/white.png" alt="" class="product-img">
-  <div class="slide-label">أبيض — White</div>  
-</div>
-
-<div class="slide slide-black">
-  <img src="images/black.png" alt="" class="product-img">
-<div class="slide-label">أسود — Black</div>    
-</div>
+          <img src="images/white.png" alt="" class="product-img">
+          <div class="slide-label">أبيض — White</div>
+        </div>
+        <div class="slide slide-black">
+          <img src="images/black.png" alt="" class="product-img">
+          <div class="slide-label">أسود — Black</div>
+        </div>
       </div>
     </div>
     <div class="thumb-row" id="thumbRow">
@@ -904,16 +837,17 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
 
       <div class="price-band">
         <div class="price-left">
-          <span class="price-label">سعر القطعة</span>
+          <span class="price-label" id="priceLabelUnit">سعر القطعة الواحدة</span>
           <div class="price-main">
-            <span class="price-amount">2500</span>
+            <span class="price-amount" id="priceAmount">3000</span>
             <span class="price-currency">دج</span>
           </div>
-          <span class="price-old">3200 دج</span>
+          <span class="price-old" id="priceOld">4100 دج</span>
         </div>
         <div class="price-right">
-          <div class="price-badge">صناعة جزائرية</div>
-          <span class="price-ship">التوصيل حسب الولاية</span>
+          <div class="price-badge" id="priceBadge">السعر النهائي</div>
+          <span class="price-ship" id="priceTotalLine" style="display:none;font-size:.72rem;color:rgba(255,255,255,.55);font-weight:600"></span>
+          <span class="price-ship">حسب كمية ومكان ولاية</span>
         </div>
       </div>
 
@@ -929,12 +863,13 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
         <div class="form-grid">
           <div class="form-group">
             <label>الاسم الكامل</label>
-            <input type="text" id="fName" placeholder="مثال: أحمد بن علي">
+            <input type="text" id="fName" placeholder="أدخل إسمك">
           </div>
           <div class="form-group">
             <label>رقم الهاتف</label>
             <input type="tel" id="fPhone" placeholder="05xxxxxxxx">
           </div>
+
           <div class="form-group">
             <label>اللون (محدد تلقائياً)</label>
             <input type="text" id="fColor" value="أبيض" readonly style="opacity:.7;cursor:default">
@@ -953,18 +888,92 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
           </div>
 
           <div class="form-group full" id="multiPickerWrap" style="display:none">
-          <label>القطع الإضافية — لون ومقاس كل قطعة</label>
-            <div class="multi-picker" id="multiPicker">
+            <label>القطع الإضافية — لون ومقاس كل قطعة</label>
+            <div class="multi-picker" id="multiPicker"></div>
+          </div>
+
+          <!-- WILAYA — Custom Select -->
+          <div class="form-group">
+            <label>الولاية</label>
+            <div
+              class="lux-select-trigger"
+              id="wilayaTrigger"
+              role="button"
+              tabindex="0"
+              aria-haspopup="listbox"
+              aria-expanded="false"
+            >
+              <span class="lux-select-trigger-text placeholder" id="wilayaTriggerText">اختر الولاية...</span>
+              <span class="lux-select-chevron">
+                <svg viewBox="0 0 12 8"><polyline points="1,1 6,7 11,1"/></svg>
+              </span>
+            </div>
+            <input type="hidden" id="fWilaya">
+          </div>
+
+          <!-- REGION — Custom Select -->
+          <div class="form-group">
+            <div class="region-reveal" id="regionAnim">
+              <label>المنطقة / البلدية</label>
+              <div
+                class="lux-select-trigger disabled"
+                id="regionTrigger"
+                role="button"
+                tabindex="0"
+                aria-haspopup="listbox"
+                aria-expanded="false"
+              >
+                <span class="lux-select-trigger-text placeholder" id="regionTriggerText">اختر الولاية أولاً...</span>
+                <span class="lux-select-chevron">
+                  <svg viewBox="0 0 12 8"><polyline points="1,1 6,7 11,1"/></svg>
+                </span>
               </div>
+              <input type="hidden" id="fRegion">
+            </div>
           </div>
-          <div class="form-group">
-            <label>الولاية / المدينة</label>
-            <input type="text" id="fCity" placeholder="مثال: الجزائر العاصمة">
+
+          <!-- DELIVERY PRICE CARD -->
+          <div class="delivery-reveal" id="deliveryReveal">
+            <div class="delivery-card" id="deliveryCard">
+              <!-- أيقونة SVG: مسار تسليم مجرّد -->
+              <div class="delivery-icon">
+                <svg viewBox="0 0 24 24">
+                  <path d="M3 12 C3 7 7 4 12 4 C17 4 21 7 21 12"/>
+                  <circle cx="12" cy="19" r="2.2"/>
+                  <path d="M12 16.8 L12 12"/>
+                  <path d="M9 14.5 L12 12 L15 14.5"/>
+                </svg>
+              </div>
+
+              <div class="delivery-info">
+                <div class="delivery-label">تكلفة التوصيل</div>
+                <div class="delivery-wilaya-name" id="deliveryWilayaName">—</div>
+                <div class="delivery-tier" id="deliveryTier" style="display:inline-flex;margin-top:5px"></div>
+              </div>
+
+              <div class="delivery-price-wrap">
+                <!-- منزل -->
+                <div class="delivery-price-col home-col">
+                  <div class="delivery-col-icon">
+                    <svg viewBox="0 0 16 16"><path d="M2 7L8 2L14 7V14H10V10H6V14H2V7Z"/></svg>
+                    منزل
+                  </div>
+                  <span class="delivery-amount" id="deliveryAmountHome">—</span>
+                  <span class="delivery-currency">دج</span>
+                </div>
+                <!-- مكتب -->
+                <div class="delivery-price-col desk-col">
+                  <div class="delivery-col-icon">
+                    <svg viewBox="0 0 16 16"><rect x="2" y="5" width="12" height="9" rx="1.5"/><path d="M5 5V4a3 3 0 016 0v1"/><path d="M2 9h12"/></svg>
+                    مكتب
+                  </div>
+                  <span class="delivery-amount" id="deliveryAmountDesk">—</span>
+                  <span class="delivery-currency">دج</span>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="form-group">
-            <label>المقاس (محدد تلقائياً)</label>
-            <input type="text" id="fSize" value="M" readonly style="opacity:.7;cursor:default">
-          </div>
+
           <div class="form-group full">
             <label>ملاحظات (اختياري)</label>
             <textarea id="fNotes" placeholder="أي تفاصيل إضافية..."></textarea>
@@ -994,38 +1003,52 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   </div>
 </footer>
 
+<!-- BOTTOM SHEET — shared overlay -->
+<div class="lux-sheet-overlay" id="luxSheetOverlay">
+  <div class="lux-sheet" id="luxSheet">
+    <div class="lux-sheet-handle" id="luxSheetHandle"></div>
+    <div class="lux-sheet-header">
+      <div class="lux-sheet-title" id="luxSheetTitle">اختر...</div>
+      <div class="lux-sheet-search">
+        <span class="lux-sheet-search-icon">⌕</span>
+        <input
+          class="lux-sheet-search-input"
+          id="luxSheetSearch"
+          type="text"
+          placeholder="ابحث..."
+          autocomplete="off"
+          autocorrect="off"
+          autocapitalize="off"
+          spellcheck="false"
+        >
+        <div class="lux-search-clear" id="luxSearchClear" title="مسح">✕</div>
+      </div>
+    </div>
+    <div class="lux-sheet-list" id="luxSheetList"></div>
+  </div>
+</div>
+
+<!-- EASTER EGG -->
 <div class="egg-overlay" id="eggOverlay">
   <div class="egg-bg" onclick="closeEgg()"></div>
   <div class="egg-card">
-    <div class="egg-pulse"></div>
-    <div class="egg-pulse"></div>
-    <div class="egg-pulse"></div>
+    <div class="egg-pulse"></div><div class="egg-pulse"></div><div class="egg-pulse"></div>
     <div class="egg-monogram">ZV</div>
     <div class="egg-title">ZAKVELA</div>
     <div class="egg-line"></div>
     <div class="egg-sub">علامة جزائرية ولدت من شغف بالتصميم والجمال البسيط</div>
     <div class="egg-details">
-      <div class="egg-detail">
-        <span class="egg-detail-lbl">المنشأ</span>
-        <span class="egg-detail-val">الجزائر</span>
-      </div>
-      <div class="egg-detail">
-        <span class="egg-detail-lbl">القماش</span>
-        <span class="egg-detail-val">تويل</span>
-      </div>
-      <div class="egg-detail">
-        <span class="egg-detail-lbl">الفلسفة</span>
-        <span class="egg-detail-val">Minimal</span>
-      </div>
+      <div class="egg-detail"><span class="egg-detail-lbl">المنشأ</span><span class="egg-detail-val">الجزائر</span></div>
+      <div class="egg-detail"><span class="egg-detail-lbl">القماش</span><span class="egg-detail-val">تويل</span></div>
+      <div class="egg-detail"><span class="egg-detail-lbl">الفلسفة</span><span class="egg-detail-val">Minimal</span></div>
     </div>
     <button class="egg-close" onclick="closeEgg()">إغلاق</button>
   </div>
 </div>
 
+<!-- TOAST -->
 <div class="lux-toast t-error" id="luxToast" role="alert" aria-live="assertive">
-  <div class="toast-ring">
-    <div class="toast-ico" id="toastIco">✦</div>
-  </div>
+  <div class="toast-ring"><div class="toast-ico" id="toastIco">✦</div></div>
   <div class="toast-body">
     <div class="toast-ttl" id="toastTtl">تنبيه</div>
     <div class="toast-sub" id="toastSub"></div>
@@ -1036,511 +1059,745 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
 
 <script>
 (() => {
-  'use strict';
+'use strict';
 
-  const ORDER_API = "https://botzakvela.onrender.com/order";
-  const REQUEST_TIMEOUT_MS = 12000;
-  const COLORS = ['أبيض', 'أسود'];
-  const DOTS = ['white', 'black'];
-  const SIZES = ['M', 'L', 'XL', 'XXL'];
-  const SIZE_STEP = 150;
+const ORDER_API = "https://botzakvela.onrender.com/order";
+const REQUEST_TIMEOUT_MS = 12000;
+const COLORS = ['أبيض','أسود'];
+const DOTS   = ['white','black'];
+const SIZES  = ['M','L','XL','XXL'];
+const SIZE_STEP = 150;
+const BASE_PRICE = 3000;  // سعر القطعة الأصلي دج
+const BASE_PRICE_OLD = 4100; // سعر قبل التخفيض
 
-  const $ = (id) => document.getElementById(id);
-  const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
-  const wrapIndex = (i, length) => ((i % length) + length) % length;
+const $ = id => document.getElementById(id);
+const clamp = (n,mn,mx) => Math.min(mx,Math.max(mn,n));
+const wrapIndex = (i,l) => ((i%l)+l)%l;
 
-  const ui = {
-    slides: Array.from(document.querySelectorAll('.slide')),
-    thumbs: Array.from(document.querySelectorAll('.thumb')),
-    wrap: $('sliderWrap'),
-    thumbRow: $('thumbRow'),
-    carousel: $('sizeCarousel'),
-    fColor: $('fColor'),
-    sumColor: $('sumColor'),
-    sumDot: $('sumDot'),
-    sizeCurrent: $('sizeCurrent'),
-    sumSize: $('sumSize'),
-    fSize: $('fSize'),
-    fQty: $('fQty'),
-    qtyNum: $('qtyNum'),
-    formWrap: $('formWrap'),
-    successMsg: $('successMsg'),
-    submitBtn: document.querySelector('.submit-btn'),
-    fName: $('fName'),
-    fPhone: $('fPhone'),
-    fCity: $('fCity'),
-    fNotes: $('fNotes'),
-  };
+const ui = {
+  slides: Array.from(document.querySelectorAll('.slide')),
+  thumbs: Array.from(document.querySelectorAll('.thumb')),
+  wrap:       $('sliderWrap'),
+  thumbRow:   $('thumbRow'),
+  carousel:   $('sizeCarousel'),
+  fColor:     $('fColor'),
+  sumColor:   $('sumColor'),
+  sumDot:     $('sumDot'),
+  sizeCurrent:$('sizeCurrent'),
+  sumSize:    $('sumSize'),
+  fQty:       $('fQty'),
+  qtyNum:     $('qtyNum'),
+  formWrap:   $('formWrap'),
+  successMsg: $('successMsg'),
+  submitBtn:  document.querySelector('.submit-btn'),
+  fName:      $('fName'),
+  fPhone:     $('fPhone'),
+  fWilaya:    $('fWilaya'),
+  fRegion:    $('fRegion'),
+  regionAnim: $('regionAnim'),
+  fNotes:     $('fNotes'),
+  priceAmount:    $('priceAmount'),
+  priceOld:       $('priceOld'),
+  priceBadge:     $('priceBadge'),
+  priceLabelUnit: $('priceLabelUnit'),
+  priceTotalLine: $('priceTotalLine'),
+};
 
-  /* ── LUXURY TOAST ── */
-  let _toastTimer = null;
-  function showToast(sub, ttl, type) {
-    ttl  = ttl  || 'تنبيه';
-    type = type || 'error';
-    const toast = $('luxToast');
-    const ico   = $('toastIco');
-    const tTtl  = $('toastTtl');
-    const tSub  = $('toastSub');
-    if (!toast) return;
+/* ── WILAYAS DATA ── */
+const DZ_REGIONS = {
+"01 - أدرار":["أدرار","تامنطيط","بودة","أولاد أحمد تيمي","فنوغيل","زاوية كنتة","سالي","رقان","إن زغمير","تيط","أولف","تيمقتن","أقبلي","تسابيت","السبع"],
+"02 - الشلف":["الشلف","تنس","وادي الفضة","بوقادير","المرسى","تاوقريت","الزبوجة","أبو الحسن","عين مران","أولاد بن عبد القادر","وادي سلي","الشطية","أم الدروع","سنجاس","حرشون","بني راشد","أولاد فارس","بوزغاية","بنايرية","سيدي عكاشة","الأبيض مجاجة","الحجاج","المصدق","تلعصة","سيدي عبد الرحمن","الظهرة","بريرة","بني حواء","وادي قوسين","الصبحة","عين أمران","تاجنة","الكريمية"],
+"03 - الأغواط":["الأغواط","قصر الحيران","بن ناصر بن شهرة","سيدي مخلوف","حاسي الدلاعة","حاسي الرمل","عين ماضي","تاجموت","الخنق","قلتة سيدي سعد","عين سيدي علي","البيضاء","بريدة","الغيشة","الحاج مشري","سبقاق","تاويالة","تاجرونة","آفلو","العسافية","وادي مرة","وادي مزي","الناصرية","العويجة"],
+"04 - أم البواقي":["أم البواقي","عين البيضاء","عين مليلة","عين فكرون","سيقوس","مسكيانة","قصر الصبيحي","الضلعة","بحير الشرقي","العامرية","الحرملية","عين ببوش","عين الزيتون","بئر الشهداء","أولاد قاسم","وادي نيني","الرحية","فكيرينة","الزرق","سوق نعمان","أولاد حملة","الرجاص","هنشير تومغاني","أولاد زواي","بوغرارة السعودي","عين كرشة","عين الديس","بلالة","الجازية"],
+"05 - باتنة":["باتنة","بريكة","أريس","مروانة","عين التوتة","المعذر","تكوت","بوزينة","الشمرة","وادي الماء","لازرو","نقاوس","بومقر","قصر بلزمة","سقانة","إشمول","فسديس","وادي الطاقة","بولهيلات","بيطام","عزيل عبد القادر","كيمل","وادي الشعبة","تاكسلانت","أولاد عوف","بومية","الرحبات","تيمقاد","لمسان","أولاد سي سليمان","تالخمت","حيدوسة","ثنية العابد","علي النمر","أولاد عمار","شير","زانة البيضاء","بني فضالة الحقانية","أم الطيور","جرمة","أولاد سلام","الحاسي","إمدوكل","تيغانيمين","عين ياقوت","سفيان","تيغرغار","عين جاسر","غسيرة","معافة","سريانة","منعة","الجزار"],
+"06 - بجاية":["بجاية","أقبو","أميزور","القصر","خراطة","صدوق","سيدي عيش","أوقاس","تيفرة","تاسكريوت","درقينة","بني جليل","سوق الإثنين","تامريجت","سمعون","تيمزريت","أمالو","آيت رزين","بني مليكش","شميني","سيدي عياد","آيت لعزيز","إيغرام","أكفادو","بوحمزة","أوزلاقن","وادي غير","توجة","بني كسيلة","تالا حمزة","كنديرة","برباشة","أدكار","تاوريرت إغيل","فرعون","بني معوش","الفلاي","شلاطة","تيبيان","سوق أوفلا","إرجن","ملاكو","آيت إسماعيل","تيقرمت","آيت نوال مزادة","بوخليفة","ذراع القايد"],
+"07 - بسكرة":["بسكرة","طولقة","سيدي عقبة","الزريبة","أورلال","القنطرة","أوماش","الفيض","مخادمة","ليوة","برانيس","جمورة","عين زعطوط","شتمة","الحاجب","فوغالة","الغروس","بوشقرون","برج بن عزوز","ليشانة","مشونش","لوطاية","زريبة الوادي","الحوش","عين الناقة","شير","خيران","مزيرعة"],
+"08 - بشار":["بشار","العبادلة","تاغيت","القنادسة","بني ونيف","لحمر","بوكايس","مريجة","مشرع هواري بومدين","عرق فراج","موغل"],
+"09 - البليدة":["البليدة","بوفاريك","العفرون","موزاية","الأربعاء","بوقرة","أولاد يعيش","الشفة","وادي العلايق","بني مراد","بني تامو","بن خليل","الصومعة","الشبلي","بوعينان","بوعرفة","قرواو","مفتاح","الجبابرة","صوحان","عين الأشياخ","أولاد سلامة","عين الرمانة","وادي جر","خزرونة"],
+"10 - البويرة":["البويرة","سور الغزلان","الأخضرية","مشدالله","عين بسام","قادرية","بشلول","وادي البردي","العجيبة","الأسنام","أهل القصر","تاغزوت","الحاكمية","المعمورة","روراوة","الدشمية","برج أوخريص","ديرة","حجرة الزرقاء","سوق الخميس","المقراني","عمر","جباحية","قرومة","معالة","الهاشمية","وادي الحاء","عين العلوي","رائد بيبان","الزبربر","عين الحجر","عين الترك","آيت لعزيز","الشرفة","حنيفك","الصهايج","بئر غبالو","خبوزية","بوكرمة","أغبالو","تغزوت"],
+"11 - تمنراست":["تمنراست","أبلسة","تاظروك","إدلس","تزروق","عين أمقل"],
+"12 - تبسة":["تبسة","بئر العاتر","الشريعة","الونزة","العوينات","الكويف","مرسط","بكارية","الماء الأبيض","بوخضرة","بئر مقدم","نقرين","فركان","الحمامات","أم علي","ثليجان","العقلة","بئر الذهب","العقلة المالحة","قريقر","سطح قنطيس","أم الجذور","المريج","صفصاف الوسرة"],
+"13 - تلمسان":["تلمسان","مغنية","الغزوات","سبدو","منصورة","الرمشي","ندرومة","بن سكران","عين تالوت","بني مستار","شتوان","عمير","السواحلية","زناتة","سوق الثلاثاء","تيانت","البويهي","القور","سيدي مجاهد","العريشة","عين غرابة","أولاد ميمون","سبع شيوخ","عين فتاح","سيدي عبدلي","صبرة","بوحلو","بني سنوس","بني باهدل","عزيل","دار يغمراسن","تيرني بني هديل","جبالة","وادي الخضر","حناية","سيدي سعيد","سيدي جيلالي","بني بوسعيد","السهالة","فلاوسن","بني خلاد","هنين","سوق الخميس","باب العسة","مرسى بن مهيدي","المسيردة الفواقة","العقيد لطفي"],
+"14 - تيارت":["تيارت","السوقر","فرندة","قصر الشلالة","مهدية","رحوية","دحموني","عين بوشقيف","مشرع الصفا","توسنينة","مادنة","شحيمة","الرصفة","زمالة الأمير عبد القادر","سرغين","سي الحواس","تيكاريت","النعيمة","الفايجة","قرطوفة","ملاكو","تخمرت","عين الذهب","شهايرية","سيدي علي ملال","سبعين","الرشايقة","الزبيرية","سيدي عبد الرحمن","بوغار","تيدة","جيلالي بن عمار","وادي ليلي","توسنينة","سوق الحد"],
+"15 - تيزي وزو":["تيزي وزو","عزازقة","ذراع الميزان","بوغني","الأربعاء نايث إيراثن","مقلع","واسيف","بوزقن","عزفون","تيقزيرت","واضية","مكيرة","بني دوالة","عين الحمام","آيت يحيى","أبي يوسف","إفرحونن","إليلتن","إمزالم","آيت محمود","بني زيكي","إفليسن","ميزرانة","تيميزار","سوق الإثنين","آيت يحيى موسى","ذراع بن خدة","تيرميتين","سيدي نعمان","ماكودة","آيت عيسى ميمون","بوجيمة","واقنون","تيزي راشد","آيت أومالو","إيلولة أمالو","بني يني","يبدر","تالة تزاينت","عين الزاوية","فريحة","ياكوران","إعكوران","زكري","بني شفعة","أغريب","أزفون","آيت شافع","تيزي غنيف","فريقات"],
+"16 - الجزائر":["سيدي امحمد","باب الوادي","حسين داي","بوزريعة","بئر مراد رايس","الشراقة","الرويبة","بئر توتة","الدار البيضاء","براقي","زرالدة","الدرارية","الرغاية","الجزائر الوسطى","المدنية","الحامة - بلوزداد","القصبة","وادي قريش","بولوغين","الرايس حميدو","باب الزوار","برج الكيفان","بئر خادم","جسر قسنطينة","المرادية","حيدرة","الأبيار","بن عكنون","دالي إبراهيم","هراوة","الكاليتوس","سيدي موسى","أولاد شبل","تسالا المرجة","بني مسوس","دوار هيشر","أولاد فايت","عين البنيان","الحمامات","المحالمة","الرحمانية","سويدانية","سطاوالي","بابا حسن","الدويرة","خرايسية","المقرية","القبة","باش جراح","بوروبة","الحراش","وادي السمار","المرسى","المحمدية","برج البحري"],
+"17 - الجلفة":["الجلفة","عين وسارة","مسعد","حاسي بحبح","الإدريسية","الشارف","دار الشيوخ","البيرين","حد الصحاري","سيدي لعجال","حاسي فدول","الزعفران","بن يعقوب","سيدي بايزيد","مليليحة","المجبارة","قطارة","أم العظام","تعظميت","عين الإبل","زكار","سيدي مقران","سلمانة","حاسي العش","بويرة الأحداب","القرنيني","عين الشهداء","عمورة","الخميس","القديد","القرنينة","بن نهار","عين فقه","الشارف"],
+"18 - جيجل":["جيجل","الميلية","الطاهير","زيامة منصورية","العنصر","تاكسنة","الأمير عبد القادر","قاوس","العوانة","سلمى بن زيادة","إيراقن سويسي","بوسيف أولاد عسكر","وجانة","الشحنة","السطارة","غبالة","سيدي معروف","أولاد رابح","أولاد يحيى خدروش","برج الطهر","بوراوي بلهادف","الجمعة بني حبيبي","بني ياجيس","الكنار نوشفي","سيدي عبد العزيز","خنق مايون","خير وادي عجول"],
+"19 - سطيف":["سطيف","العلمة","عين ولمان","بوقاعة","عين الكبيرة","عين آزال","عموشة","صالح باي","بئر العرش","بني عزيز","عين أرنات","قجال","التلة","أولاد صابر","القلتة الزرقاء","بازر سكرة","الرشايقة","بني حسان","معاوية","عين الروى","بني فودة","تاشودة","الولجة","عين السبت","قنزات","حربيل","ذراع قبيلة","تالا إيفاسن","ماوكلان","بوسلام","آيت نوال مزادة","آيت تيزي","بوعنداس","الرواشد","بني ورتيلان","بني شبانة","عين لقراج","بيضاء برج","أوريسيا","عين عباسة","قلال","قصر الأبطال","أولاد تبان","الرصفة","الحامة","عين الحجر","بئر حدادة"],
+"20 - سعيدة":["سعيدة","الحساسنة","عين الحجر","سيدي بوبكر","يوب","أولاد إبراهيم","أولاد خالد","الرباحية","سيدي عمار","سيدي أحمد","داوود","تيرسين","مولاي العربي","عين السخونة","المعمورة","حنيني"],
+"21 - سكيكدة":["سكيكدة","عزابة","القل","الحروش","تمالوس","رمضان جمال","الحدائق","الزيتونة","أم الطوب","سيدي مزغيش","بني زيد","عين قشرة","أولاد عطية","خناق مايون","وادي الزهور","الشرايع","الكركرة","بين الويدان","جندل سعدي محمد","السبت","لغدير","بني ولبان","مجاز الدشيش","أمجاز الدشيش","صالح بوالشعور","زردازة","عين بوزيان","بني بشير","فلفلة","بكوش لخضر","المرسى","بوشطاطة","عين زويت"],
+"22 - سيدي بلعباس":["سيدي بلعباس","تلاغ","سفيزف","ابن باديس","تسالة","سيدي علي بن يوب","رأس الماء","مرحوم","عين البرد","سيدي ابراهيم","الضاية","تينيرة","سيدي علي بوسيدي","مكدرة","مصطفى بن ابراهيم","سيدي حمادوش","سيدي خالد","زروالة","بوجبهة البرج","السهالة الطواهرية","حاسي دحو","سيدي يعقوب","سيدي لحسن","لمطار","بدر الدين","الطابية","شيطوان بليلة","وادي تاوريرة","وادي السبع","الرجم دموش","بن عشيبة شيلية","حاسي زهانة","العمارنة","عين قادة","عين الثريد","عين تندمين","سيدي دحو","سيدي شعيب","بوشبكة","بوخنفيس","تفضنة"],
+"23 - عنابة":["عنابة","البوني","سيدي عمار","الحجار","برحال","شطايبي","وادي العنب","سرايدي","عين الباردة","الشرفة","العلمة","التريعات"],
+"24 - قالمة":["قالمة","وادي الزناتي","بوشقوف","هيليوبوليس","عين مخلوف","لخزارة","بوعاتي محمود","بومهرة أحمد","جبالة خميسي","بني مزلين","الفجوج","بلخير","قلعة بوصبع","نشماية","الركنية","مجاز عمار","حمام دباغ","عين العربي","مجاز الصفاء","عين بن بيضاء","وادي الشحم","تاملوكة","عين رقادة","برج صباط","الدهوارة","حمام النبائل","عين صندل","سلاوة عنونة","رأس العقبة","وادي الزناتي","الركنية"],
+"25 - قسنطينة":["قسنطينة","الخروب","عين السمارة","حامة بوزيان","ديدوش مراد","زيغود يوسف","بني حميدان","أولاد رحمون","عين عبيد","ابن زياد","مسعود بوجريو","ابن باديس"],
+"26 - المدية":["المدية","قصر البخاري","البرواقية","بني سليمان","العمارية","تابلاط","وزرة","شلالة العذاورة","الشهبونية","سيدي نعمام","عزيز","سي المحجوب","بوعيشون","السواقي","جواب","الزبيرية","الربعية","سيدي زهار","مغراوة","بئر بن عابد","القلب الكبير","بني يعقوب","العيساوية","الحوضان","بوسكن","سيدي الربيع","أولاد هلال","تفراوت","خمس جوامع","تيزي مهدي","سيدي دامد","عين بوسيف","الروالم","شنيقل","السانق","بوشراحيل","خياوطة","أولاد دايد","أولاد عنتر","بوغار","حناشة","وامري","سيدي زيات","الميهوب","بعطة","أولاد إبراهيم","سيدي عيسى","الربعية","الحمدانية","دراق","أولاد بوعشرة","أولاد معرف","المفاتحة"],
+"27 - مستغانم":["مستغانم","عشعاشة","عين النويصي","بوقيرات","حاسي مماش","خير الدين","سيدي علي","سيدي لخضر","ماسرة","عين تادلس","صيادة","مزرغنة","ستيديا","المنصورة","سيدي بلعطار","فرناكة","الحسيان","عين سيدي شريف","السوافلية","صفصاف","النقمارية","خضرة","أولاد بوغالم","الطواهرية","السيرات","الصور","بن عبد المالك رمضان","حجاج","تزقايت"],
+"28 - المسيلة":["المسيلة","بوسعادة","مقرة","سيدي عيسى","عين الملح","أولاد دراج","برهوم","حمام الضلعة","عين الخضراء","أولاد عدي القبالة","بوطي السايح","الشلال","بن سرور","محمد بوضياف","أولاد ماضي","تارمونت","المطارفة","المعاضيد","ولتام","بني إلمان","أولاد منصور","عين الريش","الحوامد","بلعائبة","أولاد سليمان","ونوقة","الخبانة","المعاريق","زرارقة","عين فارس","سيدي عامر","الديس","تامسة","سيدي امحمد","جبل مساعد","عين الحجل","بني يلمان","سليم"],
+"29 - معسكر":["معسكر","سيق","المحمدية","تيغنيف","غريس","بوحنيفية","وادي الأبطال","زهانة","عقاز","مقطع دوز","الهاشم","زلامطة","سيدي قادة","الكرط","عين فكان","قرجوم","خلوية","البرج","السهايلية","سيدي عبد الجبار","وادي التاغية","سيدي بوسعيد","ماقضة","عين فارس","المأمونية","سيدي عبد المومن","عين أفقه","الطمزوغة","الغمري","البنيان","ماتمور","سيدي بوبكر"],
+"30 - ورقلة":["ورقلة","حاسي مسعود","الرويسات","سيدي خويلد","البرمة","أنقوسة","حاسي بن عبد الله","عين البيضاء","بامنديل","خفجي"],
+"31 - وهران":["وهران","أرزيو","بطيوة","السانيا","بئر الجير","وادي تليلات","عين الترك","قديل","بوسفر","العنصر","مسرغين","بوتليليس","سيدي الشحمي","حاسي بونيف","حاسي بن عقبة","بن فريحة","حاسي مفسوخ","سيدي بن يبقى","عين البية","المرسى الكبير","الكرمة","البرية","بوعتليلات","طافراوي","الشهايرية","عيايدة"],
+"32 - البيض":["البيض","بوقطب","الأبيض سيدي الشيخ","بوسمغون","بريزينة","الشلالة","روينة","عين العراك","البنود","الكراكدة","اربوات","المحرة","سيدي طيفور","سيدي سليمان","سيدي عمر","ستيتن","توسمولين","عين طارق","المشرية","سيدي عبد الرحمن"],
+"33 - إليزي":["إليزي","إن أميناس","برج عمر إدريس","الدبداب"],
+"34 - برج بوعريريج":["برج بوعريريج","رأس الوادي","مجانة","بئر قاصد علي","المنصورة","المهير","خليل","سيدي أمبارك","عين تاغروت","بليمور","الرابطة","الحمادية","العش","القصور","حسناوة","جعافرة","تفرق","إلماين","زمورة","تسيمارط","تاسمرت","وادي زقار","أولاد دحمان","حرازة","أولاد سيدي ابراهيم","عين تسرة","بن داود","غيلاسة","تقلعيت","القلة","برج الغدير","الرابطة"],
+"35 - بومرداس":["بومرداس","دلس","الثنية","برج منايل","بودواو","يسر","بغلية","قورصو","تيجلابين","سي مصطفى","زموري","لقاطة","جنات","الناصرية","أولاد عيسى","سيدي داود","تعبو","بن شود","أعفير","شعبة العامر","حمادي","خميس الخشنة","أولاد موسى","الأربعطاش","خروبة","بوزقزة قدارة","بني عمران","عمارة","سوق الحد"],
+"36 - الطارف":["الطارف","القالة","بوحجار","ابن مهيدي","البسباس","الذرعان","بوثلجة","الشط","بريحان","زريزر","الزيتونة","بحيرة الطيور","عين العسل","شيحاني","بوقوس","العصفور","عين الكرمة","وادي الزيتون","حمام بني صالح","سوق الرقاد","الرمل السوق","الشافية"],
+"37 - تندوف":["تندوف","أم العسل"],
+"38 - تيسمسيلت":["تيسمسيلت","ثنية الحد","برج بونعامة","خميستي","عماري","لرجام","برج الأمير عبد القادر","بوقرة","سيدي عابد","أولاد بسام","سيدي العنتري","سيدي سليمان","بني شعيب","بني لحسن","المعاصم","العيون","ثنية الحد","عماري","سيدي بوتشنت","الملعب","اليوسفية"],
+"39 - الوادي":["الوادي","الدبيلة","الرقيبة","المقرن","قمار","حاسي خليفة","البياضة","الطريفاوي","ورماس","تغزوت","الرباح","النخلة","العقلة","زقم","الزقم"],
+"40 - خنشلة":["خنشلة","قايس","بابار","بوحمامة","ششار","أولاد رشاش","عين الطويلة","المحمل","الحامة","بغاي","طامزة","انسغة","الولجة","خيران","جلال","يابوس","لمصارة","شيلية"],
+"41 - سوق أهراس":["سوق أهراس","سدراتة","تاورة","لحدادة","مداوروش","المراهنة","بئر بوحوش","الزوابي","سافل الويدان","ويلان","الدريعة","تيفاش","الزعرورية","عين الزانة","عين السلطان","وادي الكبريت","المشروحة","حنانشة","وادي الشحم","خضراوة","تارقة","أولاد إدريس","أم العظائم"],
+"42 - تيبازة":["تيبازة","القليعة","بواسماعيل","حجوط","شرشال","سيدي غيلاس","قوراية","الداموس","بني ميلك","الارهاط","أغبال","مناصر","سيدي سميان","سيدي عمر","مراد","الناظور","بورقيقة","عين تاقورايت","بوهارون","خميستي","فوكة","الدواودة","الشعيبة","الحطاطبة","سيدي راشد","شرشال"],
+"43 - ميلة":["ميلة","شلغوم العيد","فرجيوة","التلاغمة","تاجنانت","القرارم قوقة","الرواشد","بني قشة","سيدي مروان","الشيقارة","حمالة","زغاية","وادي النجاء","أحمد راشدي","تسدان حدادة","مينار زرزة","ترعي باينان","عميرة أراس","العيجيا","عين البيضاء أحريش","وادي العثمانية","بئر العرش","المشيرة","يحيى بني قشة","الرواشد","فرجيوة","بوحاتم","دراس بواد","عين الملوك","التلاغمة"],
+"44 - عين الدفلى":["عين الدفلى","الخميس","مليانة","العطاف","الروينة","بومدفع","جندل","برج الأمير خالد","طارق بن زياد","وادي الشرفاء","جليدة","الحسينية","بن علال","عين سلطان","عريب","سيدي الأخضر","تيبيركانين","زدين","الماين","العامرة","مخاطرية","عين البنيان","حمام ريغة","جمعة ولاد الشيخ","سيدي لخضر","الحسنية","بلعسل","بطحية","بني راشد","الروينة","وادي الجمعة","العطاف","العبادية"],
+"45 - النعامة":["النعامة","المشرية","عين الصفراء","مكمن بن عمار","عسلة","صفيصيفة","جنين بورزق","البيوض","تيوت","مغرار","قصدير","عين بن خليل"],
+"46 - عين تموشنت":["عين تموشنت","بني صاف","ولهاصة","حمام بوحجر","عين الكيحل","الملاح","عين الطلبة","سيدي بن عدة","الأمير عبد القادر","شعبة اللحم","عقب الليل","سيدي الصافي","أولاد الكيحل","تارقة","عين الأربعاء","حاسي الغلة","أولاد بوجمعة","سيدي بومدين","تامزورة","وادي الصباح","وادي برقش","بني صاف","سيدي ورياش","إميا","وادي الكرمة","برج سعيد"],
+"47 - غرداية":["غرداية","زلفانة","القرارة","متليلي","بريان","بونورة","ضاية بن ضحوة","العطف","المنصورة"],
+"48 - غليزان":["غليزان","وادي ارهيو","مازونة","يلل","المطمر","عمي موسى","بوقدير","بن داود","سيدي خطاب","بلعسل","المرجة","بني درقن","القطار","زمورة","منداس","سيدي لزرق","سيدي محمد بن علي","مديونة","بني زينطس","وادي الجمعة","جديوية","حمري","الحمادنة","الولجة","مازونة","القطار","المرجة","وادي السلام","سيدي امحمد بن عودة","عين طارق","عمي موسى","الرمكة","سوق الحد","لحلاف","بوقيراط"],
+"49 - تيميمون":["تيميمون","أوقروت","شروين","تينركوك","طالمين","قصر قدور","المطارفة","أولاد سعيد","دلدول","أولاد عيسى"],
+"50 - برج باجي مختار":["برج باجي مختار","تيمياوين"],
+"51 - أولاد جلال":["أولاد جلال","سيدي خالد","الدوسن","راس الميعاد","البسباس","الشعيبة"],
+"52 - بني عباس":["بني عباس","إقلي","كرزاز","الواتة","أولاد خضير","تبلبالة","القصابي","تيمودي","بني يخلف","تامترت"],
+"53 - عين صالح":["عين صالح","فقارة الزوى","إن غار"],
+"54 - عين قزام":["عين قزام","تين زاوتين"],
+"55 - تقرت":["تقرت","تماسين","المقارين","الحجيرة","نزلة","تبسبست","الزاوية العابدية","بلدة عمر","العالية","سيدي سليمان","بن ناصر"],
+"56 - جانت":["جانت","برج الحواس"],
+"57 - المغير":["المغير","جامعة","أم الطيور","سيدي خليل","تندلة","المرارة","سيدي عمران","سطيل"],
+"58 - المنيعة":["المنيـعة","حاسي القارة","حاسي الفحل","تيريكت"]
+};
 
-    tTtl.textContent = ttl;
-    tSub.textContent = sub;
+/* ══════════════════════════════════════
+   LUXURY BOTTOM-SHEET SELECT SYSTEM
+══════════════════════════════════════ */
+let sheetOpen = false;
+let sheetMode = null; // 'wilaya' | 'region'
+let sheetOnSelect = null;
 
-    toast.className = 'lux-toast t-' + type;
-    ico.textContent = type === 'ok' ? '✓' : '✦';
+const overlay  = $('luxSheetOverlay');
+const sheet    = $('luxSheet');
+const sheetTitleEl = $('luxSheetTitle');
+const sheetSearch  = $('luxSheetSearch');
+const sheetList    = $('luxSheetList');
 
-    // reset bar then re-trigger
-    const bar = toast.querySelector('.toast-bar');
-    if (bar) { bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)'; }
+function openSheet(mode, title, items, selectedValue, onSelect) {
+  sheetMode    = mode;
+  sheetOnSelect = onSelect;
+  sheetTitleEl.textContent = title;
+  sheetSearch.value = '';
+  renderSheetItems(items, selectedValue);
+  overlay.classList.add('show');
+  sheetOpen = true;
+  document.body.style.overflow = 'hidden';
+  setTimeout(() => sheetSearch.focus(), 400);
+  // Store items for search
+  overlay._items    = items;
+  overlay._selected = selectedValue;
+}
 
-    requestAnimationFrame(() => {
-      toast.classList.add('show');
-      if (bar) {
-        requestAnimationFrame(() => {
-          bar.style.transition = 'transform 4s linear';
-          bar.style.transform  = 'scaleX(0)';
-        });
-      }
+function closeSheet() {
+  overlay.classList.remove('show');
+  sheetOpen = false;
+  document.body.style.overflow = '';
+  sheetSearch.value = '';
+}
+
+function renderSheetItems(items, selectedValue, filterText) {
+  const filtered = filterText
+    ? items.filter(it => it.toLowerCase().includes(filterText.toLowerCase()))
+    : items;
+
+  sheetList.innerHTML = '';
+  if (!filtered.length) {
+    sheetList.innerHTML = '<div class="lux-sheet-empty">لا توجد نتائج</div>';
+    return;
+  }
+  filtered.forEach(item => {
+    const row = document.createElement('div');
+    row.className = 'lux-sheet-item' + (item === selectedValue ? ' selected' : '');
+    row.innerHTML = `
+      <span class="lux-sheet-item-label">${item}</span>
+      <div class="lux-sheet-check">
+        <div class="lux-sheet-check-dot"></div>
+      </div>
+    `;
+    row.addEventListener('click', () => {
+      // Update selected in list
+      sheetList.querySelectorAll('.lux-sheet-item').forEach(r => r.classList.remove('selected'));
+      row.classList.add('selected');
+      overlay._selected = item;
+      if (sheetOnSelect) sheetOnSelect(item);
+      setTimeout(closeSheet, 180);
     });
+    sheetList.appendChild(row);
+  });
+  // Scroll to selected
+  const sel = sheetList.querySelector('.selected');
+  if (sel) sel.scrollIntoView({ block: 'center' });
+}
 
-    clearTimeout(_toastTimer);
-    _toastTimer = setTimeout(hideToast, 4200);
+// Search filter — handled in INIT with clear button wiring
+
+// Close on overlay bg tap
+overlay.addEventListener('click', e => {
+  if (e.target === overlay) closeSheet();
+});
+
+// Escape key
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') {
+    if (sheetOpen) closeSheet();
+    else closeEgg();
   }
+});
 
-  function hideToast() {
-    const toast = $('luxToast');
-    if (toast) toast.classList.remove('show');
-    clearTimeout(_toastTimer);
+/* ── WILAYA TRIGGER ── */
+const wilayaTrigger = $('wilayaTrigger');
+const wilayaTriggerText = $('wilayaTriggerText');
+const wilayaItems = Object.keys(DZ_REGIONS);
+
+wilayaTrigger.addEventListener('click', () => {
+  openSheet('wilaya', 'اختر الولاية', wilayaItems, ui.fWilaya.value, (val) => {
+    ui.fWilaya.value = val;
+    wilayaTriggerText.textContent = val;
+    wilayaTriggerText.classList.remove('placeholder');
+    wilayaTrigger.classList.remove('open');
+    updateRegions(val);
+  });
+  wilayaTrigger.classList.add('open');
+});
+wilayaTrigger.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); wilayaTrigger.click(); }
+});
+
+/* ── REGION TRIGGER ── */
+const regionTrigger = $('regionTrigger');
+const regionTriggerText = $('regionTriggerText');
+
+regionTrigger.addEventListener('click', () => {
+  if (regionTrigger.classList.contains('disabled')) return;
+  const wilaya = ui.fWilaya.value;
+  const items = DZ_REGIONS[wilaya] || [];
+  openSheet('region', 'اختر المنطقة', items, ui.fRegion.value, (val) => {
+    ui.fRegion.value = val;
+    regionTriggerText.textContent = val;
+    regionTriggerText.classList.remove('placeholder');
+    regionTrigger.classList.remove('open');
+  });
+  regionTrigger.classList.add('open');
+});
+regionTrigger.addEventListener('keydown', e => {
+  if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); regionTrigger.click(); }
+});
+
+// Remove open class when sheet closes
+overlay.addEventListener('transitionend', () => {
+  if (!overlay.classList.contains('show')) {
+    wilayaTrigger.classList.remove('open');
+    regionTrigger.classList.remove('open');
   }
+});
 
-  window.hideToast = hideToast;
+function updateRegions(wilaya) {
+  ui.fRegion.value = '';
+  regionTriggerText.textContent = 'اختر المنطقة...';
+  regionTriggerText.classList.add('placeholder');
 
-  /* ── COLOR / SIZE STATE ── */
-  let currentSlide = 0;
-  let currentSize  = 0;
-
-  function updateColorState(index) {
-    const color = COLORS[index] || COLORS[0];
-    const dot   = DOTS[index]   || DOTS[0];
-    if (ui.fColor)   ui.fColor.value = color;
-    if (ui.sumColor) ui.sumColor.textContent = color;
-    if (ui.sumDot)   ui.sumDot.className = 'sum-dot ' + dot;
+  if (wilaya && DZ_REGIONS[wilaya]) {
+    regionTrigger.classList.remove('disabled');
+    ui.regionAnim.classList.add('show');
+    showDeliveryPrice(wilaya);
+  } else {
+    regionTrigger.classList.add('disabled');
+    ui.regionAnim.classList.remove('show');
+    hideDeliveryPrice();
   }
+}
+window.updateRegions = updateRegions;
 
-  function updateSizeState(index) {
-    const size = SIZES[index] || SIZES[0];
-    if (ui.sizeCurrent) ui.sizeCurrent.textContent = size;
-    if (ui.sumSize)     ui.sumSize.textContent = size;
-    if (ui.fSize)       ui.fSize.value = size;
-  }
+/* ── DELIVERY PRICES ── */
+// أسعار التوصيل بالدينار الجزائري حسب الولاية (2025)
+/* ── DELIVERY PRICES ── */
+// home: توصيل للمنزل | desk: توصيل لمكتب | tier: proche/moyen/loin
+const DELIVERY_PRICES = {
+  // ── العاصمة ──
+  "16 - الجزائر":        { home: 450,  desk: null, tier: 'proche', label: 'العاصمة'      },
 
-  /* ── SLIDER ── */
-  function showSlide(index, animate) {
-    if (!ui.slides.length) return;
-    currentSlide = wrapIndex(index, ui.slides.length);
-    ui.slides.forEach((s, i) => {
-      s.style.transition    = animate ? 'opacity .45s ease' : 'none';
-      s.style.opacity       = i === currentSlide ? '1' : '0';
-      s.style.pointerEvents = i === currentSlide ? 'auto' : 'none';
-    });
-    ui.thumbs.forEach((t, i) => t.classList.toggle('active', i === currentSlide));
-    updateColorState(currentSlide);
-  }
+  // ── الولايات المجاورة ──
+  "09 - البليدة":        { home: 550,  desk: 380,  tier: 'proche', label: 'مجاور'        },
+  "35 - بومرداس":        { home: 550,  desk: 380,  tier: 'proche', label: 'مجاور'        },
+  "42 - تيبازة":         { home: 550,  desk: 380,  tier: 'proche', label: 'مجاور'        },
 
-  let slideStartX = 0, slideDragging = false;
-  function slideStart(x) { slideDragging = true; slideStartX = x; }
-  function slideEnd(x) {
-    if (!slideDragging) return; slideDragging = false;
-    const dx = slideStartX - x;
-    if      (dx >  40 && currentSlide < ui.slides.length - 1) showSlide(currentSlide + 1, true);
-    else if (dx < -40 && currentSlide > 0)                    showSlide(currentSlide - 1, true);
-  }
-  if (ui.wrap) {
-    ui.wrap.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
-    window.addEventListener('mouseup',     e => slideEnd(e.clientX));
-    ui.wrap.addEventListener('touchstart', e => slideStart(e.touches[0].clientX), { passive: true });
-    window.addEventListener('touchend',    e => { if (e.changedTouches?.[0]) slideEnd(e.changedTouches[0].clientX); });
-  }
-  if (ui.thumbRow) {
-    ui.thumbRow.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
-    ui.thumbRow.addEventListener('touchstart', e => slideStart(e.touches[0].clientX), { passive: true });
-  }
+  // ── وسط البلاد والمراكز الكبرى ──
+  "31 - وهران":          { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "25 - قسنطينة":        { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "19 - سطيف":           { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "06 - بجاية":          { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "15 - تيزي وزو":       { home: 650,  desk: 420,  tier: 'moyen',  label: 'وسط كبير'    },
+  "10 - البويرة":        { home: 650,  desk: 420,  tier: 'moyen',  label: 'وسط كبير'    },
+  "26 - المدية":         { home: 650,  desk: 420,  tier: 'moyen',  label: 'وسط كبير'    },
+  "02 - الشلف":          { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "05 - باتنة":          { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "14 - تيارت":          { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "27 - مستغانم":        { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "28 - المسيلة":        { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "29 - معسكر":          { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "34 - برج بوعريريج":   { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "43 - ميلة":           { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
+  "44 - عين الدفلى":     { home: 650,  desk: 420,  tier: 'moyen',  label: 'وسط كبير'    },
+  "17 - الجلفة":         { home: 700,  desk: 450,  tier: 'moyen',  label: 'وسط كبير'    },
 
-  /* ── 3D SIZE CAROUSEL ── */
-  const sizeItems = SIZES.map(s => {
-    const el = document.createElement('div');
-    el.className = 'size-item';
-    el.textContent = s;
-    ui.carousel?.appendChild(el);
-    return el;
+  // ── شرق وغرب بعيد ──
+  "13 - تلمسان":         { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "23 - عنابة":          { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "12 - تبسة":           { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "40 - خنشلة":          { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "21 - سكيكدة":         { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "41 - سوق أهراس":      { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "45 - النعامة":        { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "04 - أم البواقي":     { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "18 - جيجل":           { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "22 - سيدي بلعباس":    { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "24 - قالمة":          { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "36 - الطارف":         { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "46 - عين تموشنت":     { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "38 - تيسمسيلت":       { home: 750,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "20 - سعيدة":          { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+  "08 - بشار":           { home: 850,  desk: 550,  tier: 'loin',   label: 'بعيد'        },
+  "32 - البيض":          { home: 800,  desk: 500,  tier: 'loin',   label: 'بعيد'        },
+
+  // ── جنوب قريب ──
+  "07 - بسكرة":          { home: 900,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "03 - الأغواط":        { home: 900,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "39 - الوادي":         { home: 950,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "30 - ورقلة":          { home: 950,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "47 - غرداية":         { home: 950,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "48 - غليزان":         { home: 750,  desk: 500,  tier: 'moyen',  label: 'وسط'        },
+  "51 - أولاد جلال":     { home: 900,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "55 - تقرت":           { home: 950,  desk: 650,  tier: 'loin',   label: 'جنوب قريب'  },
+  "57 - المغير":         { home: 950,  desk: 680,  tier: 'loin',   label: 'جنوب قريب'  },
+
+  // ── جنوب كبير ──
+  "01 - أدرار":          { home: 1350, desk: 900,  tier: 'sud',    label: 'جنوب كبير'  },
+  "11 - تمنراست":        { home: 1400, desk: 950,  tier: 'sud',    label: 'جنوب كبير'  },
+  "37 - تندوف":          { home: 1300, desk: 900,  tier: 'sud',    label: 'جنوب كبير'  },
+  "33 - إليزي":          { home: 1400, desk: 950,  tier: 'sud',    label: 'جنوب كبير'  },
+  "49 - تيميمون":        { home: 1300, desk: 900,  tier: 'sud',    label: 'جنوب كبير'  },
+  "50 - برج باجي مختار": { home: 1400, desk: 1000, tier: 'sud',    label: 'جنوب كبير'  },
+  "52 - بني عباس":       { home: 1300, desk: 900,  tier: 'sud',    label: 'جنوب كبير'  },
+  "53 - عين صالح":       { home: 1350, desk: 950,  tier: 'sud',    label: 'جنوب كبير'  },
+  "54 - عين قزام":       { home: 1400, desk: 1000, tier: 'sud',    label: 'جنوب كبير'  },
+  "56 - جانت":           { home: 1400, desk: 950,  tier: 'sud',    label: 'جنوب كبير'  },
+  "58 - المنيعة":        { home: 1300, desk: 900,  tier: 'sud',    label: 'جنوب كبير'  },
+};
+
+const TIER_LABELS = {
+  proche: 'قريب',
+  moyen:  'متوسط',
+  loin:   'بعيد',
+  sud:    'جنوب',
+};
+
+function showDeliveryPrice(wilaya) {
+  const info = DELIVERY_PRICES[wilaya];
+  const card    = $('deliveryReveal');
+  const homeEl  = $('deliveryAmountHome');
+  const deskEl  = $('deliveryAmountDesk');
+  const nameEl  = $('deliveryWilayaName');
+  const tierEl  = $('deliveryTier');
+  if (!card) return;
+
+  const shortName = wilaya.split(' - ')[1] || wilaya;
+
+  // إخفاء مؤقت للأرقام
+  [homeEl, deskEl].forEach(el => {
+    if (el) { el.style.transform = 'translateY(-7px)'; el.style.opacity = '0'; }
   });
 
-  function renderSizeCarousel(animate) {
-    sizeItems.forEach((el, i) => {
-      let rel = wrapIndex(i - currentSize, sizeItems.length);
-      if (rel > sizeItems.length / 2) rel -= sizeItems.length;
-      el.className = 'size-item';
-      if      (rel ===  0) el.classList.add('pos-0');
-      else if (rel ===  1) el.classList.add('pos-1');
-      else if (rel === -1) el.classList.add('pos-neg1');
-      else if (rel ===  2) el.classList.add('pos-2');
-      else if (rel === -2) el.classList.add('pos-neg2');
-      else                 el.classList.add('pos-hidden');
-      if (!animate) {
-        el.style.transition = 'none';
-        requestAnimationFrame(() => { el.style.transition = ''; });
+  setTimeout(() => {
+    if (nameEl) nameEl.textContent = shortName;
+
+    if (info) {
+      if (homeEl) homeEl.textContent = info.home.toLocaleString('ar-DZ');
+      // مكتب stop desk — بعض الولايات لا تتوفر
+      if (deskEl) {
+        deskEl.textContent = info.desk ? info.desk.toLocaleString('ar-DZ') : '—';
+        const deskCol = deskEl.closest('.desk-col');
+        if (deskCol) deskCol.style.opacity = info.desk ? '1' : '.38';
+      }
+      if (tierEl) {
+        tierEl.textContent = TIER_LABELS[info.tier] || '';
+        tierEl.className   = 'delivery-tier ' + info.tier;
+        tierEl.style.display = 'inline-flex';
+      }
+    } else {
+      // ولاية غير موجودة في الجدول — أسعار افتراضية
+      if (homeEl) homeEl.textContent = '—';
+      if (deskEl) deskEl.textContent = '—';
+      if (tierEl) tierEl.style.display = 'none';
+    }
+
+    [homeEl, deskEl].forEach(el => {
+      if (el) {
+        el.style.transition = 'transform .35s cubic-bezier(.22,1,.36,1), opacity .28s ease';
+        el.style.transform  = 'translateY(0)';
+        el.style.opacity    = '1';
       }
     });
-    updateSizeState(currentSize);
-  }
+  }, 140);
 
-  function goToSize(index, animate) {
-    currentSize = wrapIndex(index, SIZES.length);
-    renderSizeCarousel(animate);
-  }
+  card.classList.add('show');
+}
 
-  function applyDragOffset(frac) {
-    sizeItems.forEach((el, i) => {
-      let rel = wrapIndex(i - currentSize, sizeItems.length);
-      if (rel > sizeItems.length / 2) rel -= sizeItems.length;
-      const adjRel = rel - frac;
-      el.className = 'size-item';
-      el.style.transition = 'none';
-      let tx, sc, op;
-      if (adjRel >= -0.5 && adjRel <= 0.5) {
-        const t = adjRel;
-        tx = 130 * t;
-        sc = t >= 0 ? clamp(1 - 0.15*t, 0.85, 1) : clamp(1 + 0.15*t, 0.85, 1);
-        op = t >= 0 ? clamp(1 - 0.55*t, 0.45, 1) : clamp(1 + 0.55*t, 0.45, 1);
-      } else if (adjRel > 0.5 && adjRel <= 1.5) {
-        const t = adjRel - 1;
-        tx = 130 + 80*t; sc = clamp(.85 - .2*t, 0.65, .85); op = clamp(.45 - .25*t, 0.2, .45);
-      } else if (adjRel < -0.5 && adjRel >= -1.5) {
-        const t = -(adjRel + 1);
-        tx = -130 - 80*t; sc = clamp(.85 - .2*t, 0.65, .85); op = clamp(.45 - .25*t, 0.2, .45);
-      } else { el.style.opacity = 0; return; }
-      if (window.innerWidth <= 640) tx *= 0.77;
-      el.style.transform = `translateX(${tx}px) scale(${sc}) translateZ(0)`;
-      el.style.opacity   = op;
-      el.style.filter    = 'none';
-      el.style.zIndex    = adjRel === 0 ? 10 : (Math.abs(adjRel) < 1 ? 5 : 2);
+function hideDeliveryPrice() {
+  const card = $('deliveryReveal');
+  if (card) card.classList.remove('show');
+}
+
+/* ── TOAST ── */
+let _toastTimer = null;
+function showToast(sub, ttl, type) {
+  ttl = ttl || 'تنبيه'; type = type || 'error';
+  const toast = $('luxToast');
+  $('toastTtl').textContent = ttl;
+  $('toastSub').textContent = sub;
+  toast.className = 'lux-toast t-' + type;
+  $('toastIco').textContent = type === 'ok' ? '✓' : '✦';
+  const bar = toast.querySelector('.toast-bar');
+  if (bar) { bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)'; }
+  requestAnimationFrame(() => {
+    toast.classList.add('show');
+    if (bar) requestAnimationFrame(() => { bar.style.transition = 'transform 4s linear'; bar.style.transform = 'scaleX(0)'; });
+  });
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(hideToast, 4200);
+}
+function hideToast() { $('luxToast')?.classList.remove('show'); clearTimeout(_toastTimer); }
+window.hideToast = hideToast;
+
+/* ── COLOR / SIZE STATE ── */
+let currentSlide = 0, currentSize = 0;
+
+function updateColorState(index) {
+  const color = COLORS[index] || COLORS[0];
+  const dot   = DOTS[index]   || DOTS[0];
+  if (ui.fColor)   ui.fColor.value = color;
+  if (ui.sumColor) ui.sumColor.textContent = color;
+  if (ui.sumDot)   ui.sumDot.className = 'sum-dot ' + dot;
+}
+function updateSizeState(index) {
+  const size = SIZES[index] || SIZES[0];
+  if (ui.sizeCurrent) ui.sizeCurrent.textContent = size;
+  if (ui.sumSize)     ui.sumSize.textContent = size;
+}
+
+/* ── SLIDER ── */
+function showSlide(index, animate) {
+  if (!ui.slides.length) return;
+  currentSlide = wrapIndex(index, ui.slides.length);
+  ui.slides.forEach((s, i) => {
+    s.style.transition    = animate ? 'opacity .45s ease' : 'none';
+    s.style.opacity       = i === currentSlide ? '1' : '0';
+    s.style.pointerEvents = i === currentSlide ? 'auto' : 'none';
+  });
+  ui.thumbs.forEach((t, i) => t.classList.toggle('active', i === currentSlide));
+  updateColorState(currentSlide);
+}
+let slideStartX = 0, slideDragging = false;
+function slideStart(x) { slideDragging = true; slideStartX = x; }
+function slideEnd(x) {
+  if (!slideDragging) return; slideDragging = false;
+  const dx = slideStartX - x;
+  if (dx > 40 && currentSlide < ui.slides.length - 1) showSlide(currentSlide + 1, true);
+  else if (dx < -40 && currentSlide > 0) showSlide(currentSlide - 1, true);
+}
+if (ui.wrap) {
+  ui.wrap.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
+  window.addEventListener('mouseup',     e => slideEnd(e.clientX));
+  ui.wrap.addEventListener('touchstart', e => slideStart(e.touches[0].clientX), { passive: true });
+  window.addEventListener('touchend',    e => { if (e.changedTouches?.[0]) slideEnd(e.changedTouches[0].clientX); });
+}
+if (ui.thumbRow) {
+  ui.thumbRow.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
+  ui.thumbRow.addEventListener('touchstart', e => slideStart(e.touches[0].clientX), { passive: true });
+}
+
+/* ── SIZE CAROUSEL ── */
+const sizeItems = SIZES.map(s => {
+  const el = document.createElement('div');
+  el.className = 'size-item';
+  el.textContent = s;
+  ui.carousel?.appendChild(el);
+  return el;
+});
+function renderSizeCarousel(animate) {
+  sizeItems.forEach((el, i) => {
+    let rel = wrapIndex(i - currentSize, sizeItems.length);
+    if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+    el.className = 'size-item';
+    if      (rel ===  0) el.classList.add('pos-0');
+    else if (rel ===  1) el.classList.add('pos-1');
+    else if (rel === -1) el.classList.add('pos-neg1');
+    else if (rel ===  2) el.classList.add('pos-2');
+    else if (rel === -2) el.classList.add('pos-neg2');
+    else                 el.classList.add('pos-hidden');
+    if (!animate) { el.style.transition = 'none'; requestAnimationFrame(() => { el.style.transition = ''; }); }
+  });
+  updateSizeState(currentSize);
+}
+function goToSize(index, animate) {
+  currentSize = wrapIndex(index, SIZES.length);
+  renderSizeCarousel(animate);
+}
+function applyDragOffset(frac) {
+  sizeItems.forEach((el, i) => {
+    let rel = wrapIndex(i - currentSize, sizeItems.length);
+    if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+    const adjRel = rel - frac;
+    el.className = 'size-item'; el.style.transition = 'none';
+    let tx, sc, op;
+    if (adjRel >= -0.5 && adjRel <= 0.5) {
+      const t = adjRel;
+      tx = 130*t; sc = t>=0 ? clamp(1-.15*t,.85,1) : clamp(1+.15*t,.85,1); op = t>=0 ? clamp(1-.55*t,.45,1) : clamp(1+.55*t,.45,1);
+    } else if (adjRel > 0.5 && adjRel <= 1.5) {
+      const t = adjRel-1; tx=130+80*t; sc=clamp(.85-.2*t,.65,.85); op=clamp(.45-.25*t,.2,.45);
+    } else if (adjRel < -0.5 && adjRel >= -1.5) {
+      const t=-(adjRel+1); tx=-130-80*t; sc=clamp(.85-.2*t,.65,.85); op=clamp(.45-.25*t,.2,.45);
+    } else { el.style.opacity=0; return; }
+    if (window.innerWidth<=640) tx*=0.77;
+    el.style.transform=`translateX(${tx}px) scale(${sc}) translateZ(0)`;
+    el.style.opacity=op; el.style.filter='none';
+    el.style.zIndex=adjRel===0?10:(Math.abs(adjRel)<1?5:2);
+  });
+}
+let sizeStartX=0, sizeDragging=false, dragRel=0;
+function sizeStart(x) { sizeDragging=true; sizeStartX=x; dragRel=0; }
+function sizeMove(x)  { if(!sizeDragging) return; dragRel=(sizeStartX-x)/SIZE_STEP; applyDragOffset(dragRel); }
+function sizeEnd()    { if(!sizeDragging) return; sizeDragging=false; goToSize(currentSize+Math.round(dragRel),true); dragRel=0; }
+if (ui.carousel) {
+  ui.carousel.addEventListener('mousedown',  e => { e.preventDefault(); sizeStart(e.clientX); });
+  window.addEventListener('mousemove', e => sizeMove(e.clientX));
+  window.addEventListener('mouseup',   () => sizeEnd());
+  ui.carousel.addEventListener('touchstart', e => sizeStart(e.touches[0].clientX), { passive: true });
+  window.addEventListener('touchmove', e => { if(sizeDragging && e.touches[0]) sizeMove(e.touches[0].clientX); }, { passive: true });
+  window.addEventListener('touchend',  () => sizeEnd());
+}
+
+/* ── MULTI-ITEM PICKER ── */
+const ALL_SIZES = ['M','L','XL','XXL'];
+let itemSpecs = [];
+function buildPicker(qty){
+  const wrap = $('multiPickerWrap'), picker = $('multiPicker');
+  if(!wrap || !picker) return;
+  const extra = qty - 1;
+  if(extra<=0){ wrap.style.display='none'; itemSpecs=[]; return; }
+  const prev = [...itemSpecs]; itemSpecs = [];
+  wrap.style.display=''; picker.innerHTML='';
+  for(let i=0; i<extra; i++){
+    const spec = prev[i] || { color: currentSlide===0?'white':'black', size: SIZES[currentSize] };
+    itemSpecs.push(spec);
+    const card = document.createElement('div'); card.className='mi-card'; card.style.animationDelay=(i*.06)+'s';
+    const num = document.createElement('div'); num.className='mi-num'; num.textContent=i+2;
+    const colors = document.createElement('div'); colors.className='mi-colors';
+    ['white','black'].forEach(c => {
+      const d = document.createElement('div');
+      d.className=`mi-dot mi-dot-${c}${spec.color===c?' active':''}`;
+      d.title=c==='white'?'أبيض':'أسود';
+      d.onclick=()=>{ itemSpecs[i].color=c; colors.querySelectorAll('.mi-dot').forEach(x=>x.classList.remove('active')); d.classList.add('active'); updatePreview(i,card); };
+      colors.appendChild(d);
     });
-  }
-
-  let sizeStartX = 0, sizeDragging = false, dragRel = 0;
-  function sizeStart(x) { sizeDragging = true; sizeStartX = x; dragRel = 0; }
-  function sizeMove(x)  { if (!sizeDragging) return; dragRel = (sizeStartX - x) / SIZE_STEP; applyDragOffset(dragRel); }
-  function sizeEnd()    { if (!sizeDragging) return; sizeDragging = false; goToSize(currentSize + Math.round(dragRel), true); dragRel = 0; }
-
-  if (ui.carousel) {
-    ui.carousel.addEventListener('mousedown',  e => { e.preventDefault(); sizeStart(e.clientX); });
-    window.addEventListener('mousemove', e => sizeMove(e.clientX));
-    window.addEventListener('mouseup',   () => sizeEnd());
-    ui.carousel.addEventListener('touchstart', e => sizeStart(e.touches[0].clientX), { passive: true });
-    window.addEventListener('touchmove', e => { if (sizeDragging && e.touches[0]) sizeMove(e.touches[0].clientX); }, { passive: true });
-    window.addEventListener('touchend',  () => sizeEnd());
-  }
-
-  /* ── MULTI-ITEM PICKER ── */
-  const ALL_SIZES  = ['M','L','XL','XXL'];
-  let itemSpecs    = []; // [{color:'white',size:'M'}, ...]
-
-  function buildPicker(qty){
-    const wrap    = document.getElementById('multiPickerWrap');
-    const picker  = document.getElementById('multiPicker');
-    if(!wrap || !picker) return;
-
-    const extra = qty - 1;
-
-    if(extra <= 0){
-      wrap.style.display = 'none';
-      itemSpecs = [];
-      return;
-    }
-
-    const prev = [...itemSpecs];
-    itemSpecs  = [];
-
-    wrap.style.display = '';
-    picker.innerHTML   = '';
-
-    for(let i = 0; i < extra; i++){
-      const spec = prev[i] || { color: currentSlide === 0 ? 'white' : 'black', size: SIZES[currentSize] };
-      itemSpecs.push(spec);
-
-      const card = document.createElement('div');
-      card.className = 'mi-card';
-      card.style.animationDelay = (i * 0.06) + 's';
-
-      const num = document.createElement('div');
-      num.className   = 'mi-num';
-      num.textContent = i + 2;
-
-      const colors = document.createElement('div');
-      colors.className = 'mi-colors';
-
-      ['white','black'].forEach(c => {
-        const d = document.createElement('div');
-        d.className = `mi-dot mi-dot-${c}${spec.color === c ? ' active' : ''}`;
-        d.title     = c === 'white' ? 'أبيض' : 'أسود';
-        d.onclick   = () => {
-          itemSpecs[i].color = c;
-          colors.querySelectorAll('.mi-dot').forEach(x => x.classList.remove('active'));
-          d.classList.add('active');
-          updatePreview(i, card);
-        };
-        colors.appendChild(d);
-      });
-
-      const sep = document.createElement('div');
-      sep.className = 'mi-sep';
-
-      const sizes = document.createElement('div');
-      sizes.className = 'mi-sizes';
-
-      ALL_SIZES.forEach(s => {
-        const btn = document.createElement('div');
-        btn.className   = `mi-size${spec.size === s ? ' active' : ''}`;
-        btn.textContent = s;
-        btn.onclick     = () => {
-          itemSpecs[i].size = s;
-          sizes.querySelectorAll('.mi-size').forEach(x => x.classList.remove('active'));
-          btn.classList.add('active');
-          updatePreview(i, card);
-        };
-        sizes.appendChild(btn);
-      });
-
-      const preview = document.createElement('div');
-      preview.className    = 'mi-preview';
-      preview.id           = `mi-preview-${i}`;
-      preview.textContent  = previewText(spec);
-
-      card.appendChild(num);
-      card.appendChild(colors);
-      card.appendChild(sep);
-      card.appendChild(sizes);
-      card.appendChild(preview);
-      picker.appendChild(card);
-    }
-  }
-
-  function previewText(spec){
-    const c = spec.color === 'white' ? 'أبيض' : 'أسود';
-    return `${c} · ${spec.size}`;
-  }
-
-  function updatePreview(i, card){
-    const p = card.querySelector('.mi-preview');
-    if(p) p.textContent = previewText(itemSpecs[i]);
-  }
-
-  /* ── QTY ── */
-  function changeQty(delta) {
-    let val = parseInt(ui.fQty.value, 10);
-    if (isNaN(val)) val = 1;
-    val = clamp(val + delta, 1, 10);
-    ui.fQty.value = String(val);
-    ui.qtyNum.textContent = String(val);
-    ui.qtyNum.classList.remove('bump-up', 'bump-down');
-    void ui.qtyNum.offsetWidth;
-    ui.qtyNum.classList.add(delta > 0 ? 'bump-up' : 'bump-down');
-    buildPicker(val);
-  }
-
-  /* ── SUBMIT ── */
-  function createFetchTimeout() {
-    const controller = new AbortController();
-    const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
-    return { controller, timer };
-  }
-
-  async function submitOrder() {
-    const name  = ui.fName?.value.trim()  || '';
-    const phone = ui.fPhone?.value.trim() || '';
-    const color = ui.fColor?.value        || '';
-    const size  = ui.fSize?.value         || '';
-    const qty   = ui.fQty?.value          || '';
-    const city  = ui.fCity?.value.trim()  || '';
-    const notes = ui.fNotes?.value.trim() || '';
-
-    if (!name || !phone || !city) {
-      showToast('الرجاء ملء الاسم، الهاتف، والمدينة.', 'حقول مطلوبة', 'error');
-      return;
-    }
-
-    if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) {
-      showToast('ضع رابط السيرفر الحقيقي داخل ORDER_API أولاً.', 'إعداد مطلوب', 'warn');
-      return;
-    }
-
-    const btn = ui.submitBtn;
-    const oldText = btn?.textContent || '';
-    if (btn) { btn.disabled = true; btn.textContent = 'جارٍ الإرسال...'; }
-
-    const { controller, timer } = createFetchTimeout();
-
-    const qtyNum2 = parseInt(qty, 10);
-    let itemsDetail = '';
-    if(qtyNum2 > 1){
-      const colorLabel = color === 'أبيض' ? 'أبيض' : 'أسود';
-      let lines = [`   قطعة 1: ${colorLabel} · ${size}`];
-      itemSpecs.forEach((s, i) => {
-        lines.push(`   قطعة ${i+2}: ${s.color==='white'?'أبيض':'أسود'} · ${s.size}`);
-      });
-      itemsDetail = '\n' + lines.join('\n');
-    }
-    try {
-      const res  = await fetch(ORDER_API, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        signal: controller.signal,
-        body: JSON.stringify({ name, phone, color, size, qty, city, notes,
-          items: itemSpecs.length > 0 ? itemSpecs : null
-           })
-      });
-      const data = await res.json().catch(() => ({}));
-      if (!res.ok || !data.success) throw new Error(data.error || 'FAILED');
-      if (ui.formWrap)   ui.formWrap.style.display = 'none';
-      if (ui.successMsg) ui.successMsg.classList.add('show');
-    } catch (err) {
-      if (err?.name === 'AbortError')
-        showToast('لقد تم ارسال الطلب نتأسف على تأخير', 'تم الإرسال', 'ok');
-      else
-        showToast('تعذر إرسال الطلب. تحقق من إعدادات البوت.', 'خطأ في الإرسال', 'error');
-    } finally {
-      clearTimeout(timer);
-      if (btn) { btn.disabled = false; btn.textContent = oldText; }
-    }
-  }
-
-  /* ── RESET ── */
-  function resetForm() {
-    if (ui.fName)  ui.fName.value  = '';
-    if (ui.fPhone) ui.fPhone.value = '';
-    if (ui.fCity)  ui.fCity.value  = '';
-    if (ui.fNotes) ui.fNotes.value = '';
-    if (ui.fQty)   ui.fQty.value   = '1';
-    if (ui.qtyNum) ui.qtyNum.textContent = '1';
-    buildPicker(1);
-    currentSlide = 0; currentSize = 0;
-    showSlide(0, false); goToSize(0, false);
-    if (ui.formWrap)   ui.formWrap.style.display = '';
-    if (ui.successMsg) ui.successMsg.classList.remove('show');
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  }
-
-  /* ── EASTER EGG — LONG PRESS ── */
-  (() => {
-    const mark      = document.getElementById('brandMark');
-    const brandLink = document.getElementById('brandLink');
-    const ring      = document.getElementById('markRing');
-    const circle    = document.getElementById('ringCircle');
-    const overlay   = document.getElementById('eggOverlay');
-
-    const HOLD_MS   = 3000;
-    const CIRCUMFERENCE = 2 * Math.PI * 22;
-
-    let holdTimer   = null;
-    let startTime   = 0;
-    let rafId       = null;
-    let triggered   = false;
-
-    function startHold(e){
-      e.preventDefault();
-      triggered  = false;
-      startTime  = Date.now();
-      ring.classList.add('charging');
-
-      function tick(){
-        const elapsed = Date.now() - startTime;
-        const pct     = Math.min(elapsed / HOLD_MS, 1);
-        const dash    = pct * CIRCUMFERENCE;
-        circle.style.strokeDasharray = `${dash} ${CIRCUMFERENCE}`;
-
-        if(pct < 1){
-          rafId = requestAnimationFrame(tick);
-        } else {
-          triggerEgg();
-        }
-      }
-      rafId = requestAnimationFrame(tick);
-    }
-
-    function cancelHold(){
-      if(triggered) return;
-      cancelAnimationFrame(rafId);
-      ring.classList.remove('charging');
-      circle.style.strokeDasharray = '0 200';
-    }
-
-    function triggerEgg(){
-      triggered = true;
-      ring.classList.remove('charging');
-      circle.style.strokeDasharray = '0 200';
-
-      const emojis = ['✦','◆','✧','▣','◌','✦','◆'];
-      const rect = mark.getBoundingClientRect();
-      const cx   = rect.left + rect.width/2;
-      const cy   = rect.top  + rect.height/2;
-
-      emojis.forEach((em, i) => {
-        const el  = document.createElement('div');
-        el.className = 'egg-star';
-        el.textContent = em;
-        const angle   = (i / emojis.length) * 2 * Math.PI;
-        const dist    = 60 + Math.random() * 40;
-        el.style.setProperty('--tx', Math.cos(angle)*dist + 'px');
-        el.style.setProperty('--ty', Math.sin(angle)*dist + 'px');
-        el.style.left = cx + 'px';
-        el.style.top  = cy + 'px';
-        el.style.animationDelay = (i * 0.05) + 's';
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 3000);
-      });
-
-      setTimeout(() => {
-        overlay.classList.add('show');
-        document.body.style.overflow = 'hidden';
-      }, 200);
-    }
-
-    function closeEgg(){
-      overlay.classList.remove('show');
-      document.body.style.overflow = '';
-      triggered = false;
-    }
-    window.closeEgg = closeEgg;
-
-    brandLink.addEventListener('click', e => {
-      if(triggered){ e.preventDefault(); }
+    const sep = document.createElement('div'); sep.className='mi-sep';
+    const sizes = document.createElement('div'); sizes.className='mi-sizes';
+    ALL_SIZES.forEach(s=>{
+      const btn = document.createElement('div');
+      btn.className=`mi-size${spec.size===s?' active':''}`;
+      btn.textContent=s;
+      btn.onclick=()=>{ itemSpecs[i].size=s; sizes.querySelectorAll('.mi-size').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); updatePreview(i,card); };
+      sizes.appendChild(btn);
     });
+    const preview = document.createElement('div'); preview.className='mi-preview'; preview.id=`mi-preview-${i}`; preview.textContent=previewText(spec);
+    card.appendChild(num); card.appendChild(colors); card.appendChild(sep); card.appendChild(sizes); card.appendChild(preview);
+    picker.appendChild(card);
+  }
+}
+function previewText(spec){ return `${spec.color==='white'?'أبيض':'أسود'} · ${spec.size}`; }
+function updatePreview(i,card){ const p=card.querySelector('.mi-preview'); if(p) p.textContent=previewText(itemSpecs[i]); }
 
-    mark.addEventListener('mousedown',  startHold);
-    window.addEventListener('mouseup',  cancelHold);
-    mark.addEventListener('touchstart', startHold, { passive:false });
-    window.addEventListener('touchend', cancelHold);
-    window.addEventListener('touchcancel', cancelHold);
+/* ── PRICE SYSTEM ── */
+// 2% تخفيض لكل قطعة إضافية، حتى 10 قطع (أقصى تخفيض 18% عند 10 قطع)
+function updatePriceDisplay(qty) {
+  const discount = Math.min((qty - 1) * 2, 18); // 0% → 18%
+  const unitPrice = Math.round(BASE_PRICE * (1 - discount / 100));
+  const total = unitPrice * qty;
+  const oldUnit = Math.round(BASE_PRICE_OLD * (1 - discount / 100));
 
-    document.addEventListener('keydown', e => {
-      if(e.key === 'Escape') closeEgg();
-    });
-  })();
-  window.changeQty   = changeQty;
-  window.submitOrder = submitOrder;
-  window.resetForm   = resetForm;
+  if (!ui.priceAmount) return;
 
-  /* ── INIT ── */
-  showSlide(0, false);
-  goToSize(0, false);
+  // تحديث الأرقام مع animation
+  ui.priceAmount.style.transform = 'translateY(-6px)';
+  ui.priceAmount.style.opacity   = '0';
+  setTimeout(() => {
+    ui.priceAmount.textContent = unitPrice.toLocaleString('ar-DZ');
+    ui.priceOld.textContent    = oldUnit.toLocaleString('ar-DZ') + ' دج';
+    ui.priceAmount.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1), opacity .25s ease';
+    ui.priceAmount.style.transform  = 'translateY(0)';
+    ui.priceAmount.style.opacity    = '1';
+  }, 120);
 
-  const revIO = new IntersectionObserver(
-    es => es.forEach(e => { if (e.isIntersecting) e.target.classList.add('show'); }),
-    { threshold: 0.08 }
-  );
-  document.querySelectorAll('.reveal').forEach(el => revIO.observe(el));
+  // شارة التخفيض
+  if (discount > 0) {
+    ui.priceBadge.textContent = `خصم ${discount}%`;
+    ui.priceBadge.style.background   = 'rgba(60,220,130,.12)';
+    ui.priceBadge.style.borderColor  = 'rgba(60,220,130,.3)';
+    ui.priceBadge.style.color        = '#3cdc82';
+    ui.priceLabelUnit.textContent = 'سعر القطعة بعد الخصم';
+  } else {
+    ui.priceBadge.textContent = 'السعر النهائي';
+    ui.priceBadge.style.background   = 'rgba(255,255,255,.08)';
+    ui.priceBadge.style.borderColor  = 'rgba(255,255,255,.14)';
+    ui.priceBadge.style.color        = 'rgba(255,255,255,.7)';
+    ui.priceLabelUnit.textContent = 'سعر القطعة الواحدة';
+  }
 
-  window.addEventListener('resize', () => renderSizeCarousel(false));
+  // إجمالي الطلب (يظهر فقط عند qty > 1)
+  if (qty > 1 && ui.priceTotalLine) {
+    ui.priceTotalLine.textContent = `المجموع: ${total.toLocaleString('ar-DZ')} دج`;
+    ui.priceTotalLine.style.display = 'block';
+  } else if (ui.priceTotalLine) {
+    ui.priceTotalLine.style.display = 'none';
+  }
+}
+
+/* ── QTY ── */
+function changeQty(delta) {
+  let val = parseInt(ui.fQty.value,10); if(isNaN(val)) val=1;
+  val = clamp(val+delta,1,10); ui.fQty.value=String(val); ui.qtyNum.textContent=String(val);
+  ui.qtyNum.classList.remove('bump-up','bump-down'); void ui.qtyNum.offsetWidth;
+  ui.qtyNum.classList.add(delta>0?'bump-up':'bump-down');
+  buildPicker(val);
+  updatePriceDisplay(val);
+}
+
+/* ── SUBMIT ── */
+function createFetchTimeout() {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
+  return { controller, timer };
+}
+async function submitOrder() {
+  const name   = ui.fName?.value.trim()   || '';
+  const phone  = ui.fPhone?.value.trim()  || '';
+  const color  = ui.fColor?.value         || '';
+  const size   = ui.sizeCurrent?.textContent || 'M';
+  const qty    = ui.fQty?.value           || '';
+  const wilaya = ui.fWilaya?.value        || '';
+  const region = ui.fRegion?.value        || '';
+  const notes  = ui.fNotes?.value.trim()  || '';
+  if (!name || !phone) { showToast('الرجاء ملء الاسم ورقم الهاتف.','حقول مطلوبة','error'); return; }
+  if (!wilaya || !region) { showToast('الرجاء اختيار الولاية والمنطقة.','بيانات الموقع ناقصة','error'); return; }
+  if (!ORDER_API || ORDER_API.includes('YOUR-PRIVATE-BOT-SERVER')) { showToast('ضع رابط السيرفر داخل ORDER_API.','إعداد مطلوب','warn'); return; }
+  const city = `${wilaya} - ${region}`;
+  const btn = ui.submitBtn; const oldText = btn?.textContent || '';
+  if (btn) { btn.disabled=true; btn.textContent='جارٍ الإرسال...'; }
+  const { controller, timer } = createFetchTimeout();
+  try {
+    const res  = await fetch(ORDER_API,{ method:'POST', headers:{'Content-Type':'application/json'}, signal:controller.signal, body:JSON.stringify({name,phone,color,size,qty,city,notes,items:itemSpecs.length>0?itemSpecs:null}) });
+    const data = await res.json().catch(()=>({}));
+    if (!res.ok || !data.success) throw new Error(data.error||'FAILED');
+    if (ui.formWrap)   ui.formWrap.style.display='none';
+    if (ui.successMsg) ui.successMsg.classList.add('show');
+  } catch(err) {
+    if (err?.name==='AbortError') showToast('لقد تم ارسال الطلب نتأسف على التأخير','تم الإرسال','ok');
+    else showToast('تعذر إرسال الطلب. تحقق من إعدادات البوت.','خطأ في الإرسال','error');
+  } finally {
+    clearTimeout(timer); if(btn){ btn.disabled=false; btn.textContent=oldText; }
+  }
+}
+
+/* ── RESET ── */
+function resetForm() {
+  if(ui.fName)  ui.fName.value='';
+  if(ui.fPhone) ui.fPhone.value='';
+  ui.fWilaya.value=''; ui.fRegion.value='';
+  wilayaTriggerText.textContent='اختر الولاية...'; wilayaTriggerText.classList.add('placeholder');
+  regionTriggerText.textContent='اختر الولاية أولاً...'; regionTriggerText.classList.add('placeholder');
+  regionTrigger.classList.add('disabled');
+  ui.regionAnim.classList.remove('show');
+  hideDeliveryPrice();
+  if(ui.fNotes)  ui.fNotes.value='';
+  if(ui.fQty)    ui.fQty.value='1';
+  if(ui.qtyNum)  ui.qtyNum.textContent='1';
+  buildPicker(1);
+  updatePriceDisplay(1);
+  currentSlide=0; currentSize=0;
+  showSlide(0,false); goToSize(0,false);
+  if(ui.formWrap)   ui.formWrap.style.display='';
+  if(ui.successMsg) ui.successMsg.classList.remove('show');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── EASTER EGG ── */
+(() => {
+  const mark      = $('brandMark');
+  const brandLink = $('brandLink');
+  const ring      = $('markRing');
+  const circle    = $('ringCircle');
+  const eggOverlay= $('eggOverlay');
+  const HOLD_MS   = 3000;
+  const CIRCUMFERENCE = 2*Math.PI*22;
+  let holdTimer=null, startTime=0, rafId=null, triggered=false;
+
+  function startHold(e){ e.preventDefault(); triggered=false; startTime=Date.now(); ring.classList.add('charging');
+    function tick(){ const elapsed=Date.now()-startTime, pct=Math.min(elapsed/HOLD_MS,1), dash=pct*CIRCUMFERENCE;
+      circle.style.strokeDasharray=`${dash} ${CIRCUMFERENCE}`;
+      if(pct<1) rafId=requestAnimationFrame(tick); else triggerEgg(); }
+    rafId=requestAnimationFrame(tick); }
+  function cancelHold(){ if(triggered) return; cancelAnimationFrame(rafId); ring.classList.remove('charging'); circle.style.strokeDasharray='0 200'; }
+  function triggerEgg(){ triggered=true; ring.classList.remove('charging'); circle.style.strokeDasharray='0 200';
+    const emojis=['✦','◆','✧','▣','◌','✦','◆'];
+    const rect=mark.getBoundingClientRect(), cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+    emojis.forEach((em,i)=>{ const el=document.createElement('div'); el.className='egg-star'; el.textContent=em;
+      const angle=(i/emojis.length)*2*Math.PI, dist=60+Math.random()*40;
+      el.style.setProperty('--tx',Math.cos(angle)*dist+'px'); el.style.setProperty('--ty',Math.sin(angle)*dist+'px');
+      el.style.left=cx+'px'; el.style.top=cy+'px'; el.style.animationDelay=(i*.05)+'s';
+      document.body.appendChild(el); setTimeout(()=>el.remove(),3000); });
+    setTimeout(()=>{ eggOverlay.classList.add('show'); document.body.style.overflow='hidden'; },200); }
+  function closeEgg(){ eggOverlay.classList.remove('show'); document.body.style.overflow=''; triggered=false; }
+  window.closeEgg = closeEgg;
+
+  brandLink.addEventListener('click', e=>{ if(triggered) e.preventDefault(); });
+  mark.addEventListener('mousedown',  startHold);
+  window.addEventListener('mouseup',  cancelHold);
+  mark.addEventListener('touchstart', startHold, {passive:false});
+  window.addEventListener('touchcancel', cancelHold);
+})();
+
+window.changeQty   = changeQty;
+window.submitOrder = submitOrder;
+window.resetForm   = resetForm;
+
+/* ── INIT ── */
+showSlide(0, false);
+goToSize(0, false);
+updatePriceDisplay(1);
+
+// ربط زر المسح المخصص بحقل البحث
+const clearBtn = $('luxSearchClear');
+if (clearBtn) {
+  clearBtn.addEventListener('click', () => {
+    sheetSearch.value = '';
+    sheetSearch.focus();
+    clearBtn.classList.remove('visible');
+    renderSheetItems(overlay._items, overlay._selected, '');
+  });
+}
+// إظهار/إخفاء زر المسح عند الكتابة
+sheetSearch.addEventListener('input', () => {
+  renderSheetItems(overlay._items, overlay._selected, sheetSearch.value);
+  if (clearBtn) clearBtn.classList.toggle('visible', sheetSearch.value.length > 0);
+});
+
+const revIO = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) e.target.classList.add('show')}),{threshold:.08});
+document.querySelectorAll('.reveal').forEach(el=>revIO.observe(el));
+window.addEventListener('resize',()=>renderSizeCarousel(false));
 })();
 </script>
 </body>
