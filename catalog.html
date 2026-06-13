@@ -154,8 +154,100 @@ input,textarea{width:100%;padding:13px 16px;border-radius:13px;border:1px solid 
 input:focus,textarea:focus{border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.07)}
 input::placeholder,textarea::placeholder{color:rgba(255,255,255,.25)}
 textarea{resize:vertical;min-height:80px;line-height:1.7}
-.submit-btn{display:block;width:100%;margin-top:20px;padding:16px;border-radius:14px;border:none;background:#fff;color:#111;font-size:.95rem;font-weight:700;letter-spacing:.12em;cursor:pointer;transition:.25s ease;box-shadow:0 10px 30px rgba(255,255,255,.08)}
-.submit-btn:hover{transform:translateY(-2px);box-shadow:0 14px 36px rgba(255,255,255,.13)}
+.submit-btn{
+  --fill:0%;
+  display:block;
+  width:100%;
+  margin-top:20px;
+  padding:16px;
+  border-radius:14px;
+  border:none;
+  background:#fff;
+  color:#111;
+  font-size:.95rem;
+  font-weight:700;
+  letter-spacing:.12em;
+  cursor:pointer;
+  transition:transform .25s ease, box-shadow .25s ease, opacity .25s ease;
+  box-shadow:0 10px 30px rgba(255,255,255,.08);
+  position:relative;
+  overflow:hidden;
+  isolation:isolate;
+}
+
+.submit-btn:hover{
+  transform:translateY(-2px);
+  box-shadow:0 14px 36px rgba(255,255,255,.13);
+}
+
+.submit-btn:active{
+  transform:scale(.97);
+}
+
+.submit-btn-label{
+  position:relative;
+  z-index:2;
+  display:inline-block;
+  transition:transform .2s ease, color .2s ease;
+}
+
+.submit-btn-water{
+  position:absolute;
+  left:-6%;
+  right:-6%;
+  bottom:0;
+  height:var(--fill);
+  border-radius:14px;
+  z-index:1;
+  pointer-events:none;
+  opacity:0;
+  transform:translateY(10px);
+  background:
+    linear-gradient(180deg,
+      rgba(255,255,255,.10) 0%,
+      rgba(255,255,255,.38) 26%,
+      rgba(255,255,255,.88) 62%,
+      rgba(255,255,255,.98) 100%);
+  box-shadow:
+    0 -8px 18px rgba(255,255,255,.18),
+    inset 0 1px 0 rgba(255,255,255,.55);
+  transition:height .14s linear, opacity .22s ease, transform .22s ease;
+}
+
+.submit-btn-water::before{
+  content:"";
+  position:absolute;
+  left:-20%;
+  right:-20%;
+  top:-10px;
+  height:20px;
+  background:
+    radial-gradient(circle at 15% 50%, rgba(255,255,255,.98) 0 18%, transparent 19%),
+    radial-gradient(circle at 38% 55%, rgba(255,255,255,.92) 0 16%, transparent 17%),
+    radial-gradient(circle at 62% 50%, rgba(255,255,255,.98) 0 18%, transparent 19%),
+    radial-gradient(circle at 85% 55%, rgba(255,255,255,.92) 0 16%, transparent 17%);
+  filter:blur(5px);
+  opacity:.95;
+  animation:waterDrift 1.3s linear infinite;
+}
+
+.submit-btn.sending{
+  cursor:wait;
+}
+
+.submit-btn.sending .submit-btn-label{
+  color:#111;
+}
+
+.submit-btn.sending .submit-btn-water{
+  opacity:1;
+  transform:translateY(0);
+}
+
+@keyframes waterDrift{
+  from{transform:translateX(0)}
+  to{transform:translateX(12%)}
+}
 .submit-btn:active{transform:scale(.97)}
 .success-msg{display:none;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:40px 20px}
 .success-msg.show{display:flex}
@@ -216,6 +308,7 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
   opacity:.5;
   cursor:not-allowed;
   pointer-events:none;
+  transition:opacity .35s ease;
 }
 .lux-select-trigger-text{
   flex:1;
@@ -726,17 +819,21 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
     0 0 18px rgba(255,255,255,.09),
     inset 0 0 0 1px rgba(255,255,255,.04);
 }
+
 .delivery-price-col.selected::after{
   opacity:1;
   animation: deliveryBorderSweep 1.8s linear infinite;
 }
+
 .delivery-price-col.selected .delivery-amount{
   transform: translateY(-1px);
 }
+
 .delivery-price-col.unavailable{
   opacity: .5;
   cursor: not-allowed;
 }
+
 @keyframes deliveryBorderSweep{
   0%{ transform: translateX(-18%); }
   100%{ transform: translateX(18%); }
@@ -1073,7 +1170,10 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
             <textarea id="fNotes" placeholder="أي تفاصيل إضافية..."></textarea>
           </div>
         </div>
-        <button class="submit-btn" onclick="submitOrder()">إرسال الطلب عبر Telegram ←</button>
+        <button class="submit-btn" onclick="submitOrder()">
+  <span class="submit-btn-label">إرسال الطلب عبر Telegram ←</span>
+  <span class="submit-btn-water" aria-hidden="true"></span>
+</button>
       </div>
 
       <div class="success-msg" id="successMsg">
@@ -1904,47 +2004,82 @@ function previewText(spec){ return `${spec.color==='white'?'أبيض':'أسود'
 function updatePreview(i,card){ const p=card.querySelector('.mi-preview'); if(p) p.textContent=previewText(itemSpecs[i]); }
 
 /* ── PRICE SYSTEM ── */
-// 2% تخفيض لكل قطعة إضافية، حتى 10 قطع (أقصى تخفيض 18% عند 10 قطع)
-function updatePriceDisplay(qty) {
-  const discount = Math.min((qty - 1) * 2, 18); // 0% → 18%
-  const unitPrice = Math.round(BASE_PRICE * (1 - discount / 100));
-  const total = unitPrice * qty;
-  const oldUnit = Math.round(BASE_PRICE_OLD * (1 - discount / 100));
+const PRICE_STEP = 50;
 
+function getDiscountByQty(qty) {
+  // جدول تخفيضات واضح وقابل للتعديل بسهولة
+  const discountTable = {
+    1: 0,
+    2: 5,
+    3: 8,
+    4: 10,
+    5: 12,
+    6: 13,
+    7: 14,
+  };
+
+  // 7 قطع فما فوق → الحد الأقصى 15%
+  if (qty >= 7) return 15;
+
+  return discountTable[qty] ?? 0;
+}
+
+function roundPrice(value) {
+  return Math.round(value / PRICE_STEP) * PRICE_STEP;
+}
+
+function updatePriceDisplay(qty) {
   if (!ui.priceAmount) return;
 
-  // تحديث الأرقام مع animation
-  ui.priceAmount.style.transform = 'translateY(-6px)';
-  ui.priceAmount.style.opacity   = '0';
+  const discount    = getDiscountByQty(qty);
+  const unitPrice   = roundPrice(BASE_PRICE * (1 - discount / 100));
+
+  // ✅ السعر القديم ثابت دائمًا — لا يُخصَّم
+  const oldUnit     = roundPrice(BASE_PRICE_OLD);
+  const total       = unitPrice * qty;
+
+  // Animation
+  ui.priceAmount.style.transition = 'none';
+  ui.priceAmount.style.transform  = 'translateY(-6px)';
+  ui.priceAmount.style.opacity    = '0';
+
   setTimeout(() => {
     ui.priceAmount.textContent = unitPrice.toLocaleString('ar-DZ');
-    ui.priceOld.textContent    = oldUnit.toLocaleString('ar-DZ') + ' دج';
+
+    // ✅ السعر القديم يظهر فقط إذا كان أعلى من الحالي
+    if (ui.priceOld) {
+      ui.priceOld.textContent = oldUnit.toLocaleString('ar-DZ') + ' دج';
+      ui.priceOld.style.display = oldUnit > unitPrice ? 'inline' : 'none';
+    }
+
     ui.priceAmount.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1), opacity .25s ease';
     ui.priceAmount.style.transform  = 'translateY(0)';
     ui.priceAmount.style.opacity    = '1';
   }, 120);
 
-  // شارة التخفيض
+  // Badge
   if (discount > 0) {
-    ui.priceBadge.textContent = `خصم ${discount}%`;
-    ui.priceBadge.style.background   = 'rgba(60,220,130,.12)';
-    ui.priceBadge.style.borderColor  = 'rgba(60,220,130,.3)';
-    ui.priceBadge.style.color        = '#3cdc82';
-    ui.priceLabelUnit.textContent = 'سعر القطعة بعد الخصم';
+    ui.priceBadge.textContent         = `خصم ${discount}%`;
+    ui.priceBadge.style.background    = 'rgba(60,220,130,.12)';
+    ui.priceBadge.style.borderColor   = 'rgba(60,220,130,.3)';
+    ui.priceBadge.style.color         = '#3cdc82';
+    ui.priceLabelUnit.textContent     = 'سعر القطعة بعد الخصم';
   } else {
-    ui.priceBadge.textContent = 'السعر النهائي';
-    ui.priceBadge.style.background   = 'rgba(255,255,255,.08)';
-    ui.priceBadge.style.borderColor  = 'rgba(255,255,255,.14)';
-    ui.priceBadge.style.color        = 'rgba(255,255,255,.7)';
-    ui.priceLabelUnit.textContent = 'سعر القطعة الواحدة';
+    ui.priceBadge.textContent         = 'السعر النهائي';
+    ui.priceBadge.style.background    = 'rgba(255,255,255,.08)';
+    ui.priceBadge.style.borderColor   = 'rgba(255,255,255,.14)';
+    ui.priceBadge.style.color         = 'rgba(255,255,255,.7)';
+    ui.priceLabelUnit.textContent     = 'سعر القطعة الواحدة';
   }
 
-  // إجمالي الطلب (يظهر فقط عند qty > 1)
-  if (qty > 1 && ui.priceTotalLine) {
-    ui.priceTotalLine.textContent = `المجموع: ${total.toLocaleString('ar-DZ')} دج`;
-    ui.priceTotalLine.style.display = 'block';
-  } else if (ui.priceTotalLine) {
-    ui.priceTotalLine.style.display = 'none';
+  // Total line
+  if (ui.priceTotalLine) {
+    if (qty > 1) {
+      ui.priceTotalLine.textContent  = `المجموع: ${total.toLocaleString('ar-DZ')} دج`;
+      ui.priceTotalLine.style.display = 'block';
+    } else {
+      ui.priceTotalLine.style.display = 'none';
+    }
   }
 }
 
@@ -1970,6 +2105,43 @@ function getSelectedDeliveryPrice() {
 
   return info.desk ?? info.home ?? null;
 }
+
+let submitWaterRAF = null;
+const SEND_WATER_DURATION = 12000; // نفس الإحساس مع مهلة الانتظار
+const SEND_WATER_MAX = 94;         // لا يملأ الزر بالكامل
+
+function startSubmitWater(btn) {
+  if (!btn) return;
+
+  cancelAnimationFrame(submitWaterRAF);
+  const start = performance.now();
+
+  const tick = (now) => {
+    const t = Math.min((now - start) / SEND_WATER_DURATION, 1);
+    const eased = 1 - Math.pow(1 - t, 2); // صعود ناعم
+    const fill = Math.max(10, Math.round(SEND_WATER_MAX * eased));
+
+    btn.style.setProperty('--fill', `${fill}%`);
+
+    if (t < 1 && btn.classList.contains('sending')) {
+      submitWaterRAF = requestAnimationFrame(tick);
+    } else {
+      submitWaterRAF = null;
+    }
+  };
+
+  submitWaterRAF = requestAnimationFrame(tick);
+}
+
+function stopSubmitWater(btn) {
+  cancelAnimationFrame(submitWaterRAF);
+  submitWaterRAF = null;
+
+  if (!btn) return;
+  btn.style.removeProperty('--fill');
+  btn.classList.remove('sending');
+}
+
 /* ── SUBMIT ── */
 
 async function submitOrder() {
@@ -2009,12 +2181,18 @@ const city = deliveryMode === 'home'
   : wilaya;    const orderId = ensureOrderId();
 
   const btn = ui.submitBtn;
-  const oldText = btn?.textContent || '';
+const oldText = btn?.querySelector('.submit-btn-label')?.textContent || btn?.textContent || '';
 
-  if (btn) {
-    btn.disabled = true;
-    btn.textContent = 'جارٍ الإرسال...';
-  }
+if (btn) {
+  btn.disabled = true;
+  btn.dataset.originalText = oldText;
+  btn.classList.add('sending');
+  btn.innerHTML = `
+    <span class="submit-btn-label">جارٍ الإرسال...</span>
+    <span class="submit-btn-water" aria-hidden="true"></span>
+  `;
+  startSubmitWater(btn);
+}
 
   const softNoticeTimer = setTimeout(() => {
     showToast('ما زال الطلب قيد الإرسال، انتظر قليلاً.', 'جارٍ الإرسال', 'warn');
@@ -2078,11 +2256,16 @@ const city = deliveryMode === 'home'
     clearTimeout(softNoticeTimer);
 
     if (btn) {
-      btn.disabled = false;
-      btn.textContent = oldText;
-    }
+  stopSubmitWater(btn);
+  btn.disabled = false;
+  btn.classList.remove('sending');
+  btn.innerHTML = `
+    <span class="submit-btn-label">${btn.dataset.originalText || oldText}</span>
+    <span class="submit-btn-water" aria-hidden="true"></span>
+  `;
+}
 
-    submitLock = false;
+submitLock = false;
   }
 }
 
@@ -2124,7 +2307,8 @@ function resetForm() {
   showSlide(0, false);
   goToSize(0, false);
 
-  if (ui.formWrap) ui.formWrap.style.display = '';
+  if (ui.submitBtn) stopSubmitWater(ui.submitBtn);
+if (ui.formWrap) ui.formWrap.style.display = '';
   if (ui.successMsg) ui.successMsg.classList.remove('show');
 
   newOrderId();
