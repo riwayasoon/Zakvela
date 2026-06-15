@@ -128,6 +128,50 @@ a{color:inherit;text-decoration:none}
 .size-carousel-wrap.drag-left .size-fx-burst,.size-carousel-wrap.drag-right .size-fx-burst{opacity:1}
 .size-item{position:absolute;display:flex;align-items:center;justify-content:center;border-radius:50%;font-weight:800;letter-spacing:.08em;will-change:transform;transition:transform .55s cubic-bezier(.22,1,.36,1),opacity .55s cubic-bezier(.22,1,.36,1),filter .55s cubic-bezier(.22,1,.36,1),box-shadow .55s cubic-bezier(.22,1,.36,1);cursor:pointer;user-select:none;backdrop-filter:blur(4px)}
 .size-item.pos-0{width:104px;height:104px;font-size:1.3rem;opacity:1;transform:translateX(0) scale(1) translateZ(0);border:2px solid rgba(255,255,255,.55);background:radial-gradient(circle at 40% 30%,rgba(255,255,255,.18),rgba(255,255,255,.06) 60%),rgba(255,255,255,.08);box-shadow:0 0 0 8px rgba(255,255,255,.04),0 12px 40px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.2);color:#fff;z-index:10}
+/* لمعان داخلي للكرة المركزية */
+.size-item.pos-0::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:50%;
+  background:radial-gradient(circle at 30% 22%,rgba(255,255,255,.55) 0%,rgba(255,255,255,.18) 28%,transparent 58%);
+  pointer-events:none;
+  z-index:1;
+  animation:sphereShimmer 3.2s ease-in-out infinite;
+}
+.size-item.pos-0::after{
+  content:'';
+  position:absolute;
+  bottom:14%;
+  right:16%;
+  width:22%;
+  height:10%;
+  border-radius:50%;
+  background:rgba(255,255,255,.13);
+  filter:blur(3px);
+  pointer-events:none;
+  z-index:1;
+  animation:sphereShimmer 3.2s ease-in-out infinite reverse;
+}
+.size-item.pos-0 span,
+.size-item.pos-0{
+  isolation:isolate;
+}
+@keyframes sphereShimmer{
+  0%,100%{opacity:.85;transform:scale(1)}
+  50%{opacity:1;transform:scale(1.04)}
+}
+
+/* تأثير طفيف عند السحب */
+.size-carousel-wrap.dragging .size-item.pos-0{
+  box-shadow:0 0 0 10px rgba(255,255,255,.07),0 20px 55px rgba(0,0,0,.55),inset 0 1.5px 0 rgba(255,255,255,.5),inset 0 -1px 0 rgba(0,0,0,.2);
+  filter:brightness(1.06);
+}
+.size-carousel-wrap.dragging .size-item.pos-1,
+.size-carousel-wrap.dragging .size-item.pos-neg1{
+  opacity:.6;
+  filter:blur(.2px);
+}
 .size-item.pos-1{width:72px;height:72px;font-size:.9rem;opacity:.45;transform:translateX(130px) scale(.85) translateZ(-60px);border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:var(--muted);z-index:5;filter:blur(.5px)}
 .size-item.pos-2{width:52px;height:52px;font-size:.75rem;opacity:.2;transform:translateX(210px) scale(.65) translateZ(-120px);border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.02);color:rgba(255,255,255,.4);z-index:2;filter:blur(1.5px)}
 .size-item.pos-neg1{width:72px;height:72px;font-size:.9rem;opacity:.45;transform:translateX(-130px) scale(.85) translateZ(-60px);border:1.5px solid rgba(255,255,255,.18);background:rgba(255,255,255,.04);color:var(--muted);z-index:5;filter:blur(.5px)}
@@ -651,22 +695,6 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
   max-height: 200px;
 }
 
-.delivery-card{
-  position: relative;
-  border-radius: 18px;
-  border: 1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(circle at 100% 50%, rgba(255,255,255,.06), transparent 55%),
-    linear-gradient(135deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-  padding: 16px 18px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 14px;
-  overflow: hidden;
-  margin-top: 2px;
-}
-
 /* خط بريق متحرك */
 .delivery-card::before{
   content: '';
@@ -895,10 +923,6 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
   animation: deliverySweep 3.5s ease-in-out infinite;
   pointer-events: none;
 }
-@keyframes deliverySweep{
-  0%,100%{ left:-80% }
-  55%{ left:130% }
-}
 
 /* FOOTER */
 footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:.88rem}
@@ -917,6 +941,140 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   .size-item.pos-2{transform:translateX(165px) scale(.65) translateZ(-120px)}
   .size-item.pos-neg2{transform:translateX(-165px) scale(.65) translateZ(-120px)}
 }
+
+/* ── LIQUID MORPH v5 ── */
+.mi-dot {
+  position: relative;
+  overflow: visible;
+  isolation: isolate;
+  transition: transform .35s cubic-bezier(.34,1.56,.64,1),
+              box-shadow .35s ease,
+              opacity .25s ease,
+              filter .25s ease;
+  will-change: transform;
+}
+
+/* نبضة بسيطة وناعمة بدل التوهج القوي */
+.mi-dot::before {
+  content: '';
+  position: absolute;
+  inset: 6%;
+  border-radius: 28%;
+  opacity: 0;
+  transform: scale(.82);
+  pointer-events: none;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 35% 30%,
+      rgba(255,255,255,.28) 0%,
+      rgba(255,255,255,.12) 28%,
+      transparent 68%);
+  filter: blur(.2px);
+}
+
+.mi-dot-white::before {
+  background:
+    radial-gradient(circle at 35% 30%,
+      rgba(255,255,255,.32) 0%,
+      rgba(255,255,255,.14) 28%,
+      transparent 68%);
+}
+
+.mi-dot-black::before {
+  background:
+    radial-gradient(circle at 35% 30%,
+      rgba(255,255,255,.14) 0%,
+      rgba(255,255,255,.06) 28%,
+      transparent 68%);
+}
+
+/* طبقة البريق */
+.mi-dot::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(.88);
+  pointer-events: none;
+  transition: opacity .25s ease,
+              transform .3s cubic-bezier(.34,1.56,.64,1);
+}
+
+.mi-dot-white::after {
+  background: radial-gradient(circle at 35% 30%,
+    rgba(255,255,255,.32) 0%,
+    rgba(255,255,255,.10) 40%,
+    transparent 72%);
+}
+
+.mi-dot-black::after {
+  background: radial-gradient(circle at 35% 30%,
+    rgba(255,255,255,.18) 0%,
+    rgba(255,255,255,.06) 40%,
+    transparent 72%);
+}
+
+.mi-dot.active::after {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* نبضة خفيفة جدًا عند التبديل */
+.mi-dot.liquid-burst::before {
+  animation: softPulse .42s cubic-bezier(.22,1,.36,1) forwards;
+}
+
+@keyframes softPulse {
+  0% {
+    transform: scale(.82);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.04);
+    opacity: .18;
+  }
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+@keyframes liquidEcho {
+  0% {
+    transform: scale(.92);
+    opacity: .10;
+  }
+  100% {
+    transform: scale(1.45);
+    opacity: 0;
+  }
+}
+
+/* active */
+.mi-dot.active {
+  transform: scale(1.08) !important;
+}
+
+.mi-dot-white.active {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.55),
+    0 1px 5px rgba(0,0,0,.22);
+}
+
+.mi-dot-black.active {
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.24),
+    0 1px 5px rgba(0,0,0,.34);
+}
+
+/* hover */
+.mi-dot:not(.active):hover {
+  transform: scale(1.04) !important;
+  opacity: .92;
+}
+
+
 </style>
 </head>
 <body>
@@ -1854,13 +2012,199 @@ function showSlide(index, animate) {
   ui.thumbs.forEach((t, i) => t.classList.toggle('active', i === currentSlide));
   updateColorState(currentSlide);
 }
+
+let lastInkTrigger = 0;
+
+function triggerSlideInk(direction, toColor) {
+  const now = performance.now();
+  if (now - lastInkTrigger < 160) return;
+  lastInkTrigger = now;
+
+  const isWhite = toColor === 0;
+  const fromRight = direction > 0;
+
+  const originX = fromRight ? window.innerWidth + 40 : -40;
+  const originY = window.innerHeight * 0.42;
+  const baseSize = Math.hypot(window.innerWidth, window.innerHeight) * 2;
+
+  const ink = document.createElement('div');
+  ink.style.cssText = `
+    position: fixed;
+    left: ${originX}px;
+    top: ${originY}px;
+    width: ${baseSize}px;
+    height: ${baseSize}px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%) scale(0);
+    background: ${isWhite
+      ? 'radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.07) 36%, rgba(255,255,255,0.02) 58%, transparent 74%)'
+      : 'radial-gradient(circle, rgba(0,0,0,0.24) 0%, rgba(20,20,20,0.12) 36%, rgba(0,0,0,0.04) 58%, transparent 74%)'
+    };
+    will-change: transform, opacity;
+    filter: blur(0.2px);
+  `;
+  document.body.appendChild(ink);
+
+  const ripple = document.createElement('div');
+  ripple.style.cssText = `
+    position: fixed;
+    left: ${originX}px;
+    top: ${originY}px;
+    width: 0px;
+    height: 0px;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    border: 2.5px solid ${isWhite ? 'rgba(255,255,255,0.78)' : 'rgba(180,180,180,0.58)'};
+    box-shadow: 0 0 ${isWhite ? '18px rgba(255,255,255,0.35)' : '14px rgba(150,150,150,0.28)'};
+    will-change: transform, opacity, width, height;
+  `;
+  document.body.appendChild(ripple);
+
+  const ringCount = 4;
+  for (let i = 0; i < ringCount; i++) {
+    const ring = document.createElement('div');
+    const ringAlpha = isWhite ? (0.5 - i * 0.1) : (0.38 - i * 0.08);
+    const maxSize = 120 + i * 70;
+    const delay = i * 80;
+
+    ring.style.cssText = `
+      position: fixed;
+      left: ${originX}px;
+      top: ${originY}px;
+      width: 0px;
+      height: 0px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      transform: translate(-50%, -50%);
+      border: 1.5px solid ${isWhite
+        ? `rgba(255,255,255,${Math.max(ringAlpha, 0.12)})`
+        : `rgba(160,160,160,${Math.max(ringAlpha, 0.1)})`
+      };
+      will-change: transform, opacity, width, height;
+    `;
+    document.body.appendChild(ring);
+
+    ring.animate(
+      [
+        { width: '0px', height: '0px', opacity: 1, transform: 'translate(-50%, -50%) scale(0.85)' },
+        { width: `${maxSize}px`, height: `${maxSize}px`, opacity: 0, transform: 'translate(-50%, -50%) scale(1)' }
+      ],
+      {
+        duration: 700 + i * 60,
+        delay,
+        easing: 'cubic-bezier(0.1, 0.6, 0.4, 1)',
+        fill: 'forwards'
+      }
+    );
+
+    setTimeout(() => ring.remove(), 950 + delay + i * 60);
+  }
+
+  const sparkCount = 7;
+  for (let i = 0; i < sparkCount; i++) {
+    const spark = document.createElement('div');
+    const angle = (fromRight ? 160 : 20) + (i - sparkCount / 2) * 22;
+    const rad = angle * Math.PI / 180;
+    const dist = 40 + Math.random() * 55;
+    const tx = Math.cos(rad) * dist;
+    const ty = Math.sin(rad) * dist;
+    const sz = 2.5 + Math.random() * 3.5;
+
+    spark.style.cssText = `
+      position: fixed;
+      left: ${originX}px;
+      top: ${originY}px;
+      width: ${sz}px;
+      height: ${sz}px;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 9999;
+      background: ${isWhite ? '#fff' : '#aaa'};
+      box-shadow: 0 0 ${sz * 2}px ${isWhite ? 'rgba(255,255,255,0.78)' : 'rgba(180,180,180,0.55)'};
+      will-change: transform, opacity;
+      transform: translate(-50%, -50%) scale(1);
+    `;
+    document.body.appendChild(spark);
+
+    spark.animate(
+      [
+        { transform: 'translate(-50%, -50%) scale(1)', opacity: 1 },
+        {
+          transform: `translate(calc(-50% + ${tx * 0.5}px), calc(-50% + ${ty * 0.5}px)) scale(1.35)`,
+          opacity: 0.92,
+          offset: 0.35
+        },
+        {
+          transform: `translate(calc(-50% + ${tx}px), calc(-50% + ${ty}px)) scale(0)`,
+          opacity: 0
+        }
+      ],
+      {
+        duration: 550 + i * 30,
+        delay: i * 18,
+        easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+        fill: 'forwards'
+      }
+    );
+
+    setTimeout(() => spark.remove(), 750 + i * 50);
+  }
+
+  ink.animate(
+    [
+      { transform: 'translate(-50%, -50%) scale(0)', opacity: 1 },
+      { transform: 'translate(-50%, -50%) scale(0.62)', opacity: 0.72, offset: 0.4 },
+      { transform: 'translate(-50%, -50%) scale(1)', opacity: 0 }
+    ],
+    {
+      duration: 780,
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      fill: 'forwards'
+    }
+  );
+
+  ripple.animate(
+    [
+      { width: '0px', height: '0px', opacity: 1 },
+      { width: '84px', height: '84px', opacity: 0.9, offset: 0.28 },
+      { width: '210px', height: '210px', opacity: 0.25, offset: 0.72 },
+      { width: '260px', height: '260px', opacity: 0 }
+    ],
+    {
+      duration: 760,
+      easing: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      fill: 'forwards'
+    }
+  );
+
+  setTimeout(() => {
+    ink.remove();
+    ripple.remove();
+  }, 900);
+}
+
 let slideStartX = 0, slideDragging = false;
 function slideStart(x) { slideDragging = true; slideStartX = x; }
 function slideEnd(x) {
-  if (!slideDragging) return; slideDragging = false;
+  if (!slideDragging) return;
+  slideDragging = false;
+
   const dx = slideStartX - x;
-  if (dx > 40 && currentSlide < ui.slides.length - 1) showSlide(currentSlide + 1, true);
-  else if (dx < -40 && currentSlide > 0) showSlide(currentSlide - 1, true);
+
+  if (dx > 40 && currentSlide < ui.slides.length - 1) {
+    const targetSlide = currentSlide + 1;
+    triggerSlideInk(1, targetSlide);
+    showSlide(targetSlide, true);
+  } else if (dx < -40 && currentSlide > 0) {
+    const targetSlide = currentSlide - 1;
+    triggerSlideInk(-1, targetSlide);
+    showSlide(targetSlide, true);
+  }
 }
 if (ui.wrap) {
   ui.wrap.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
@@ -1922,9 +2266,50 @@ function applyDragOffset(frac) {
   });
 }
 let sizeStartX=0, sizeDragging=false, dragRel=0;
-function sizeStart(x) { sizeDragging=true; sizeStartX=x; dragRel=0; }
-function sizeMove(x)  { if(!sizeDragging) return; dragRel=(sizeStartX-x)/SIZE_STEP; applyDragOffset(dragRel); }
-function sizeEnd()    { if(!sizeDragging) return; sizeDragging=false; goToSize(currentSize+Math.round(dragRel),true); dragRel=0; }
+let sizeVelocity = 0, sizeLastX = 0, sizeLastTime = 0;
+let sizeAnimRAF = null;
+
+function sizeStart(x) {
+  sizeDragging = true;
+  sizeStartX = x;
+  sizeLastX = x;
+  sizeLastTime = performance.now();
+  sizeVelocity = 0;
+  dragRel = 0;
+  cancelAnimationFrame(sizeAnimRAF);
+  ui.carousel?.classList.add('dragging');
+}
+
+function sizeMove(x) {
+  if (!sizeDragging) return;
+  const now = performance.now();
+  const dt = now - sizeLastTime || 1;
+  sizeVelocity = (x - sizeLastX) / dt;
+  sizeLastX = x;
+  sizeLastTime = now;
+  dragRel = (sizeStartX - x) / SIZE_STEP;
+  applyDragOffset(dragRel);
+}
+
+function sizeEnd() {
+  if (!sizeDragging) return;
+  sizeDragging = false;
+  ui.carousel?.classList.remove('dragging');
+
+  const momentumBoost = -sizeVelocity * 0.18;
+  const totalRel = dragRel + momentumBoost;
+  const steps = Math.round(totalRel);
+  const clampedSteps = Math.sign(steps) * Math.min(Math.abs(steps), 1);
+
+  if (clampedSteps !== 0) {
+    goToSize(currentSize + clampedSteps, true);
+  } else {
+    goToSize(currentSize, true);
+  }
+
+  dragRel = 0;
+  sizeVelocity = 0;
+}
 if (ui.carousel) {
   ui.carousel.addEventListener('mousedown',  e => { e.preventDefault(); sizeStart(e.clientX); });
   window.addEventListener('mousemove', e => sizeMove(e.clientX));
@@ -1954,7 +2339,47 @@ function buildPicker(qty){
       const d = document.createElement('div');
       d.className=`mi-dot mi-dot-${c}${spec.color===c?' active':''}`;
       d.title=c==='white'?'أبيض':'أسود';
-      d.onclick=()=>{ itemSpecs[i].color=c; colors.querySelectorAll('.mi-dot').forEach(x=>x.classList.remove('active')); d.classList.add('active'); updatePreview(i,card); };
+      d.onclick = () => {
+  if (itemSpecs[i].color === c) return;
+  itemSpecs[i].color = c;
+
+  colors.querySelectorAll('.mi-dot').forEach(x => {
+    x.classList.remove('active');
+  });
+  d.classList.add('active');
+
+  d.querySelectorAll('.mi-dot-echo').forEach(e => e.remove());
+
+  d.classList.remove('liquid-burst');
+  void d.offsetWidth;
+  d.classList.add('liquid-burst');
+
+  const echo = document.createElement('span');
+  echo.className = 'mi-dot-echo';
+  echo.style.cssText = `
+    position: absolute;
+    inset: 6%;
+    border-radius: 28%;
+    pointer-events: none;
+    z-index: -2;
+    opacity: 0;
+    transform: scale(.92);
+    background: ${c === 'white'
+      ? 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.26) 0%, rgba(255,255,255,.10) 30%, transparent 70%)'
+      : 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.12) 0%, rgba(255,255,255,.05) 30%, transparent 70%)'};
+    animation: liquidEcho .42s .04s cubic-bezier(.22,1,.36,1) forwards;
+  `;
+  d.appendChild(echo);
+
+  const cleanup = () => {
+    d.classList.remove('liquid-burst');
+    echo.remove();
+  };
+
+  echo.addEventListener('animationend', cleanup, { once: true });
+
+  updatePreview(i, card);
+};
       colors.appendChild(d);
     });
     const sep = document.createElement('div'); sep.className='mi-sep';
@@ -2114,7 +2539,6 @@ function _initWaterCanvas(btn) {
   ];
 
   const bubbles = [];
-  const MAX_BUB = 35;
 
   const foam = Array.from({ length: 28 }, () => ({
     x:       Math.random(),
@@ -2684,11 +3108,11 @@ function resetForm() {
   wilayaTriggerText.textContent = 'اختر الولاية...';
   wilayaTriggerText.classList.add('placeholder');
 
-  regionTriggerText.textContent = 'غير متاحة مع مكتب';
+ regionTriggerText.textContent = 'اختر المنطقة...';
   regionTriggerText.classList.add('placeholder');
 
   regionTrigger.classList.add('disabled');
-  ui.regionAnim.classList.add('show');
+  ui.regionAnim.classList.remove('show');
   hideDeliveryPrice();
 
   setDeliveryMode('desk');
