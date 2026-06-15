@@ -2593,11 +2593,9 @@ const oldText = btn?.querySelector('.submit-btn-label')?.textContent || btn?.tex
 if (btn) {
   btn.disabled = true;
   btn.dataset.originalText = oldText;
+  const lbl = btn.querySelector('.submit-btn-label');
+  if (lbl) lbl.textContent = 'جارٍ الإرسال...';
   btn.classList.add('sending');
-  btn.innerHTML = `
-    <span class="submit-btn-label">جارٍ الإرسال...</span>
-    <span class="submit-btn-water" aria-hidden="true"></span>
-  `;
   startSubmitWater(btn);
 }
 
@@ -2666,10 +2664,8 @@ if (btn) {
   stopSubmitWater(btn);
   btn.disabled = false;
   btn.classList.remove('sending');
-  btn.innerHTML = `
-    <span class="submit-btn-label">${btn.dataset.originalText || oldText}</span>
-    <span class="submit-btn-water" aria-hidden="true"></span>
-  `;
+  const lbl = btn.querySelector('.submit-btn-label');
+  if (lbl) lbl.textContent = btn.dataset.originalText || oldText;
 }
 
 submitLock = false;
