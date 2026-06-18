@@ -637,6 +637,12 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
 .multi-picker{display:flex;flex-direction:column;gap:10px;margin-top:2px}
 .mi-card{border:1px solid rgba(255,255,255,.10);border-radius:16px;padding:14px 16px;background:rgba(255,255,255,.03);display:flex;align-items:center;gap:14px;transition:border-color .3s ease,background .3s ease;animation:miSlideIn .35s cubic-bezier(.22,1,.36,1) both}
 .mi-card:hover{border-color:rgba(255,255,255,.18);background:rgba(255,255,255,.05)}
+.mi-design-toggle{margin-top:8px;width:100%}
+.mi-design-lbl{display:flex;align-items:center;gap:10px;cursor:pointer;font-size:.72rem;letter-spacing:.1em;color:rgba(255,255,255,.45)}
+.mi-design-switch{width:38px;height:22px;border-radius:999px;background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.16);position:relative;transition:background .25s ease,border-color .25s ease;flex:none}
+.mi-design-switch.on{background:rgba(120,210,255,.55);border-color:rgba(120,210,255,.7)}
+.mi-design-knob{position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:#fff;box-shadow:0 2px 5px rgba(0,0,0,.3);transition:transform .25s cubic-bezier(.22,1,.36,1)}
+.mi-design-switch.on .mi-design-knob{transform:translateX(16px)}
 @keyframes miSlideIn{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .mi-num{flex:none;width:28px;height:28px;border-radius:50%;border:1.5px solid rgba(255,255,255,.16);background:rgba(255,255,255,.05);display:grid;place-items:center;font-size:.72rem;font-weight:800;letter-spacing:.04em;color:var(--muted)}
 .mi-colors{display:flex;gap:7px;align-items:center;flex:none}
@@ -1074,6 +1080,789 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   opacity: .92;
 }
 
+/* ============================== PRICE CARD LONG PRESS ============================== */
+
+.price-band {
+  position: relative;
+  overflow: hidden;
+  cursor: default;
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
+  touch-action: none;
+}
+
+.price-band * {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+.price-longpress-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 5;
+  border-radius: inherit;
+}
+
+.price-longpress-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 0.28s ease;
+  border-radius: inherit;
+}
+
+.price-band.lp-active .price-longpress-canvas {
+  opacity: 1;
+}
+
+.price-longpress-orb {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 52px;
+  height: 52px;
+  border-radius: 50%;
+  background: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.16) 0%,
+    rgba(255, 255, 255, 0.08) 38%,
+    rgba(255, 255, 255, 0.02) 62%,
+    transparent 76%
+  );
+  transform: translate(-50%, -50%) scale(0.22);
+  opacity: 0;
+  filter: blur(0.4px);
+  transition:
+    opacity 0.28s ease,
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    width 0.22s ease,
+    height 0.22s ease;
+  z-index: 3;
+}
+
+.price-band.lp-armed .price-longpress-orb,
+.price-band.lp-active .price-longpress-orb {
+  opacity: 1;
+  transform: translate(-50%, -50%) scale(1);
+}
+
+.price-longpress-ring {
+  position: absolute;
+  inset: -1px;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  overflow: visible;
+  z-index: 4;
+  pointer-events: none;
+}
+
+.price-longpress-ring path {
+  fill: none;
+  stroke: rgba(255, 255, 255, 0);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.6;
+  stroke-dasharray: 0 1;
+  stroke-dashoffset: 0;
+  transition: stroke 0.22s ease, stroke-width 0.22s ease;
+}
+
+.price-band.lp-active .price-longpress-ring path {
+  stroke: rgba(255, 255, 255, 0.82);
+}
+
+.price-whisper {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 99999;
+  max-width: min(88vw, 380px);
+  padding: 15px 22px;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: linear-gradient(145deg, rgba(18, 18, 18, 0.98), rgba(8, 8, 8, 0.98));
+  color: rgba(255, 255, 255, 0.86);
+  text-align: center;
+  font-size: 0.92rem;
+  line-height: 1.65;
+  letter-spacing: 0.01em;
+  box-shadow:
+    0 18px 55px rgba(0, 0, 0, 0.58),
+    0 0 0 1px rgba(255, 255, 255, 0.03) inset;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  opacity: 0;
+  transform: translate3d(-50%, 10px, 0) scale(0.98);
+  pointer-events: none;
+  will-change: transform, opacity, left, top;
+  transition:
+    opacity 0.28s ease,
+    transform 0.42s cubic-bezier(0.22, 1, 0.36, 1);
+  white-space: normal;
+}
+
+.price-whisper.show {
+  opacity: 1;
+  transform: translate3d(-50%, 0, 0) scale(1);
+}
+
+.price-whisper::after {
+  content: "";
+  display: block;
+  width: 42px;
+  height: 2px;
+  margin: 10px auto 0;
+  border-radius: 999px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.35), transparent);
+  opacity: 0.8;
+}
+
+/* ── NO-SELECT GLOBAL ── */
+body {
+  -webkit-user-select: text;
+  user-select: text;
+}
+input, textarea {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* ── COPY TOAST (برتقالي) ── */
+.copy-toast {
+  position: fixed;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%) translateY(110px);
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 15px 20px 15px 18px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 160, 40, 0.18);
+  background: linear-gradient(145deg, rgba(18,18,18,.97), rgba(10,10,10,.99));
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  box-shadow:
+    0 28px 70px rgba(0,0,0,.75),
+    0 0 0 1px rgba(255,255,255,.04) inset,
+    0 1px 0 rgba(255,255,255,.07) inset;
+  min-width: 270px;
+  max-width: min(88vw, 380px);
+  opacity: 0;
+  pointer-events: none;
+  will-change: transform, opacity;
+  transition:
+    transform .5s cubic-bezier(.22,1,.36,1),
+    opacity .38s ease;
+}
+.copy-toast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+.copy-toast-ring {
+  flex: none;
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+}
+.copy-toast-ring::before {
+  content: '';
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  background: rgba(255, 140, 30, 0.55);
+  opacity: .22;
+  animation: ringPulse 2s ease infinite;
+}
+.copy-toast-ico {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 1.05rem;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+  color: #ff9932;
+  background: rgba(255,140,30,.10);
+  border: 1.5px solid #ff9932;
+}
+.copy-toast-body {
+  flex: 1;
+  min-width: 0;
+}
+.copy-toast-ttl {
+  font-size: .8rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.copy-toast-sub {
+  font-size: .74rem;
+  color: var(--muted);
+  line-height: 1.45;
+}
+.copy-toast-bar {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  border-radius: 0 0 22px 22px;
+  background: linear-gradient(90deg, #ff6a00, #ffb347);
+  transform-origin: left;
+  transform: scaleX(1);
+}
+.copy-toast.show .copy-toast-bar {
+  transform: scaleX(0);
+  transition: transform 3.2s linear;
+}
+
+/* ══════════════════════════════════════
+   DESIGN UPLOAD — HD QUALITY GATE
+══════════════════════════════════════ */
+.design-upload-section{max-width:780px;margin:0 auto 22px}
+.design-upload-card{
+  border:1px solid rgba(255,255,255,.10);
+  background:radial-gradient(circle at 0% 0%,rgba(120,210,255,.06),transparent 45%),
+             linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;
+  padding:28px 24px 26px;
+  box-shadow:var(--shadow);
+}
+.design-upload-header{text-align:center;margin-bottom:20px}
+.design-upload-badge{
+  display:inline-flex;padding:4px 14px;border-radius:999px;
+  font-size:.6rem;letter-spacing:.2em;font-weight:800;
+  border:1px solid rgba(120,210,255,.35);
+  background:rgba(80,180,255,.08);color:#7fd8ff;margin-bottom:12px;
+}
+.design-upload-title{font-size:1.05rem;font-weight:700;margin-bottom:6px;letter-spacing:.02em}
+.design-upload-sub{font-size:.82rem;color:var(--muted);line-height:1.75;max-width:46ch;margin:0 auto}
+
+.design-dropzone{
+  position:relative;border:1.5px dashed rgba(255,255,255,.16);border-radius:22px;
+  min-height:210px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;overflow:hidden;background:rgba(255,255,255,.02);
+  transition:border-color .3s ease,background .3s ease;
+}
+.design-dropzone:hover{border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.04)}
+.design-dropzone.drag-over{border-color:rgba(120,210,255,.6);background:rgba(80,180,255,.07)}
+.design-dropzone.accepted{cursor:default}
+.design-dropzone.shake{animation:designShake .45s ease}
+@keyframes designShake{
+  10%,90%{transform:translateX(-2px)}
+  20%,80%{transform:translateX(4px)}
+  30%,50%,70%{transform:translateX(-7px)}
+  40%,60%{transform:translateX(7px)}
+}
+
+.design-dropzone-inner{
+  display:flex;flex-direction:column;align-items:center;gap:14px;
+  padding:30px 20px;text-align:center;
+  transition:opacity .3s ease;
+}
+.design-dropzone.analyzing .design-dropzone-inner,
+.design-dropzone.accepted .design-dropzone-inner{display:none}
+
+.design-dz-icon{
+  width:54px;height:54px;border-radius:16px;border:1px solid rgba(255,255,255,.14);
+  background:linear-gradient(160deg,rgba(255,255,255,.08),rgba(255,255,255,.02));
+  display:grid;place-items:center;color:rgba(255,255,255,.55);
+}
+.design-dz-icon svg{width:24px;height:24px}
+.design-dz-text strong{display:block;font-size:.92rem;margin-bottom:4px;color:#fff}
+.design-dz-text span{font-size:.74rem;color:rgba(255,255,255,.35)}
+
+.design-analysis{
+  position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;background:rgba(6,6,8,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.design-dropzone.analyzing .design-analysis{opacity:1;pointer-events:auto}
+.design-analysis-spinner{
+  width:34px;height:34px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.12);border-top-color:rgba(120,210,255,.85);
+  animation:designSpin .7s linear infinite;
+}
+@keyframes designSpin{to{transform:rotate(360deg)}}
+.design-analysis-label{font-size:.78rem;letter-spacing:.06em;color:rgba(255,255,255,.65)}
+
+.design-metrics{display:flex;gap:18px}
+.design-metric{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:.6rem;letter-spacing:.05em;color:rgba(255,255,255,.35)}
+.dm-dot{
+  width:10px;height:10px;border-radius:50%;
+  background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.18);
+  transition:background .3s ease,border-color .3s ease,box-shadow .3s ease;
+}
+.design-metric.pending .dm-dot{animation:dmPulse 1s ease-in-out infinite}
+@keyframes dmPulse{0%,100%{opacity:.4}50%{opacity:1}}
+.design-metric.pass .dm-dot{background:#3cdc82;border-color:rgba(60,220,130,.5);box-shadow:0 0 10px rgba(60,220,130,.5)}
+.design-metric.fail .dm-dot{background:#ff6060;border-color:rgba(255,90,90,.5);box-shadow:0 0 10px rgba(255,90,90,.5)}
+.design-metric.pass .dm-label,.design-metric.fail .dm-label{color:#fff}
+
+.design-preview{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transform:scale(.96);
+  transition:opacity .4s cubic-bezier(.22,1,.36,1),transform .4s cubic-bezier(.22,1,.36,1);
+}
+.design-dropzone.accepted .design-preview{opacity:1;pointer-events:auto;transform:scale(1)}
+.design-preview img{max-width:100%;max-height:100%;object-fit:contain}
+.design-preview-overlay{
+  position:absolute;inset:auto 0 0 0;padding:14px 16px;display:flex;flex-direction:column;
+  align-items:center;gap:10px;background:linear-gradient(0deg,rgba(0,0,0,.78),transparent);
+}
+.design-preview-badge{
+  display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;
+  background:rgba(60,220,130,.12);border:1px solid rgba(60,220,130,.35);
+  color:#3cdc82;font-size:.66rem;letter-spacing:.08em;font-weight:700;
+}
+.design-preview-remove{
+  padding:6px 16px;border-radius:999px;border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);
+  font-size:.66rem;letter-spacing:.05em;cursor:pointer;transition:.2s ease;
+}
+.design-preview-remove:hover{background:rgba(255,255,255,.12);color:#fff}
+
+.design-hint{margin-top:14px;text-align:center;font-size:.66rem;letter-spacing:.05em;color:rgba(255,255,255,.25)}
+
+/* ══════════════════════════════════════
+   TEXT DESIGN STUDIO — ZAKVELA
+══════════════════════════════════════ */
+
+.tdz-section{max-width:780px;margin:0 auto 22px}
+
+.tdz-card{
+  border:1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,255,255,.07),transparent 42%),
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;
+  padding:28px 24px 30px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);
+}
+
+.tdz-header{text-align:center;margin-bottom:22px}
+.tdz-badge{
+  display:inline-flex;padding:4px 14px;border-radius:999px;
+  font-size:.6rem;letter-spacing:.22em;font-weight:800;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);
+  margin-bottom:12px;
+}
+.tdz-title{font-size:1.1rem;font-weight:700;letter-spacing:.02em;margin-bottom:6px}
+.tdz-sub{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.75;max-width:46ch;margin:0 auto}
+
+/* color picker row */
+.tdz-color-row{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:12px;margin-bottom:18px;flex-wrap:wrap;
+}
+.tdz-color-lbl{font-size:.74rem;letter-spacing:.1em;color:rgba(255,255,255,.45)}
+.tdz-color-pick{display:flex;gap:8px}
+.tdz-color-btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 16px;border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.03);
+  color:rgba(255,255,255,.6);
+  font-family:inherit;font-size:.8rem;font-weight:600;
+  cursor:pointer;transition:.25s ease;
+}
+.tdz-color-btn:hover{border-color:rgba(255,255,255,.25);color:#fff}
+.tdz-color-btn.active{
+  border-color:rgba(255,255,255,.5);
+  background:rgba(255,255,255,.08);
+  color:#fff;
+  box-shadow:0 4px 16px rgba(255,255,255,.06);
+}
+.tdz-color-dot{width:14px;height:14px;border-radius:50%;flex:none;border:1px solid rgba(255,255,255,.2)}
+.tdz-dot-white{background:linear-gradient(160deg,#eee,#fff)}
+.tdz-dot-black{background:linear-gradient(160deg,#1c1c1c,#0a0a0a)}
+
+/* stage */
+.tdz-stage-wrap{
+  border-radius:24px;
+  overflow:hidden;
+  margin-bottom:20px;
+  background:radial-gradient(circle at 50% 0%,rgba(255,255,255,.10),transparent 24%),linear-gradient(180deg,#0f0f0f,#050505);
+  border:1px solid rgba(255,255,255,.08);
+}
+.tdz-stage{
+  position:relative;
+  width:100%;
+  aspect-ratio:1/1.05;
+  max-height:480px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  touch-action:none;
+  user-select:none;
+  -webkit-user-select:none;
+}
+.tdz-shirt-img{
+  width:min(78%,340px);
+  max-height:96%;
+  object-fit:contain;
+  pointer-events:none;
+  user-select:none;
+  -webkit-user-select:none;
+  filter:drop-shadow(0 18px 40px rgba(0,0,0,.45));
+}
+
+/* منطقة طباعة إرشادية خفيفة */
+.tdz-print-area{
+  position:absolute;
+  top:30%;left:30%;
+  width:40%;height:32%;
+  border:1px dashed rgba(255,255,255,.14);
+  border-radius:10px;
+  pointer-events:none;
+}
+
+.tdz-text-layer{
+  position:absolute;
+  top:46%;left:50%;
+  transform:translate(-50%,-50%);
+  cursor:grab;
+  touch-action:none;
+  max-width:78%;
+  text-align:center;
+  padding:4px 8px;
+  border-radius:8px;
+  transition:background .2s ease;
+}
+.tdz-text-layer:active{cursor:grabbing}
+.tdz-text-layer.dragging{
+  background:rgba(255,255,255,.06);
+  outline:1px dashed rgba(255,255,255,.3);
+}
+.tdz-text-layer span{
+  display:inline-block;
+  font-family:"Tajawal",system-ui,sans-serif;
+  font-weight:700;
+  font-size:42px;
+  line-height:1.15;
+  white-space:pre-wrap;
+  word-break:break-word;
+  color:#111;                 /* أسود فوق تيشرت أبيض */
+  -webkit-user-select:none;
+  user-select:none;
+  pointer-events:none;
+}
+/* عند تيشرت أسود → النص أبيض (يُبدّل عبر JS بإضافة هذا الكلاس) */
+.tdz-stage.tdz-dark .tdz-text-layer span{
+  color:#fff;
+}
+
+.tdz-empty-hint{
+  position:absolute;
+  bottom:14px;left:50%;
+  transform:translateX(-50%);
+  font-size:.68rem;
+  letter-spacing:.08em;
+  color:rgba(255,255,255,.28);
+  background:rgba(0,0,0,.3);
+  padding:6px 14px;
+  border-radius:999px;
+  pointer-events:none;
+  opacity:1;
+  transition:opacity .3s ease;
+}
+.tdz-stage.tdz-has-text .tdz-empty-hint{opacity:0}
+
+/* controls */
+.tdz-controls{display:flex;flex-direction:column;gap:16px;margin-bottom:18px}
+.tdz-field{display:flex;flex-direction:column;gap:8px;flex:1}
+.tdz-field label{font-size:.74rem;letter-spacing:.1em;color:rgba(255,255,255,.45);font-weight:600}
+.tdz-field input[type="text"]{
+  width:100%;padding:13px 16px;border-radius:13px;
+  border:1px solid rgba(255,255,255,.12);
+  background:rgba(255,255,255,.04);color:#fff;
+  font-size:.93rem;font-family:inherit;outline:none;
+  transition:.2s ease;
+}
+.tdz-field input[type="text"]:focus{
+  border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.07);
+}
+.tdz-field input::placeholder{color:rgba(255,255,255,.25)}
+
+.tdz-field-row{display:flex;gap:14px;align-items:flex-end;flex-wrap:wrap}
+.tdz-size-field{min-width:160px}
+
+.tdz-size-stepper{
+  display:flex;align-items:center;
+  border:1px solid rgba(255,255,255,.12);
+  border-radius:13px;background:rgba(255,255,255,.04);
+  overflow:hidden;height:50px;
+}
+.tdz-step-btn{
+  flex:none;width:48px;height:100%;
+  background:rgba(255,255,255,.05);border:none;color:#fff;
+  font-size:1.3rem;font-weight:300;cursor:pointer;
+  transition:background .2s ease,transform .1s ease;
+  display:flex;align-items:center;justify-content:center;
+  user-select:none;-webkit-tap-highlight-color:transparent;
+}
+.tdz-step-btn:hover{background:rgba(255,255,255,.11)}
+.tdz-step-btn:active{background:rgba(255,255,255,.18);transform:scale(.92)}
+.tdz-size-val{
+  flex:1;display:flex;align-items:baseline;justify-content:center;gap:4px;
+}
+#tdzSizeNum{font-size:1.1rem;font-weight:700;color:#fff;min-width:28px;text-align:center}
+.tdz-size-unit{font-size:.65rem;color:rgba(255,255,255,.4);letter-spacing:.06em}
+
+.tdz-reset-btn{
+  height:50px;padding:0 20px;border-radius:13px;
+  border:1px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.04);color:rgba(255,255,255,.7);
+  font-family:inherit;font-size:.82rem;font-weight:600;
+  cursor:pointer;transition:.2s ease;white-space:nowrap;
+}
+.tdz-reset-btn:hover{background:rgba(255,255,255,.09);color:#fff}
+
+/* مدى مرئي اختياري (مخفي بصرياً لكن يمكن إظهاره) */
+.tdz-size-range{
+  appearance:none;-webkit-appearance:none;width:100%;height:4px;
+  border-radius:999px;background:rgba(255,255,255,.1);outline:none;
+  margin-top:-4px;cursor:pointer;
+}
+.tdz-size-range::-webkit-slider-thumb{
+  appearance:none;-webkit-appearance:none;width:16px;height:16px;
+  border-radius:50%;background:#fff;cursor:pointer;
+  box-shadow:0 2px 8px rgba(0,0,0,.4);
+}
+.tdz-size-range::-moz-range-thumb{
+  width:16px;height:16px;border-radius:50%;background:#fff;border:none;cursor:pointer;
+}
+
+/* save button */
+.tdz-save-btn{
+  display:block;width:100%;padding:15px;border-radius:14px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.06);color:#fff;
+  font-size:.92rem;font-weight:700;letter-spacing:.08em;
+  cursor:pointer;transition:.25s ease;
+  font-family:inherit;
+}
+.tdz-save-btn:hover{background:rgba(255,255,255,.11);border-color:rgba(255,255,255,.26)}
+.tdz-save-btn:active{transform:scale(.98)}
+.tdz-save-btn.tdz-saved{
+  background:rgba(60,220,130,.10);
+  border-color:rgba(60,220,130,.35);
+  color:#3cdc82;
+}
+
+.tdz-status{
+  display:flex;align-items:center;gap:10px;
+  margin-top:14px;padding:12px 16px;border-radius:13px;
+  border:1px solid rgba(60,220,130,.25);
+  background:rgba(60,220,130,.06);
+  color:rgba(255,255,255,.75);
+  font-size:.8rem;line-height:1.6;
+}
+.tdz-status-ico{
+  flex:none;width:22px;height:22px;border-radius:50%;
+  display:grid;place-items:center;color:#3cdc82;
+  border:1.5px solid rgba(60,220,130,.5);font-size:.7rem;
+}
+.tdz-edit-again{
+  margin-right:auto;
+  padding:5px 14px;border-radius:999px;
+  border:1px solid rgba(255,255,255,.16);
+  background:rgba(255,255,255,.05);color:rgba(255,255,255,.7);
+  font-size:.72rem;font-family:inherit;cursor:pointer;transition:.2s ease;
+}
+.tdz-edit-again:hover{background:rgba(255,255,255,.1);color:#fff}
+
+@media(max-width:480px){
+  .tdz-card{padding:22px 16px 24px}
+  .tdz-field-row{flex-direction:column;align-items:stretch}
+  .tdz-reset-btn{width:100%}
+}
+
+/* ── DESIGN TOGGLE CARD ── */
+.tdz-design-toggle{margin-bottom:18px;animation:miSlideIn .4s cubic-bezier(.22,1,.36,1) both}
+.tdz-design-toggle-card{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 16px;border-radius:18px;
+  border:1px solid rgba(120,210,255,.22);
+  background:radial-gradient(circle at 0% 0%,rgba(120,210,255,.07),transparent 50%),rgba(255,255,255,.03);
+  transition:border-color .3s ease,background .3s ease;
+}
+.tdz-design-toggle-card.active{
+  border-color:rgba(120,210,255,.45);
+  background:radial-gradient(circle at 0% 0%,rgba(120,210,255,.12),transparent 50%),rgba(255,255,255,.05);
+}
+.tdz-design-toggle-preview{
+  flex:none;width:48px;height:48px;border-radius:12px;overflow:hidden;
+  border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.04);
+  display:flex;align-items:center;justify-content:center;
+}
+.tdz-design-toggle-preview img{width:100%;height:100%;object-fit:cover}
+.tdz-design-toggle-info{flex:1;display:flex;flex-direction:column;gap:2px;min-width:0}
+.tdz-design-toggle-info strong{font-size:.86rem;color:#fff}
+.tdz-design-toggle-info span{font-size:.7rem;color:rgba(255,255,255,.4);line-height:1.4}
+.tdz-design-toggle-switch{
+  flex:none;width:46px;height:26px;border-radius:999px;
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);
+  position:relative;cursor:pointer;transition:background .25s ease,border-color .25s ease;
+}
+.tdz-design-toggle-switch.on{background:rgba(120,210,255,.55);border-color:rgba(120,210,255,.7)}
+.tdz-design-toggle-knob{
+  position:absolute;top:2px;left:2px;width:20px;height:20px;border-radius:50%;
+  background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.3);
+  transition:transform .25s cubic-bezier(.22,1,.36,1);
+}
+.tdz-design-toggle-switch.on .tdz-design-toggle-knob{transform:translateX(20px)}
+
+/* ── IMAGE LAYER ON STAGE ── */
+.tdz-image-layer{
+  position:absolute;top:46%;left:50%;
+  transform:translate(-50%,-50%);
+  cursor:grab;touch-action:none;
+  width:60%;height:60%;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:8px;transition:background .2s ease;
+}
+.tdz-image-layer:active{cursor:grabbing}
+.tdz-image-layer.dragging{
+  background:rgba(255,255,255,.06);
+  outline:1px dashed rgba(120,210,255,.5);
+}
+.tdz-image-layer img{
+  width:100%;height:100%;object-fit:contain;
+  pointer-events:none;user-select:none;-webkit-user-select:none;
+  filter:drop-shadow(0 6px 14px rgba(0,0,0,.35));
+}
+
+/* ══════════════════════════════════════
+   FONT PICKER — TDZ
+══════════════════════════════════════ */
+.tdz-font-upload-row {
+  margin-bottom: 12px;
+}
+
+.tdz-font-dropzone {
+  position: relative;
+  border: 1.5px dashed rgba(255,255,255,.18);
+  border-radius: 16px;
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  background: rgba(255,255,255,.02);
+  transition: border-color .3s ease, background .3s ease;
+  min-height: 72px;
+  overflow: hidden;
+}
+.tdz-font-dropzone:hover {
+  border-color: rgba(255,255,255,.32);
+  background: rgba(255,255,255,.05);
+}
+.tdz-font-dropzone.drag-over {
+  border-color: rgba(120,210,255,.7);
+  background: rgba(80,180,255,.07);
+}
+.tdz-font-dropzone.shake {
+  animation: designShake .45s ease;
+}
+
+.tdz-font-dz-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+.tdz-font-dz-icon {
+  flex: none;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,.14);
+  background: rgba(255,255,255,.05);
+  display: grid; place-items: center;
+  color: rgba(255,255,255,.5);
+}
+.tdz-font-dz-icon svg { width: 20px; height: 20px; }
+
+.tdz-font-dz-text strong {
+  display: block;
+  font-size: .88rem;
+  color: #fff;
+  margin-bottom: 3px;
+}
+.tdz-font-dz-text span {
+  font-size: .68rem;
+  color: rgba(255,255,255,.35);
+  letter-spacing: .06em;
+}
+
+/* حالة القبول */
+.tdz-font-accepted {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+}
+.tdz-font-accepted-icon {
+  flex: none;
+  width: 40px; height: 40px;
+  border-radius: 12px;
+  border: 1.5px solid rgba(120,210,255,.4);
+  background: rgba(80,180,255,.08);
+  display: grid; place-items: center;
+  font-size: 1.1rem;
+  font-weight: 900;
+  color: #7fd8ff;
+  letter-spacing: .02em;
+}
+.tdz-font-accepted-info {
+  flex: 1; min-width: 0;
+}
+.tdz-font-accepted-info strong {
+  display: block;
+  font-size: .86rem;
+  color: #fff;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 2px;
+}
+.tdz-font-accepted-info span {
+  font-size: .66rem;
+  color: rgba(255,255,255,.35);
+  letter-spacing: .06em;
+}
+.tdz-font-remove-btn {
+  flex: none;
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.16);
+  background: rgba(255,255,255,.05);
+  color: rgba(255,255,255,.5);
+  font-size: .65rem;
+  cursor: pointer;
+  display: grid; place-items: center;
+  transition: .2s ease;
+}
+.tdz-font-remove-btn:hover {
+  background: rgba(255,80,80,.15);
+  border-color: rgba(255,80,80,.4);
+  color: #ff8080;
+}
+
+
 
 </style>
 </head>
@@ -1149,7 +1938,205 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
     </div>
     <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
   </div>
+<div class="design-upload-section reveal">
+    <div class="design-upload-card">
+      <div class="design-upload-header">
+        <div class="design-upload-badge">HD ONLY</div>
+        <h3 class="design-upload-title">ارفق تصميمك</h3>
+        <p class="design-upload-sub">ارفع صورة واضحة للجملة أو الكتابة التي تريدها مطبوعة على تيشرتك</p>
+      </div>
 
+      <div class="design-dropzone" id="designDropzone" tabindex="0" role="button" aria-label="رفع صورة التصميم">
+        <input type="file" id="designFileInput" accept="image/*" hidden>
+
+        <div class="design-dropzone-inner" id="designDropzoneInner">
+          <div class="design-dz-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+              <path d="M12 16V4M12 4l-4 4M12 4l4 4" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <div class="design-dz-text">
+            <strong>اسحب الصورة هنا</strong>
+            <span>أو اضغط للاختيار — JPG / PNG بجودة HD</span>
+          </div>
+        </div>
+
+        <div class="design-analysis" id="designAnalysis">
+          <div class="design-analysis-spinner"></div>
+          <div class="design-analysis-label" id="designAnalysisLabel">جاري فحص الجودة...</div>
+          <div class="design-metrics" id="designMetrics">
+            <div class="design-metric pending" data-metric="res"><span class="dm-dot"></span><span class="dm-label">الدقة</span></div>
+            <div class="design-metric pending" data-metric="sharp"><span class="dm-dot"></span><span class="dm-label">الوضوح</span></div>
+            <div class="design-metric pending" data-metric="design"><span class="dm-dot"></span><span class="dm-label">وضوح التصميم</span></div>
+          </div>
+        </div>
+
+        <div class="design-preview" id="designPreview">
+          <img id="designPreviewImg" alt="معاينة التصميم">
+          <div class="design-preview-overlay">
+            <div class="design-preview-badge"><span class="dpb-ico">✓</span> جودة HD مقبولة</div>
+            <button type="button" class="design-preview-remove" id="designRemoveBtn">إزالة وإعادة الرفع</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="design-hint">سيتم استخدام هذه الصورة كمرجع لطباعة تصميمك بدقة</div>
+    </div>
+
+    <input type="hidden" id="fDesignImage">    
+  </div>
+  
+  <!--
+  ضع هذا القسم HTML فوق <div class="form-section reveal"> مباشرة
+  (بعد قسم size-section أو design-upload-section الموجود لديك)
+-->
+<div class="tdz-section reveal">
+  <div class="tdz-card">
+
+    <div class="tdz-header">
+      <div class="tdz-badge">DESIGN STUDIO</div>
+      <h3 class="tdz-title">صمّم كتابتك على التيشرت</h3>
+      <p class="tdz-sub">ضع كلماتك حيث تنتمي</p>
+    </div>
+
+    <!-- شريط اختيار اللون (متزامن مع السلايدر الرئيسي تلقائياً، ويمكن تغييره يدوياً هنا) -->
+    <div class="tdz-color-row">
+      <span class="tdz-color-lbl">لون التيشرت</span>
+      <div class="tdz-color-pick">
+        <button type="button" class="tdz-color-btn active" data-color="white" id="tdzColorWhite">
+          <span class="tdz-color-dot tdz-dot-white"></span> أبيض
+        </button>
+        <button type="button" class="tdz-color-btn" data-color="black" id="tdzColorBlack">
+          <span class="tdz-color-dot tdz-dot-black"></span> أسود
+        </button>
+      </div>
+    </div>
+
+<!-- خيار إضافة التصميم المرفوع كطبقة على التيشرت -->
+    <div class="tdz-design-toggle" id="tdzDesignToggleWrap" style="display:none">
+      <div class="tdz-design-toggle-card" id="tdzDesignToggleCard">
+        <div class="tdz-design-toggle-preview">
+          <img id="tdzDesignTogglePreviewImg" alt="معاينة التصميم المرفوع">
+        </div>
+        <div class="tdz-design-toggle-info">
+          <strong>إضافة تصميمك المرفوع</strong>
+          <span>أضف نفس الصورة كطبقة على التيشرت</span>
+        </div>
+        <div class="tdz-design-toggle-switch" id="tdzDesignToggleSwitch" role="switch" aria-checked="false" tabindex="0">
+          <div class="tdz-design-toggle-knob"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- منطقة المعاينة / الكانفس -->
+    <div class="tdz-stage-wrap">
+      <div class="tdz-stage" id="tdzStage">
+        <img src="images/white.png" alt="" class="tdz-shirt-img" id="tdzShirtImg" draggable="false">
+
+        <!-- منطقة الطباعة المسموحة (إرشادية فقط) -->
+        <div class="tdz-print-area" id="tdzPrintArea"></div>
+
+        <!-- النص القابل للسحب -->
+        <div class="tdz-text-layer" id="tdzTextLayer">
+          <span id="tdzTextEl">اكتب نصك هنا</span>
+        </div>
+
+        <!-- طبقة صورة التصميم المرفوع، قابلة للسحب بشكل مستقل عن النص -->
+        <div class="tdz-image-layer" id="tdzImageLayer" style="display:none">
+          <img id="tdzImageLayerImg" alt="">
+        </div>
+
+        <div class="tdz-empty-hint" id="tdzEmptyHint">أكتب جملتك وحسب</div>
+      </div>
+    </div>
+
+
+    <!-- أدوات التحكم -->
+    
+    
+    <div class="tdz-controls">
+      <div class="tdz-field">
+          
+      
+  <label>الخط المستخدم</label>
+  
+  <!-- زر رفع الفونت -->
+  <div class="tdz-font-upload-row">
+    <div class="tdz-font-dropzone" id="tdzFontDropzone" tabindex="0" role="button" aria-label="رفع خط مخصص">
+      <input type="file" id="tdzFontFileInput" accept=".ttf,.otf,.woff,.woff2" hidden>
+      <div class="tdz-font-dz-inner" id="tdzFontDzInner">
+        <div class="tdz-font-dz-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 7V5a1 1 0 011-1h14a1 1 0 011 1v2"/>
+            <path d="M9 20h6"/>
+            <path d="M12 4v16"/>
+          </svg>
+        </div>
+        <div class="tdz-font-dz-text">
+          <strong>ارفع خطك المحمّل</strong>
+          <span>TTF · OTF · WOFF · WOFF2</span>
+        </div>
+      </div>
+      <!-- حالة الخط المقبول -->
+      <div class="tdz-font-accepted" id="tdzFontAccepted" style="display:none">
+        <div class="tdz-font-accepted-icon">A</div>
+        <div class="tdz-font-accepted-info">
+          <strong id="tdzFontName">—</strong>
+          <span>خط مخصص · تم تحميله</span>
+        </div>
+        <button type="button" class="tdz-font-remove-btn" id="tdzFontRemoveBtn" aria-label="إزالة الخط">✕</button>
+      </div>
+    </div>
+  </div>
+
+ 
+      </div>
+          
+      <div class="tdz-field">
+        <label>نص التصميم</label>
+        <input type="text" id="tdzTextInput" placeholder="مثال: Zakvela" maxlength="40">
+      </div>
+
+
+
+      <div class="tdz-field-row">
+        <div class="tdz-field tdz-size-field">
+          <label>حجم الخط</label>
+          <div class="tdz-size-stepper">
+            <button type="button" class="tdz-step-btn" id="tdzSizeDown" aria-label="تصغير">−</button>
+            <div class="tdz-size-val"><span id="tdzSizeNum">42</span><span class="tdz-size-unit">px</span></div>
+            <button type="button" class="tdz-step-btn" id="tdzSizeUp" aria-label="تكبير">+</button>
+          </div>
+        </div>
+
+        <div class="tdz-field tdz-size-field" id="tdzImgSizeField" style="display:none">
+          <label>حجم التصميم</label>
+          <div class="tdz-size-stepper">
+            <button type="button" class="tdz-step-btn" id="tdzImgSizeDown" aria-label="تصغير">−</button>
+            <div class="tdz-size-val"><span id="tdzImgSizeNum">100</span><span class="tdz-size-unit">%</span></div>
+            <button type="button" class="tdz-step-btn" id="tdzImgSizeUp" aria-label="تكبير">+</button>
+          </div>
+        </div>
+      </div>
+
+    <button type="button" class="tdz-save-btn" id="tdzSaveBtn">
+      <span id="tdzSaveLabel">حفظ التصميم ✓</span>
+    </button>
+
+    <div class="tdz-status" id="tdzStatus" style="display:none">
+      <span class="tdz-status-ico">✓</span>
+      <span>تم حفظ تصميمك بنجاح — سيُرسل مع طلبك</span>
+      <button type="button" class="tdz-edit-again" id="tdzEditAgain">تعديل</button>
+    </div>
+
+  </div>
+</div>
+
+<!-- حقل مخفي لتمرير صورة التصميم النهائية مع الفورم (نفس مبدأ fDesignImage الموجود) -->
+<input type="hidden" id="fTextDesignImage">
+<input type="hidden" id="fUploadedDesignOnShirt">
+  
   <div class="form-section reveal">
     <div class="form-card">
       <h2>فورم الطلب</h2>
@@ -1159,10 +2146,10 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
         <div class="price-left">
           <span class="price-label" id="priceLabelUnit">سعر القطعة الواحدة</span>
           <div class="price-main">
-            <span class="price-amount" id="priceAmount">3000</span>
+            <span class="price-amount" id="priceAmount">2400</span>
             <span class="price-currency">دج</span>
           </div>
-          <span class="price-old" id="priceOld">4100 دج</span>
+          <span class="price-old" id="priceOld">3000 دج</span>
         </div>
         <div class="price-right">
           <div class="price-badge" id="priceBadge">السعر النهائي</div>
@@ -1304,7 +2291,8 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   <span class="submit-btn-water" aria-hidden="true"></span>
 </button>
       </div>
-
+      
+      
       <div class="success-msg" id="successMsg">
         <div class="success-icon">✓</div>
         <h3>تم إرسال الطلب!</h3>
@@ -1379,6 +2367,18 @@ footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(
   <div class="toast-x" onclick="hideToast()" aria-label="إغلاق">✕</div>
   <div class="toast-bar"></div>
 </div>
+<div class="copy-toast" id="copyToast" role="alert" aria-live="assertive">
+  <div class="copy-toast-ring">
+    <div class="copy-toast-ico">⊘</div>
+  </div>
+  <div class="copy-toast-body">
+    <div class="copy-toast-ttl">عذراً</div>
+    <div class="copy-toast-sub">لا يُسمح بنسخ المحتوى من هذا الموقع</div>
+  </div>
+  <div class="copy-toast-bar"></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/fabric@5/dist/fabric.min.js"></script>
 
 <script>
 (() => {
@@ -1389,18 +2389,18 @@ const ORDER_STATUS_API = "https://botzakvela.onrender.com/order/status";
 const SOFT_WAIT_MS = 12000;
 const HARD_TIMEOUT_MS = 25000;
 const STATUS_POLL_INTERVAL_MS = 2000;
-const STATUS_POLL_TRIES = 15;
+const STATUS_POLL_TRIES = 10;
 const ORDER_ID_KEY = 'zakvela_order_id_v1';
 const COLORS = ['أبيض','أسود'];
 const DOTS   = ['white','black'];
 const SIZES  = ['M','L','XL','XXL'];
 const SIZE_STEP = 150;
-const BASE_PRICE = 3000;  // سعر القطعة الأصلي دج
-const BASE_PRICE_OLD = 4100; // سعر قبل التخفيض
+const BASE_PRICE = 2400;  // سعر القطعة الأصلي دج
+const BASE_PRICE_OLD = 3000; // سعر قبل التخفيض
 
 const $ = id => document.getElementById(id);
-const clamp = (n,mn,mx) => Math.min(mx,Math.max(mn,n));
-const wrapIndex = (i,l) => ((i%l)+l)%l;
+const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+const wrapIndex = (i, l) => ((i % l) + l) % l;
 
 const ui = {
   slides: Array.from(document.querySelectorAll('.slide')),
@@ -1846,26 +2846,53 @@ function hideDeliveryPrice() {
 
 /* ── TOAST ── */
 let _toastTimer = null;
-function showToast(sub, ttl, type) {
-  ttl = ttl || 'تنبيه'; type = type || 'error';
+
+function showToast(sub, ttl = 'تنبيه', type = 'error') {
   const toast = $('luxToast');
-  $('toastTtl').textContent = ttl;
-  $('toastSub').textContent = sub;
-  toast.className = 'lux-toast t-' + type;
-  $('toastIco').textContent = type === 'ok' ? '✓' : '✦';
+  if (!toast) return;
+
+  const ttlEl = $('toastTtl');
+  const subEl = $('toastSub');
+  const icoEl = $('toastIco');
+
+  if (ttlEl) ttlEl.textContent = ttl;
+  if (subEl) subEl.textContent = sub;
+  if (icoEl) icoEl.textContent = type === 'ok' ? '✓' : type === 'warn' ? '!' : '✦';
+
+  toast.className = `lux-toast t-${type}`;
+
   const bar = toast.querySelector('.toast-bar');
-  if (bar) { bar.style.transition = 'none'; bar.style.transform = 'scaleX(1)'; }
+  if (bar) {
+    bar.style.transition = 'none';
+    bar.style.transform = 'scaleX(1)';
+  }
+
   requestAnimationFrame(() => {
     toast.classList.add('show');
-    if (bar) requestAnimationFrame(() => { bar.style.transition = 'transform 4s linear'; bar.style.transform = 'scaleX(0)'; });
+    if (bar) {
+      requestAnimationFrame(() => {
+        bar.style.transition = 'transform 4s linear';
+        bar.style.transform = 'scaleX(0)';
+      });
+    }
   });
+
   clearTimeout(_toastTimer);
   _toastTimer = setTimeout(hideToast, 4200);
 }
-function hideToast() { $('luxToast')?.classList.remove('show'); clearTimeout(_toastTimer); }
+
+function hideToast() {
+  const toast = $('luxToast');
+  if (toast) toast.classList.remove('show');
+  clearTimeout(_toastTimer);
+  _toastTimer = null;
+}
+
 window.hideToast = hideToast;
+window.showToast = showToast;
 
 
+/* ── ORDER ID ── */
 let submitLock = false;
 
 function makeFallbackUuid() {
@@ -1912,10 +2939,93 @@ function newOrderId() {
 
 ensureOrderId();
 
+
+/* ── COPY / CUT GUARD ── */
+(() => {
+  let _copyToastTimer = null;
+  let _lastToastAt = 0;
+
+  const copyToast = $('copyToast');
+
+  function hasSelection() {
+    return !!window.getSelection?.()?.toString?.().trim();
+  }
+
+  function showCopyToast() {
+    if (!copyToast) return;
+
+    const bar = copyToast.querySelector('.copy-toast-bar');
+    if (bar) {
+      bar.style.transition = 'none';
+      bar.style.transform = 'scaleX(1)';
+    }
+
+    copyToast.classList.remove('show');
+    void copyToast.offsetWidth;
+    copyToast.classList.add('show');
+
+    if (bar) {
+      requestAnimationFrame(() => {
+        bar.style.transition = 'transform 3.2s linear';
+        bar.style.transform = 'scaleX(0)';
+      });
+    }
+
+    clearTimeout(_copyToastTimer);
+    _copyToastTimer = setTimeout(() => {
+      copyToast.classList.remove('show');
+    }, 3400);
+  }
+
+  function showOnce() {
+    const now = Date.now();
+    if (now - _lastToastAt < 800) return;
+    _lastToastAt = now;
+    showCopyToast();
+  }
+
+  document.addEventListener('copy', e => {
+    if (!hasSelection()) return;
+    e.preventDefault();
+    try { e.clipboardData?.setData('text/plain', ''); } catch (_) {}
+    showOnce();
+  });
+
+  document.addEventListener('cut', e => {
+    if (!hasSelection()) return;
+    e.preventDefault();
+    try { e.clipboardData?.setData('text/plain', ''); } catch (_) {}
+    showOnce();
+  });
+
+  document.addEventListener('contextmenu', e => {
+    if (!hasSelection()) return;
+    e.preventDefault();
+    showOnce();
+  });
+
+  document.addEventListener('keydown', e => {
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'x')) {
+      if (!hasSelection()) return;
+      e.preventDefault();
+      showOnce();
+    }
+  });
+})();
+
+
+/* ── NETWORK HELPERS ── */
 function createFetchTimeout(ms) {
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), ms);
-  return { controller, timer };
+
+  return {
+    controller,
+    timer,
+    clear() {
+      clearTimeout(timer);
+    }
+  };
 }
 
 function sleep(ms) {
@@ -1944,13 +3054,8 @@ async function waitForOrderSettlement(orderId) {
     const data = await fetchOrderStatus(orderId);
     if (!data) continue;
 
-    if (data.status === 'success') {
-      return { state: 'success', data };
-    }
-
-    if (data.status === 'failed') {
-      return { state: 'failed', data };
-    }
+    if (data.status === 'success') return { state: 'success', data };
+    if (data.status === 'failed') return { state: 'failed', data };
   }
 
   return { state: 'timeout', data: null };
@@ -1962,8 +3067,12 @@ function showSuccessUI() {
   showToast('تم استلام الطلب بنجاح.', 'تم الإرسال', 'ok');
 }
 
+function showFailedUI() {
+  showToast('تعذر تأكيد الطلب من الخادم.', 'فشل التأكيد', 'error');
+}
+
 function showTimeoutUI() {
-  showToast('انتهت مهلة الطلب ولم يصل تأكيد الاستلام.', 'انتهت مهلة الطلب', 'error');
+  showToast('انتهت مهلة الطلب ولم يصل تأكيد الاستلام.', 'انتهت المهلة', 'warn');
 }
 
 async function resolveAfterUncertainOutcome(orderId) {
@@ -1976,7 +3085,7 @@ async function resolveAfterUncertainOutcome(orderId) {
   }
 
   if (result.state === 'failed') {
-    showTimeoutUI();
+    showFailedUI();
     return false;
   }
 
@@ -1984,32 +3093,54 @@ async function resolveAfterUncertainOutcome(orderId) {
   return false;
 }
 
+
 /* ── COLOR / SIZE STATE ── */
-let currentSlide = 0, currentSize = 0;
+let currentSlide = 0;
+let currentSize = 0;
 
 function updateColorState(index) {
-  const color = COLORS[index] || COLORS[0];
-  const dot   = DOTS[index]   || DOTS[0];
-  if (ui.fColor)   ui.fColor.value = color;
+  const color = COLORS[index] ?? COLORS[0];
+  const dot = DOTS[index] ?? DOTS[0];
+
+  if (ui.fColor) ui.fColor.value = color;
   if (ui.sumColor) ui.sumColor.textContent = color;
-  if (ui.sumDot)   ui.sumDot.className = 'sum-dot ' + dot;
+  if (ui.sumDot) ui.sumDot.className = `sum-dot ${dot}`;
+
+  if (window.syncDesignMockup) window.syncDesignMockup(index);
 }
+
 function updateSizeState(index) {
-  const size = SIZES[index] || SIZES[0];
+  const size = SIZES[index] ?? SIZES[0];
+
   if (ui.sizeCurrent) ui.sizeCurrent.textContent = size;
-  if (ui.sumSize)     ui.sumSize.textContent = size;
+  if (ui.sumSize) ui.sumSize.textContent = size;
+}
+
+function wrapToArrayIndex(index, length) {
+  return ((index % length) + length) % length;
 }
 
 /* ── SLIDER ── */
-function showSlide(index, animate) {
-  if (!ui.slides.length) return;
-  currentSlide = wrapIndex(index, ui.slides.length);
-  ui.slides.forEach((s, i) => {
-    s.style.transition    = animate ? 'opacity .45s ease' : 'none';
-    s.style.opacity       = i === currentSlide ? '1' : '0';
-    s.style.pointerEvents = i === currentSlide ? 'auto' : 'none';
-  });
-  ui.thumbs.forEach((t, i) => t.classList.toggle('active', i === currentSlide));
+function showSlide(index, animate = true) {
+  if (!ui.slides || !ui.slides.length) return;
+
+  currentSlide = wrapToArrayIndex(index, ui.slides.length);
+
+  for (let i = 0; i < ui.slides.length; i++) {
+    const slide = ui.slides[i];
+    const active = i === currentSlide;
+
+    slide.style.transition = animate ? 'opacity .45s ease' : 'none';
+    slide.style.opacity = active ? '1' : '0';
+    slide.style.pointerEvents = active ? 'auto' : 'none';
+  }
+
+  if (ui.thumbs && ui.thumbs.length) {
+    ui.thumbs.forEach((thumb, i) => {
+      thumb.classList.toggle('active', i === currentSlide);
+    });
+  }
+
   updateColorState(currentSlide);
 }
 
@@ -2027,8 +3158,16 @@ function triggerSlideInk(direction, toColor) {
   const originY = window.innerHeight * 0.42;
   const baseSize = Math.hypot(window.innerWidth, window.innerHeight) * 2;
 
-  const ink = document.createElement('div');
-  ink.style.cssText = `
+  const removeLater = (el, ms) => setTimeout(() => el.remove(), ms);
+
+  const createFx = (styleText) => {
+    const el = document.createElement('div');
+    el.style.cssText = styleText;
+    document.body.appendChild(el);
+    return el;
+  };
+
+  const ink = createFx(`
     position: fixed;
     left: ${originX}px;
     top: ${originY}px;
@@ -2040,15 +3179,12 @@ function triggerSlideInk(direction, toColor) {
     transform: translate(-50%, -50%) scale(0);
     background: ${isWhite
       ? 'radial-gradient(circle, rgba(255,255,255,0.14) 0%, rgba(255,255,255,0.07) 36%, rgba(255,255,255,0.02) 58%, transparent 74%)'
-      : 'radial-gradient(circle, rgba(0,0,0,0.24) 0%, rgba(20,20,20,0.12) 36%, rgba(0,0,0,0.04) 58%, transparent 74%)'
-    };
+      : 'radial-gradient(circle, rgba(0,0,0,0.24) 0%, rgba(20,20,20,0.12) 36%, rgba(0,0,0,0.04) 58%, transparent 74%)'};
     will-change: transform, opacity;
     filter: blur(0.2px);
-  `;
-  document.body.appendChild(ink);
+  `);
 
-  const ripple = document.createElement('div');
-  ripple.style.cssText = `
+  const ripple = createFx(`
     position: fixed;
     left: ${originX}px;
     top: ${originY}px;
@@ -2061,17 +3197,15 @@ function triggerSlideInk(direction, toColor) {
     border: 2.5px solid ${isWhite ? 'rgba(255,255,255,0.78)' : 'rgba(180,180,180,0.58)'};
     box-shadow: 0 0 ${isWhite ? '18px rgba(255,255,255,0.35)' : '14px rgba(150,150,150,0.28)'};
     will-change: transform, opacity, width, height;
-  `;
-  document.body.appendChild(ripple);
+  `);
 
   const ringCount = 4;
   for (let i = 0; i < ringCount; i++) {
-    const ring = document.createElement('div');
-    const ringAlpha = isWhite ? (0.5 - i * 0.1) : (0.38 - i * 0.08);
+    const ringAlpha = isWhite ? 0.5 - i * 0.1 : 0.38 - i * 0.08;
     const maxSize = 120 + i * 70;
     const delay = i * 80;
 
-    ring.style.cssText = `
+    const ring = createFx(`
       position: fixed;
       left: ${originX}px;
       top: ${originY}px;
@@ -2083,11 +3217,9 @@ function triggerSlideInk(direction, toColor) {
       transform: translate(-50%, -50%);
       border: 1.5px solid ${isWhite
         ? `rgba(255,255,255,${Math.max(ringAlpha, 0.12)})`
-        : `rgba(160,160,160,${Math.max(ringAlpha, 0.1)})`
-      };
+        : `rgba(160,160,160,${Math.max(ringAlpha, 0.1)})`};
       will-change: transform, opacity, width, height;
-    `;
-    document.body.appendChild(ring);
+    `);
 
     ring.animate(
       [
@@ -2102,12 +3234,11 @@ function triggerSlideInk(direction, toColor) {
       }
     );
 
-    setTimeout(() => ring.remove(), 950 + delay + i * 60);
+    removeLater(ring, 950 + delay + i * 60);
   }
 
   const sparkCount = 7;
   for (let i = 0; i < sparkCount; i++) {
-    const spark = document.createElement('div');
     const angle = (fromRight ? 160 : 20) + (i - sparkCount / 2) * 22;
     const rad = angle * Math.PI / 180;
     const dist = 40 + Math.random() * 55;
@@ -2115,7 +3246,7 @@ function triggerSlideInk(direction, toColor) {
     const ty = Math.sin(rad) * dist;
     const sz = 2.5 + Math.random() * 3.5;
 
-    spark.style.cssText = `
+    const spark = createFx(`
       position: fixed;
       left: ${originX}px;
       top: ${originY}px;
@@ -2128,8 +3259,7 @@ function triggerSlideInk(direction, toColor) {
       box-shadow: 0 0 ${sz * 2}px ${isWhite ? 'rgba(255,255,255,0.78)' : 'rgba(180,180,180,0.55)'};
       will-change: transform, opacity;
       transform: translate(-50%, -50%) scale(1);
-    `;
-    document.body.appendChild(spark);
+    `);
 
     spark.animate(
       [
@@ -2152,7 +3282,7 @@ function triggerSlideInk(direction, toColor) {
       }
     );
 
-    setTimeout(() => spark.remove(), 750 + i * 50);
+    removeLater(spark, 750 + i * 50);
   }
 
   ink.animate(
@@ -2188,15 +3318,22 @@ function triggerSlideInk(direction, toColor) {
   }, 900);
 }
 
-let slideStartX = 0, slideDragging = false;
-function slideStart(x) { slideDragging = true; slideStartX = x; }
+let slideStartX = 0;
+let slideDragging = false;
+
+function slideStart(x) {
+  slideDragging = true;
+  slideStartX = x;
+}
+
 function slideEnd(x) {
   if (!slideDragging) return;
   slideDragging = false;
 
   const dx = slideStartX - x;
+  const lastIndex = ui.slides.length - 1;
 
-  if (dx > 40 && currentSlide < ui.slides.length - 1) {
+  if (dx > 40 && currentSlide < lastIndex) {
     const targetSlide = currentSlide + 1;
     triggerSlideInk(1, targetSlide);
     showSlide(targetSlide, true);
@@ -2206,16 +3343,35 @@ function slideEnd(x) {
     showSlide(targetSlide, true);
   }
 }
-if (ui.wrap) {
-  ui.wrap.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
-  window.addEventListener('mouseup',     e => slideEnd(e.clientX));
-  ui.wrap.addEventListener('touchstart', e => slideStart(e.touches[0].clientX), { passive: true });
-  window.addEventListener('touchend',    e => { if (e.changedTouches?.[0]) slideEnd(e.changedTouches[0].clientX); });
+
+function bindSlideEvents() {
+  const startFromMouse = e => {
+    e.preventDefault();
+    slideStart(e.clientX);
+  };
+
+  const startFromTouch = e => {
+    if (!e.touches || !e.touches[0]) return;
+    slideStart(e.touches[0].clientX);
+  };
+
+  if (ui.wrap) {
+    ui.wrap.addEventListener('mousedown', startFromMouse);
+    ui.wrap.addEventListener('touchstart', startFromTouch, { passive: true });
+  }
+
+  window.addEventListener('mouseup', e => slideEnd(e.clientX));
+  window.addEventListener('touchend', e => {
+    if (e.changedTouches?.[0]) slideEnd(e.changedTouches[0].clientX);
+  });
+
+  if (ui.thumbRow) {
+    ui.thumbRow.addEventListener('mousedown', startFromMouse);
+    ui.thumbRow.addEventListener('touchstart', startFromTouch, { passive: true });
+  }
 }
-if (ui.thumbRow) {
-  ui.thumbRow.addEventListener('mousedown',  e => { e.preventDefault(); slideStart(e.clientX); });
-  ui.thumbRow.addEventListener('touchstart', e => slideStart(e.touches[0].clientX), { passive: true });
-}
+bindSlideEvents();
+
 
 /* ── SIZE CAROUSEL ── */
 const sizeItems = SIZES.map(s => {
@@ -2225,48 +3381,89 @@ const sizeItems = SIZES.map(s => {
   ui.carousel?.appendChild(el);
   return el;
 });
-function renderSizeCarousel(animate) {
+
+function getRelativeSizeIndex(i) {
+  let rel = wrapToArrayIndex(i - currentSize, sizeItems.length);
+  if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+  return rel;
+}
+
+function setSizeItemState(el, rel, animate) {
+  el.className = 'size-item';
+
+  if      (rel ===  0) el.classList.add('pos-0');
+  else if (rel ===  1) el.classList.add('pos-1');
+  else if (rel === -1) el.classList.add('pos-neg1');
+  else if (rel ===  2) el.classList.add('pos-2');
+  else if (rel === -2) el.classList.add('pos-neg2');
+  else                 el.classList.add('pos-hidden');
+
+  if (!animate) {
+    el.style.transition = 'none';
+    requestAnimationFrame(() => {
+      el.style.transition = '';
+    });
+  }
+}
+
+function renderSizeCarousel(animate = true) {
   sizeItems.forEach((el, i) => {
-    let rel = wrapIndex(i - currentSize, sizeItems.length);
-    if (rel > sizeItems.length / 2) rel -= sizeItems.length;
-    el.className = 'size-item';
-    if      (rel ===  0) el.classList.add('pos-0');
-    else if (rel ===  1) el.classList.add('pos-1');
-    else if (rel === -1) el.classList.add('pos-neg1');
-    else if (rel ===  2) el.classList.add('pos-2');
-    else if (rel === -2) el.classList.add('pos-neg2');
-    else                 el.classList.add('pos-hidden');
-    if (!animate) { el.style.transition = 'none'; requestAnimationFrame(() => { el.style.transition = ''; }); }
+    setSizeItemState(el, getRelativeSizeIndex(i), animate);
   });
+
   updateSizeState(currentSize);
 }
-function goToSize(index, animate) {
-  currentSize = wrapIndex(index, SIZES.length);
+
+function goToSize(index, animate = true) {
+  currentSize = wrapToArrayIndex(index, SIZES.length);
   renderSizeCarousel(animate);
 }
+
 function applyDragOffset(frac) {
   sizeItems.forEach((el, i) => {
-    let rel = wrapIndex(i - currentSize, sizeItems.length);
-    if (rel > sizeItems.length / 2) rel -= sizeItems.length;
+    const rel = getRelativeSizeIndex(i);
     const adjRel = rel - frac;
-    el.className = 'size-item'; el.style.transition = 'none';
+
+    el.className = 'size-item';
+    el.style.transition = 'none';
+
     let tx, sc, op;
+
     if (adjRel >= -0.5 && adjRel <= 0.5) {
       const t = adjRel;
-      tx = 130*t; sc = t>=0 ? clamp(1-.15*t,.85,1) : clamp(1+.15*t,.85,1); op = t>=0 ? clamp(1-.55*t,.45,1) : clamp(1+.55*t,.45,1);
+      tx = 130 * t;
+      sc = t >= 0 ? clamp(1 - 0.15 * t, 0.85, 1) : clamp(1 + 0.15 * t, 0.85, 1);
+      op = t >= 0 ? clamp(1 - 0.55 * t, 0.45, 1) : clamp(1 + 0.55 * t, 0.45, 1);
     } else if (adjRel > 0.5 && adjRel <= 1.5) {
-      const t = adjRel-1; tx=130+80*t; sc=clamp(.85-.2*t,.65,.85); op=clamp(.45-.25*t,.2,.45);
+      const t = adjRel - 1;
+      tx = 130 + 80 * t;
+      sc = clamp(0.85 - 0.2 * t, 0.65, 0.85);
+      op = clamp(0.45 - 0.25 * t, 0.2, 0.45);
     } else if (adjRel < -0.5 && adjRel >= -1.5) {
-      const t=-(adjRel+1); tx=-130-80*t; sc=clamp(.85-.2*t,.65,.85); op=clamp(.45-.25*t,.2,.45);
-    } else { el.style.opacity=0; return; }
-    if (window.innerWidth<=640) tx*=0.77;
-    el.style.transform=`translateX(${tx}px) scale(${sc}) translateZ(0)`;
-    el.style.opacity=op; el.style.filter='none';
-    el.style.zIndex=adjRel===0?10:(Math.abs(adjRel)<1?5:2);
+      const t = -(adjRel + 1);
+      tx = -130 - 80 * t;
+      sc = clamp(0.85 - 0.2 * t, 0.65, 0.85);
+      op = clamp(0.45 - 0.25 * t, 0.2, 0.45);
+    } else {
+      el.style.opacity = 0;
+      return;
+    }
+
+    if (window.innerWidth <= 640) tx *= 0.77;
+
+    el.style.transform = `translateX(${tx}px) scale(${sc}) translateZ(0)`;
+    el.style.opacity = op;
+    el.style.filter = 'none';
+    el.style.zIndex = adjRel === 0 ? 10 : (Math.abs(adjRel) < 1 ? 5 : 2);
   });
 }
-let sizeStartX=0, sizeDragging=false, dragRel=0;
-let sizeVelocity = 0, sizeLastX = 0, sizeLastTime = 0;
+
+let sizeStartX = 0;
+let sizeDragging = false;
+let dragRel = 0;
+let sizeVelocity = 0;
+let sizeLastX = 0;
+let sizeLastTime = 0;
 let sizeAnimRAF = null;
 
 function sizeStart(x) {
@@ -2276,17 +3473,21 @@ function sizeStart(x) {
   sizeLastTime = performance.now();
   sizeVelocity = 0;
   dragRel = 0;
+
   cancelAnimationFrame(sizeAnimRAF);
   ui.carousel?.classList.add('dragging');
 }
 
 function sizeMove(x) {
   if (!sizeDragging) return;
+
   const now = performance.now();
   const dt = now - sizeLastTime || 1;
+
   sizeVelocity = (x - sizeLastX) / dt;
   sizeLastX = x;
   sizeLastTime = now;
+
   dragRel = (sizeStartX - x) / SIZE_STEP;
   applyDragOffset(dragRel);
 }
@@ -2310,49 +3511,60 @@ function sizeEnd() {
   dragRel = 0;
   sizeVelocity = 0;
 }
-if (ui.carousel) {
-  ui.carousel.addEventListener('mousedown',  e => { e.preventDefault(); sizeStart(e.clientX); });
+
+function bindSizeEvents() {
+  if (!ui.carousel) return;
+
+  ui.carousel.addEventListener('mousedown', e => {
+    e.preventDefault();
+    sizeStart(e.clientX);
+  });
+
   window.addEventListener('mousemove', e => sizeMove(e.clientX));
-  window.addEventListener('mouseup',   () => sizeEnd());
-  ui.carousel.addEventListener('touchstart', e => sizeStart(e.touches[0].clientX), { passive: true });
-  window.addEventListener('touchmove', e => { if(sizeDragging && e.touches[0]) sizeMove(e.touches[0].clientX); }, { passive: true });
-  window.addEventListener('touchend',  () => sizeEnd());
+  window.addEventListener('mouseup', () => sizeEnd());
+
+  ui.carousel.addEventListener('touchstart', e => {
+    if (e.touches?.[0]) sizeStart(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchmove', e => {
+    if (sizeDragging && e.touches?.[0]) sizeMove(e.touches[0].clientX);
+  }, { passive: true });
+
+  window.addEventListener('touchend', () => sizeEnd());
 }
+bindSizeEvents();
+
 
 /* ── MULTI-ITEM PICKER ── */
-const ALL_SIZES = ['M','L','XL','XXL'];
+const ALL_SIZES = SIZES;
 let itemSpecs = [];
-function buildPicker(qty){
-  const wrap = $('multiPickerWrap'), picker = $('multiPicker');
-  if(!wrap || !picker) return;
-  const extra = qty - 1;
-  if(extra<=0){ wrap.style.display='none'; itemSpecs=[]; return; }
-  const prev = [...itemSpecs]; itemSpecs = [];
-  wrap.style.display=''; picker.innerHTML='';
-  for(let i=0; i<extra; i++){
-    const spec = prev[i] || { color: currentSlide===0?'white':'black', size: SIZES[currentSize] };
-    itemSpecs.push(spec);
-    const card = document.createElement('div'); card.className='mi-card'; card.style.animationDelay=(i*.06)+'s';
-    const num = document.createElement('div'); num.className='mi-num'; num.textContent=i+2;
-    const colors = document.createElement('div'); colors.className='mi-colors';
-    ['white','black'].forEach(c => {
-      const d = document.createElement('div');
-      d.className=`mi-dot mi-dot-${c}${spec.color===c?' active':''}`;
-      d.title=c==='white'?'أبيض':'أسود';
-      d.onclick = () => {
-  if (itemSpecs[i].color === c) return;
-  itemSpecs[i].color = c;
 
-  colors.querySelectorAll('.mi-dot').forEach(x => {
-    x.classList.remove('active');
-  });
-  d.classList.add('active');
+function previewText(spec) {
+  return `${spec.color === 'white' ? 'أبيض' : 'أسود'} · ${spec.size}`;
+}
 
-  d.querySelectorAll('.mi-dot-echo').forEach(e => e.remove());
+function updatePreview(i, card) {
+  const p = card.querySelector('.mi-preview');
+  if (p) p.textContent = previewText(itemSpecs[i]);
+}
 
-  d.classList.remove('liquid-burst');
-  void d.offsetWidth;
-  d.classList.add('liquid-burst');
+function setPickerDotColor(dotEl, color, index) {
+  if (!itemSpecs[index]) return;
+  if (itemSpecs[index].color === color) return;
+
+  itemSpecs[index].color = color;
+
+  const colors = dotEl.closest('.mi-colors');
+  if (colors) {
+    colors.querySelectorAll('.mi-dot').forEach(x => x.classList.remove('active'));
+  }
+
+  dotEl.classList.add('active');
+
+  dotEl.classList.remove('liquid-burst');
+  void dotEl.offsetWidth;
+  dotEl.classList.add('liquid-burst');
 
   const echo = document.createElement('span');
   echo.className = 'mi-dot-echo';
@@ -2364,43 +3576,140 @@ function buildPicker(qty){
     z-index: -2;
     opacity: 0;
     transform: scale(.92);
-    background: ${c === 'white'
+    background: ${color === 'white'
       ? 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.26) 0%, rgba(255,255,255,.10) 30%, transparent 70%)'
       : 'radial-gradient(circle at 35% 30%, rgba(255,255,255,.12) 0%, rgba(255,255,255,.05) 30%, transparent 70%)'};
     animation: liquidEcho .42s .04s cubic-bezier(.22,1,.36,1) forwards;
   `;
-  d.appendChild(echo);
+  dotEl.appendChild(echo);
 
-  const cleanup = () => {
-    d.classList.remove('liquid-burst');
+  echo.addEventListener('animationend', () => {
+    dotEl.classList.remove('liquid-burst');
     echo.remove();
-  };
-
-  echo.addEventListener('animationend', cleanup, { once: true });
-
-  updatePreview(i, card);
-};
-      colors.appendChild(d);
-    });
-    const sep = document.createElement('div'); sep.className='mi-sep';
-    const sizes = document.createElement('div'); sizes.className='mi-sizes';
-    ALL_SIZES.forEach(s=>{
-      const btn = document.createElement('div');
-      btn.className=`mi-size${spec.size===s?' active':''}`;
-      btn.textContent=s;
-      btn.onclick=()=>{ itemSpecs[i].size=s; sizes.querySelectorAll('.mi-size').forEach(x=>x.classList.remove('active')); btn.classList.add('active'); updatePreview(i,card); };
-      sizes.appendChild(btn);
-    });
-    const preview = document.createElement('div'); preview.className='mi-preview'; preview.id=`mi-preview-${i}`; preview.textContent=previewText(spec);
-    card.appendChild(num); card.appendChild(colors); card.appendChild(sep); card.appendChild(sizes); card.appendChild(preview);
-    picker.appendChild(card);
-  }
+  }, { once: true });
 }
-function previewText(spec){ return `${spec.color==='white'?'أبيض':'أسود'} · ${spec.size}`; }
-function updatePreview(i,card){ const p=card.querySelector('.mi-preview'); if(p) p.textContent=previewText(itemSpecs[i]); }
 
+function setPickerSize(sizeEl, size, index) {
+  if (!itemSpecs[index]) return;
+  itemSpecs[index].size = size;
+
+  const sizes = sizeEl.closest('.mi-sizes');
+  if (sizes) {
+    sizes.querySelectorAll('.mi-size').forEach(x => x.classList.remove('active'));
+  }
+
+  sizeEl.classList.add('active');
+}
+
+function createPickerCard(spec, index) {
+  const card = document.createElement('div');
+  card.className = 'mi-card';
+  card.style.animationDelay = `${index * 0.06}s`;
+
+  const num = document.createElement('div');
+  num.className = 'mi-num';
+  num.textContent = index + 2;
+
+  const colors = document.createElement('div');
+  colors.className = 'mi-colors';
+
+  ['white', 'black'].forEach(color => {
+    const dot = document.createElement('div');
+    dot.className = `mi-dot mi-dot-${color}${spec.color === color ? ' active' : ''}`;
+    dot.title = color === 'white' ? 'أبيض' : 'أسود';
+
+    dot.onclick = () => {
+      setPickerDotColor(dot, color, index);
+      updatePreview(index, card);
+    };
+
+    colors.appendChild(dot);
+  });
+
+  const sep = document.createElement('div');
+  sep.className = 'mi-sep';
+
+  const sizes = document.createElement('div');
+  sizes.className = 'mi-sizes';
+
+  ALL_SIZES.forEach(size => {
+    const btn = document.createElement('div');
+    btn.className = `mi-size${spec.size === size ? ' active' : ''}`;
+    btn.textContent = size;
+
+    btn.onclick = () => {
+      setPickerSize(btn, size, index);
+      updatePreview(index, card);
+    };
+
+    sizes.appendChild(btn);
+  });
+
+  const preview = document.createElement('div');
+  preview.className = 'mi-preview';
+  preview.id = `mi-preview-${index}`;
+  preview.textContent = previewText(spec);
+
+  const designToggle = document.createElement('div');
+designToggle.className = 'mi-design-toggle';
+designToggle.innerHTML = `
+  <label class="mi-design-lbl">
+    <div class="mi-design-switch ${spec.applyDesign ? 'on' : ''}" data-idx="${index}">
+      <div class="mi-design-knob"></div>
+    </div>
+    <span>نفس التصميم</span>
+  </label>`;
+designToggle.querySelector('.mi-design-switch').onclick = function() {
+  itemSpecs[this.dataset.idx].applyDesign = !itemSpecs[this.dataset.idx].applyDesign;
+  this.classList.toggle('on', itemSpecs[this.dataset.idx].applyDesign);
+};
+const topRow = document.createElement('div');
+topRow.style.cssText = 'display:flex;align-items:center;gap:14px;width:100%';
+topRow.append(num, colors, sep, sizes, preview);
+card.style.flexDirection = 'column';
+card.style.alignItems = 'stretch';
+card.append(topRow, designToggle);
+  return card;
+}
+
+function buildPicker(qty) {
+  const wrap = $('multiPickerWrap');
+  const picker = $('multiPicker');
+
+  if (!wrap || !picker) return;
+
+  const extra = qty - 1;
+
+  if (extra <= 0) {
+    wrap.style.display = 'none';
+    itemSpecs = [];
+    picker.innerHTML = '';
+    return;
+  }
+
+  const prevSpecs = itemSpecs.slice();
+  itemSpecs = [];
+
+  wrap.style.display = '';
+  picker.innerHTML = '';
+
+  const fragment = document.createDocumentFragment();
+
+  for (let i = 0; i < extra; i++) {
+    const spec = prevSpecs[i] || {
+      color: currentSlide === 0 ? 'white' : 'black',
+      size: SIZES[currentSize],
+      applyDesign: false
+    };
+
+    itemSpecs.push(spec);
+    fragment.appendChild(createPickerCard(spec, i));
+  }
+
+  picker.appendChild(fragment);
+}
 /* ── PRICE SYSTEM ── */
-const PRICE_STEP = 50;
+const PRICE_STEP = 20;
 
 function getDiscountByQty(qty) {
   // جدول تخفيضات واضح وقابل للتعديل بسهولة
@@ -2973,69 +4282,68 @@ function stopSubmitWater(btn) {
   if (!btn) return;
   btn.classList.remove('sending');
 }
+
 /* ── SUBMIT ── */
+  async function submitOrder() {
+    if (submitLock) return;
+    submitLock = true;
 
-async function submitOrder() {
-  if (submitLock) return;
-  submitLock = true;
+    const name    = ui.fName?.value.trim() || '';
+    const phone   = ui.fPhone?.value.trim() || '';
+    const color   = ui.fColor?.value || '';
+    const size    = ui.sizeCurrent?.textContent || 'M';
+    const qty     = ui.fQty?.value || '';
+    const wilaya  = ui.fWilaya?.value || '';
+    const region  = ui.fRegion?.value || '';
+    const notes   = ui.fNotes?.value.trim() || '';
+    const deliveryPrice = getSelectedDeliveryPrice();
+const designImage = document.getElementById('fDesignImage')?.value || null;
+const textDesignImage = await (window.getTextDesignImage ? window.getTextDesignImage() : Promise.resolve(null));
+    if (!name || !phone) {
+      showToast('الرجاء ملء الاسم ورقم الهاتف.', 'حقول مطلوبة', 'error');
+      submitLock = false;
+      return;
+    }
+    if (!wilaya) {
+      showToast('الرجاء اختيار الولاية.', 'بيانات الموقع ناقصة', 'error');
+      submitLock = false;
+      return;
+    }
+    if (deliveryMode === 'home' && !region) {
+      showToast('الرجاء اختيار المنطقة / البلدية للتوصيل إلى المنزل.', 'بيانات الموقع ناقصة', 'error');
+      submitLock = false;
+      return;
+    }
 
-  const name   = ui.fName?.value.trim() || '';
-  const phone  = ui.fPhone?.value.trim() || '';
-  const color  = ui.fColor?.value || '';
-  const size   = ui.sizeCurrent?.textContent || 'M';
-  const qty    = ui.fQty?.value || '';
-  const wilaya = ui.fWilaya?.value || '';
-  const region = ui.fRegion?.value || '';
-  const notes  = ui.fNotes?.value.trim() || '';
-const deliveryPrice = getSelectedDeliveryPrice();
+    const city    = deliveryMode === 'home' ? `${wilaya} - ${region}` : wilaya;
+    const orderId = ensureOrderId();
 
-  if (!name || !phone) {
-    showToast('الرجاء ملء الاسم ورقم الهاتف.', 'حقول مطلوبة', 'error');
-    submitLock = false;
-    return;
-  }
+    const btn     = ui.submitBtn;
+    const oldText = btn?.querySelector('.submit-btn-label')?.textContent || btn?.textContent || '';
 
-  if (!wilaya) {
-  showToast('الرجاء اختيار الولاية.', 'بيانات الموقع ناقصة', 'error');
-  submitLock = false;
-  return;
-}
+    if (btn) {
+      btn.disabled = true;
+      btn.dataset.originalText = oldText;
+      const lbl = btn.querySelector('.submit-btn-label');
+      if (lbl) lbl.textContent = 'جارٍ الإرسال...';
+      btn.classList.add('sending');
+      startSubmitWater(btn);
+    }
 
-if (deliveryMode === 'home' && !region) {
-  showToast('الرجاء اختيار المنطقة / البلدية للتوصيل إلى المنزل.', 'بيانات الموقع ناقصة', 'error');
-  submitLock = false;
-  return;
-}
+    const softNoticeTimer = setTimeout(() => {
+      showToast('ما زال الطلب قيد الإرسال، انتظر قليلاً.', 'جارٍ الإرسال', 'warn');
+    }, SOFT_WAIT_MS);
 
-const city = deliveryMode === 'home'
-  ? `${wilaya} - ${region}`
-  : wilaya;    const orderId = ensureOrderId();
+    const { controller, timer } = createFetchTimeout(HARD_TIMEOUT_MS);
 
-  const btn = ui.submitBtn;
-const oldText = btn?.querySelector('.submit-btn-label')?.textContent || btn?.textContent || '';
-
-if (btn) {
-  btn.disabled = true;
-  btn.dataset.originalText = oldText;
-  const lbl = btn.querySelector('.submit-btn-label');
-  if (lbl) lbl.textContent = 'جارٍ الإرسال...';
-  btn.classList.add('sending');
-  startSubmitWater(btn);
-}
-
-  const softNoticeTimer = setTimeout(() => {
-    showToast('ما زال الطلب قيد الإرسال، انتظر قليلاً.', 'جارٍ الإرسال', 'warn');
-  }, SOFT_WAIT_MS);
-
-  const { controller, timer } = createFetchTimeout(HARD_TIMEOUT_MS);
-
-  try {
-    const res = await fetch(ORDER_API, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      signal: controller.signal,
+    try {
     
-  body: JSON.stringify({
+    
+      const res = await fetch(ORDER_API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
   orderId,
   name,
   phone,
@@ -3046,168 +4354,1491 @@ if (btn) {
   notes,
   deliveryMode,
   deliveryPrice,
-  items: itemSpecs.length > 0 ? itemSpecs : null
+  items: itemSpecs.length > 0 ? itemSpecs : null,
+  designImage,
+  textDesignImage
 })
+      });
+
+      let data = {};
+      try {
+        data = await res.json();
+      } catch (_) {
+        data = {};
+      }
+
+      if (res.ok && data.success) {
+        clearOrderId();
+        showSuccessUI();
+        return;
+      }
+
+      if (data?.status === 'processing' || data?.error === 'ORDER_PROCESSING') {
+        await resolveAfterUncertainOutcome(orderId);
+        return;
+      }
+
+      if (
+        data?.error === 'TELEGRAM_TIMEOUT' ||
+        data?.error === 'TELEGRAM_SEND_FAILED' ||
+        data?.error === 'SERVER_ERROR'
+      ) {
+        await resolveAfterUncertainOutcome(orderId);
+        return;
+      }
+
+      await resolveAfterUncertainOutcome(orderId);
+    } catch (err) {
+      await resolveAfterUncertainOutcome(orderId);
+    } finally {
+      clearTimeout(timer);
+      clearTimeout(softNoticeTimer);
+
+      if (btn) {
+        stopSubmitWater(btn);
+        btn.disabled = false;
+        btn.classList.remove('sending');
+        const lbl = btn.querySelector('.submit-btn-label');
+        if (lbl) lbl.textContent = btn.dataset.originalText || oldText;
+      }
+
+      submitLock = false;
+    }
+  }
+
+  /* ── RESET ── */
+  function resetForm() {
+    if (ui.fName)  ui.fName.value = '';
+    if (ui.fPhone) ui.fPhone.value = '';
+    if (ui.fNotes) ui.fNotes.value = '';
+
+    ui.fWilaya.value = '';
+    ui.fRegion.value = '';
+
+    wilayaTriggerText.textContent = 'اختر الولاية...';
+    wilayaTriggerText.classList.add('placeholder');
+
+    regionTriggerText.textContent = 'اختر المنطقة...';
+    regionTriggerText.classList.add('placeholder');
+
+    regionTrigger.classList.add('disabled');
+    ui.regionAnim.classList.remove('show');
+    hideDeliveryPrice();
+
+    setDeliveryMode('desk');
+
+    if (ui.fQty)   ui.fQty.value = '1';
+    if (ui.qtyNum) ui.qtyNum.textContent = '1';
+
+    if (ui.fColor)   ui.fColor.value = 'أبيض';
+    if (ui.sumColor) ui.sumColor.textContent = 'أبيض';
+    if (ui.sumDot)   ui.sumDot.className = 'sum-dot white';
+    if (ui.sumSize)  ui.sumSize.textContent = 'M';
+    if (ui.sizeCurrent) ui.sizeCurrent.textContent = 'M';
+
+    buildPicker(1);
+    updatePriceDisplay(1);
+
+    currentSlide = 0;
+    currentSize  = 0;
+    showSlide(0, false);
+    goToSize(0, false);
+
+    if (ui.submitBtn)  stopSubmitWater(ui.submitBtn);
+    if (ui.formWrap)   ui.formWrap.style.display = '';
+    if (ui.successMsg) ui.successMsg.classList.remove('show');
+  }
+
+  /* ── EASTER EGG ── */
+  (() => {
+    const mark        = $('brandMark');
+    const brandLink   = $('brandLink');
+    const ring        = $('markRing');
+    const circle      = $('ringCircle');
+    const eggOverlay  = $('eggOverlay');
+    const HOLD_MS     = 3000;
+    const CIRCUMFERENCE = 2 * Math.PI * 22;
+    let holdTimer = null, startTime = 0, rafId = null, triggered = false;
+
+    function startHold(e) {
+      e.preventDefault();
+      triggered = false;
+      startTime = Date.now();
+      ring.classList.add('charging');
+
+      function tick() {
+        const elapsed = Date.now() - startTime;
+        const pct = Math.min(elapsed / HOLD_MS, 1);
+        const dash = pct * CIRCUMFERENCE;
+        circle.style.strokeDasharray = `${dash} ${CIRCUMFERENCE}`;
+        if (pct < 1) rafId = requestAnimationFrame(tick);
+        else triggerEgg();
+      }
+
+      rafId = requestAnimationFrame(tick);
+    }
+
+    function cancelHold() {
+      if (triggered) return;
+      cancelAnimationFrame(rafId);
+      ring.classList.remove('charging');
+      circle.style.strokeDasharray = '0 200';
+    }
+
+    function triggerEgg() {
+      triggered = true;
+      ring.classList.remove('charging');
+      circle.style.strokeDasharray = '0 200';
+
+      const emojis = ['✦', '◆', '✧', '▣', '◌', '✦', '◆'];
+      const rect = mark.getBoundingClientRect();
+      const cx = rect.left + rect.width / 2;
+      const cy = rect.top + rect.height / 2;
+
+      emojis.forEach((em, i) => {
+        const el = document.createElement('div');
+        el.className = 'egg-star';
+        el.textContent = em;
+        const angle = (i / emojis.length) * 2 * Math.PI;
+        const dist = 60 + Math.random() * 40;
+        el.style.setProperty('--tx', Math.cos(angle) * dist + 'px');
+        el.style.setProperty('--ty', Math.sin(angle) * dist + 'px');
+        el.style.left = cx + 'px';
+        el.style.top  = cy + 'px';
+        el.style.animationDelay = (i * 0.05) + 's';
+        document.body.appendChild(el);
+        setTimeout(() => el.remove(), 3000);
+      });
+
+      setTimeout(() => {
+        eggOverlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+      }, 200);
+    }
+
+    function closeEgg() {
+      eggOverlay.classList.remove('show');
+      document.body.style.overflow = '';
+      triggered = false;
+    }
+
+    window.closeEgg = closeEgg;
+
+    brandLink.addEventListener('click', e => {
+      if (triggered) e.preventDefault();
     });
 
-    let data = {};
+    mark.addEventListener('mousedown', startHold);
+    window.addEventListener('mouseup', cancelHold);
+    mark.addEventListener('touchstart', startHold, { passive: false });
+    window.addEventListener('touchcancel', cancelHold);
+  })();
+
+  window.changeQty   = changeQty;
+  window.submitOrder = submitOrder;
+  window.resetForm   = resetForm;
+
+  /* ── INIT ── */
+  showSlide(0, false);
+  goToSize(0, false);
+  updatePriceDisplay(1);
+  setDeliveryMode('desk');
+  refreshRegionAvailability();
+
+  // ربط زر المسح المخصص بحقل البحث
+  const clearBtn = $('luxSearchClear');
+  if (clearBtn) {
+    clearBtn.addEventListener('click', () => {
+      sheetSearch.value = '';
+      sheetSearch.focus();
+      clearBtn.classList.remove('visible');
+      renderSheetItems(overlay._items, overlay._selected, '');
+    });
+  }
+
+  // إظهار/إخفاء زر المسح عند الكتابة
+  sheetSearch.addEventListener('input', () => {
+    renderSheetItems(overlay._items, overlay._selected, sheetSearch.value);
+    if (clearBtn) clearBtn.classList.toggle('visible', sheetSearch.value.length > 0);
+  });
+
+  const revIO = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('show');
+    });
+  }, { threshold: 0.08 });
+
+  document.querySelectorAll('.reveal').forEach(el => revIO.observe(el));
+  window.addEventListener('resize', () => renderSizeCarousel(false));
+})();
+
+(() => {
+  const ARM_MS     = 1500;
+  const TOTAL_MS   = 5000;
+  const WHISPER_MS = 2600;
+  const FADE_MS    = 520;
+
+  const bands = document.querySelectorAll('.price-band');
+  if (!bands.length) return;
+
+  const svgNS = 'http://www.w3.org/2000/svg';
+
+  function clamp(n, min, max) {
+    return Math.max(min, Math.min(max, n));
+  }
+
+  function setupBand(band) {
+    if (band.dataset.lpReady === '1') return;
+    band.dataset.lpReady = '1';
+
+    band.style.position = band.style.position || 'relative';
+    band.style.overflow = 'hidden';
+
+    const layer = document.createElement('div');
+    layer.className = 'price-longpress-layer';
+    band.appendChild(layer);
+
+    const canvas = document.createElement('canvas');
+    canvas.className = 'price-longpress-canvas';
+    layer.appendChild(canvas);
+
+    const orb = document.createElement('div');
+    orb.className = 'price-longpress-orb';
+    layer.appendChild(orb);
+
+    const svg = document.createElementNS(svgNS, 'svg');
+    svg.classList.add('price-longpress-ring');
+    svg.setAttribute('viewBox', '0 0 100 100');
+    svg.setAttribute('preserveAspectRatio', 'none');
+
+    const ringPath = document.createElementNS(svgNS, 'path');
+    ringPath.setAttribute(
+      'd',
+      'M 12 1 H 88 A 11 11 0 0 1 99 12 V 88 A 11 11 0 0 1 88 99 H 12 A 11 11 0 0 1 1 88 V 12 A 11 11 0 0 1 12 1 Z'
+    );
+    svg.appendChild(ringPath);
+    layer.appendChild(svg);
+
+    const whisper = document.createElement('div');
+    whisper.className = 'price-whisper';
+    whisper.setAttribute('role', 'status');
+    whisper.setAttribute('aria-live', 'polite');
+    whisper.textContent = 'وصلتنا رسالتك، سنحاول تقليل السعر قريبًا...';
+    document.body.appendChild(whisper);
+
+    const ctx = canvas.getContext('2d');
+
+    let ringLength = 320;
     try {
-      data = await res.json();
-    } catch (_) {
-      data = {};
+      ringLength = ringPath.getTotalLength();
+    } catch {}
+
+    let activePointerId = null;
+    let holdStart = 0;
+    let armed = false;
+    let active = false;
+    let completed = false;
+    let destroyed = false;
+
+    let armTimer = 0;
+    let finishTimer = 0;
+    let whisperTimer = 0;
+    let rafId = 0;
+    let fadeRaf = 0;
+    let whisperToken = 0;
+
+    const particles = [];
+
+    function resizeCanvas() {
+      const rect = band.getBoundingClientRect();
+      const dpr = window.devicePixelRatio || 1;
+      const w = Math.max(1, Math.round(rect.width * dpr));
+      const h = Math.max(1, Math.round(rect.height * dpr));
+
+      canvas.width = w;
+      canvas.height = h;
+      canvas.style.width = rect.width + 'px';
+      canvas.style.height = rect.height + 'px';
+
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     }
 
-    if (res.ok && data.success) {
-      clearOrderId();
-      showSuccessUI();
+    function spawnParticle(progress) {
+      const rect = band.getBoundingClientRect();
+      const count = progress > 0.65 ? 2 : 1;
+
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: rect.width * (0.22 + Math.random() * 0.56),
+          y: rect.height * (0.18 + Math.random() * 0.6),
+          r: 0.8 + Math.random() * 1.8,
+          vx: (Math.random() - 0.5) * 0.32,
+          vy: -(0.18 + Math.random() * 0.45),
+          life: 0,
+          maxLife: 50 + Math.random() * 35,
+          alpha: 0.12 + Math.random() * 0.2
+        });
+      }
+    }
+
+    function drawParticles(progress) {
+      const rect = band.getBoundingClientRect();
+      ctx.clearRect(0, 0, rect.width, rect.height);
+
+      if (progress > 0.02 && Math.random() < 0.14 + progress * 0.08) {
+        spawnParticle(progress);
+      }
+
+      for (let i = particles.length - 1; i >= 0; i--) {
+        const p = particles[i];
+        p.x += p.vx;
+        p.y += p.vy;
+        p.life += 1;
+
+        if (p.life >= p.maxLife) {
+          particles.splice(i, 1);
+          continue;
+        }
+
+        const inFade = Math.min(1, p.life / 12);
+        const outFade = p.life > p.maxLife * 0.72
+          ? 1 - (p.life - p.maxLife * 0.72) / (p.maxLife * 0.28)
+          : 1;
+
+        const alpha = p.alpha * inFade * outFade * (0.55 + progress * 0.45);
+
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(255,255,255,${alpha})`;
+        ctx.fill();
+      }
+    }
+
+    function updateRing(progress) {
+      const dashOffset = ringLength * (1 - progress);
+      ringPath.style.strokeDasharray = `${ringLength} ${ringLength}`;
+      ringPath.style.strokeDashoffset = `${dashOffset}`;
+      ringPath.style.strokeWidth = `${1.55 + progress * 0.75}`;
+    }
+
+    function animate() {
+      if (!active || destroyed) return;
+
+      const elapsed = performance.now() - holdStart;
+      const progress = clamp((elapsed - ARM_MS) / (TOTAL_MS - ARM_MS), 0, 1);
+
+      updateRing(progress);
+      orb.style.width  = `${52 + progress * 20}px`;
+      orb.style.height = `${52 + progress * 20}px`;
+
+      drawParticles(progress);
+
+      if (progress < 1) {
+        rafId = requestAnimationFrame(animate);
+      }
+    }
+
+    function positionWhisper() {
+      const rect = band.getBoundingClientRect();
+      const margin = 12;
+      const preferredWidth = Math.min(window.innerWidth - margin * 2, 380);
+      whisper.style.width = `${preferredWidth}px`;
+
+      const whisperRect = whisper.getBoundingClientRect();
+
+      let left = rect.left + rect.width / 2;
+      left = clamp(
+        left,
+        margin + whisperRect.width / 2,
+        window.innerWidth - margin - whisperRect.width / 2
+      );
+
+      const spaceAbove = rect.top;
+      const spaceBelow = window.innerHeight - rect.bottom;
+
+      let top;
+      let place = 'below';
+
+      if (spaceAbove >= whisperRect.height + 16 && spaceAbove >= spaceBelow) {
+        top = rect.top - whisperRect.height - 14;
+        place = 'above';
+      } else if (spaceBelow >= whisperRect.height + 16) {
+        top = rect.bottom + 14;
+        place = 'below';
+      } else {
+        top = clamp(
+          (window.innerHeight - whisperRect.height) / 2,
+          margin,
+          window.innerHeight - margin - whisperRect.height
+        );
+        place = 'center';
+      }
+
+      whisper.dataset.place = place;
+      whisper.style.left = `${left}px`;
+      whisper.style.top  = `${top}px`;
+    }
+
+    function showWhisper() {
+      if (destroyed) return;
+
+      const token = ++whisperToken;
+      clearTimeout(whisperTimer);
+      whisper.classList.remove('show');
+
+      requestAnimationFrame(() => {
+        if (destroyed || token !== whisperToken) return;
+
+        positionWhisper();
+        whisper.classList.add('show');
+
+        whisperTimer = window.setTimeout(() => {
+          if (destroyed || token !== whisperToken) return;
+          whisper.classList.remove('show');
+        }, WHISPER_MS);
+      });
+    }
+
+    function clearTimers() {
+      clearTimeout(armTimer);
+      clearTimeout(finishTimer);
+      armTimer = 0;
+      finishTimer = 0;
+    }
+
+    function resetVisuals() {
+      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(fadeRaf);
+      rafId = 0;
+      fadeRaf = 0;
+
+      band.classList.remove('lp-armed', 'lp-active');
+
+      ringPath.style.strokeDasharray = `${ringLength} ${ringLength}`;
+      ringPath.style.strokeDashoffset = `${ringLength}`;
+      ringPath.style.strokeWidth = '1.6';
+      ringPath.style.stroke = 'rgba(255,255,255,0)';
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles.length = 0;
+
+      orb.style.width = '52px';
+      orb.style.height = '52px';
+    }
+
+    function fadeOutAndReset() {
+      const start = performance.now();
+      const initialDash = parseFloat(ringPath.style.strokeDashoffset || `${ringLength}`) || ringLength;
+
+      function step(now) {
+        const t = clamp((now - start) / FADE_MS, 0, 1);
+        const ease = 1 - Math.pow(1 - t, 3);
+
+        ringPath.style.strokeDashoffset = `${initialDash + (ringLength - initialDash) * ease}`;
+        ringPath.style.stroke = `rgba(255,255,255,${0.82 * (1 - ease)})`;
+
+        drawParticles(1 - ease);
+
+        if (t < 1) {
+          fadeRaf = requestAnimationFrame(step);
+        } else {
+          resetVisuals();
+          active = false;
+          armed = false;
+          completed = false;
+          activePointerId = null;
+        }
+      }
+
+      fadeRaf = requestAnimationFrame(step);
+    }
+
+    function startHold(e) {
+      if (destroyed) return;
+      if (activePointerId !== null) return;
+      if (e.target.closest('button, a, input, textarea, select, [data-no-longpress]')) return;
+
+      e.preventDefault();
+
+      activePointerId = e.pointerId ?? 'mouse';
+      holdStart = performance.now();
+      armed = false;
+      active = false;
+      completed = false;
+      particles.length = 0;
+
+      resizeCanvas();
+      resetVisuals();
+      clearTimers();
+
+      if (band.setPointerCapture && e.pointerId !== undefined) {
+        try {
+          band.setPointerCapture(e.pointerId);
+        } catch {}
+      }
+
+      armTimer = setTimeout(() => {
+        if (activePointerId === null || destroyed) return;
+
+        armed = true;
+        active = true;
+        band.classList.add('lp-armed', 'lp-active');
+
+        ringPath.style.strokeDasharray = `${ringLength} ${ringLength}`;
+        ringPath.style.strokeDashoffset = `${ringLength}`;
+        animate();
+      }, ARM_MS);
+
+      finishTimer = setTimeout(() => {
+        if (destroyed) return;
+        if (activePointerId === null) return;
+        if (!active) return;
+
+        completed = true;
+        clearTimers();
+        showWhisper();
+        fadeOutAndReset();
+      }, TOTAL_MS);
+    }
+
+    function endHold(e) {
+      if (destroyed) return;
+
+      const id = e?.pointerId ?? 'mouse';
+      if (activePointerId !== null && id !== activePointerId) return;
+      if (activePointerId === null) return;
+
+      activePointerId = null;
+      clearTimers();
+
+      if (!armed) {
+        resetVisuals();
+        active = false;
+        completed = false;
+        return;
+      }
+
+      if (!completed) {
+        fadeOutAndReset();
+      }
+    }
+
+    function cancelHold(e) {
+      endHold(e);
+    }
+
+    band.addEventListener('pointerdown', startHold, { passive: false });
+    window.addEventListener('pointerup', endHold, { passive: true });
+    window.addEventListener('pointercancel', cancelHold, { passive: true });
+
+    window.addEventListener('blur', () => {
+      if (activePointerId !== null) {
+        activePointerId = null;
+        clearTimers();
+        fadeOutAndReset();
+      }
+    }, { passive: true });
+
+    band.addEventListener('contextmenu', e => e.preventDefault());
+    band.addEventListener('selectstart', e => e.preventDefault());
+
+    window.addEventListener('resize', () => {
+      if (!destroyed) resizeCanvas();
+    }, { passive: true });
+
+    resizeCanvas();
+    resetVisuals();
+
+    return () => {
+      destroyed = true;
+      clearTimers();
+      clearTimeout(whisperTimer);
+      cancelAnimationFrame(rafId);
+      cancelAnimationFrame(fadeRaf);
+      whisper.remove();
+    };
+  }
+
+  bands.forEach(setupBand);
+})();
+
+
+(() => {
+  const dz        = document.getElementById('designDropzone');
+  const fileInput = document.getElementById('designFileInput');
+  if (!dz || !fileInput) return;
+
+  const analysisLbl  = document.getElementById('designAnalysisLabel');
+  const metricsWrap  = document.getElementById('designMetrics');
+  const previewImg   = document.getElementById('designPreviewImg');
+  const removeBtn    = document.getElementById('designRemoveBtn');
+  const hiddenData   = document.getElementById('fDesignImage');
+  
+
+  // ── عتبات الجودة (قابلة للتعديل لاحقاً) ──
+  const MIN_SHORT_SIDE   = 900;
+  const MIN_MEGAPIXELS   = 1.15e6;
+  const SHARPNESS_MIN    = 45;
+  const EDGE_DENSITY_MIN = 0.012;
+  const ANALYSIS_SAMPLE  = 480;
+  const OUTPUT_MAX_DIM   = 1600;
+
+  const metricEls = {
+    res:    metricsWrap.querySelector('[data-metric="res"]'),
+    sharp:  metricsWrap.querySelector('[data-metric="sharp"]'),
+    design: metricsWrap.querySelector('[data-metric="design"]'),
+  };
+
+  function setMetric(key, state) {
+    const el = metricEls[key];
+    if (!el) return;
+    el.classList.remove('pending', 'pass', 'fail');
+    el.classList.add(state);
+  }
+  function resetMetrics() {
+    Object.keys(metricEls).forEach(k => setMetric(k, 'pending'));
+  }
+  function wait(ms) { return new Promise(r => setTimeout(r, ms)); }
+  function openPicker() { fileInput.click(); }
+
+  dz.addEventListener('click', () => {
+    if (dz.classList.contains('accepted') || dz.classList.contains('analyzing')) return;
+    openPicker();
+  });
+  dz.addEventListener('keydown', e => {
+    if ((e.key === 'Enter' || e.key === ' ') &&
+        !dz.classList.contains('accepted') && !dz.classList.contains('analyzing')) {
+      e.preventDefault();
+      openPicker();
+    }
+  });
+
+  ['dragenter', 'dragover'].forEach(ev => {
+    dz.addEventListener(ev, e => {
+      e.preventDefault();
+      if (dz.classList.contains('analyzing')) return;
+      dz.classList.add('drag-over');
+    });
+  });
+  ['dragleave', 'drop'].forEach(ev => {
+    dz.addEventListener(ev, e => {
+      e.preventDefault();
+      dz.classList.remove('drag-over');
+    });
+  });
+  dz.addEventListener('drop', e => {
+    const f = e.dataTransfer?.files?.[0];
+    if (f) handleFile(f);
+  });
+
+  fileInput.addEventListener('change', () => {
+    const f = fileInput.files?.[0];
+    if (f) handleFile(f);
+    fileInput.value = '';
+  });
+
+  removeBtn.addEventListener('click', e => {
+    e.stopPropagation();
+    resetDropzone();
+  });
+
+  function resetDropzone() {
+  dz.classList.remove('accepted', 'analyzing', 'drag-over');
+  previewImg.src = '';
+  hiddenData.value = '';
+  resetMetrics();
+}
+  function shakeReject(message) {
+    dz.classList.remove('analyzing');
+    dz.classList.add('shake');
+    setTimeout(() => dz.classList.remove('shake'), 460);
+    if (window.showToast) window.showToast(message, 'جودة الصورة غير كافية', 'error');
+  }
+
+  async function handleFile(file) {
+    if (!file.type || !file.type.startsWith('image/')) {
+      shakeReject('الملف المختار ليس صورة صالحة.');
       return;
     }
 
-    if (data?.status === 'processing' || data?.error === 'ORDER_PROCESSING') {
-      await resolveAfterUncertainOutcome(orderId);
-      return;
+    dz.classList.remove('accepted');
+    dz.classList.add('analyzing');
+    resetMetrics();
+    analysisLbl.textContent = 'جاري فحص الجودة...';
+
+    const url = URL.createObjectURL(file);
+    const img = new Image();
+
+    img.onload = async () => {
+      try {
+        await wait(160);
+        const w = img.naturalWidth, h = img.naturalHeight;
+        const shortSide = Math.min(w, h);
+        const megapixels = w * h;
+        const resOk = shortSide >= MIN_SHORT_SIDE && megapixels >= MIN_MEGAPIXELS;
+        setMetric('res', resOk ? 'pass' : 'fail');
+
+        if (!resOk) {
+          await wait(260);
+          shakeReject(`دقة الصورة منخفضة (${w}×${h}). الرجاء رفع صورة بجودة HD (لا تقل عن ${MIN_SHORT_SIDE}px للبعد الأقصر).`);
+          URL.revokeObjectURL(url);
+          return;
+        }
+
+        await wait(220);
+        analysisLbl.textContent = 'تحليل الوضوح والحدّة...';
+
+        const { ctx, sw, sh } = drawSample(img, ANALYSIS_SAMPLE);
+        const gray = toGrayscale(ctx, sw, sh);
+
+        const sharpness = laplacianVariance(gray, sw, sh);
+        const sharpOk = sharpness >= SHARPNESS_MIN;
+        setMetric('sharp', sharpOk ? 'pass' : 'fail');
+
+        if (!sharpOk) {
+          await wait(260);
+          shakeReject('الصورة تبدو ضبابية أو غير واضحة. الرجاء رفع صورة أكثر حدّة.');
+          URL.revokeObjectURL(url);
+          return;
+        }
+
+        await wait(220);
+        analysisLbl.textContent = 'فحص وضوح التصميم...';
+
+        const edgeDensity = sobelEdgeDensity(gray, sw, sh);
+        const designOk = edgeDensity >= EDGE_DENSITY_MIN;
+        setMetric('design', designOk ? 'pass' : 'fail');
+
+        if (!designOk) {
+          await wait(260);
+          shakeReject('لا يمكن تمييز تصميم أو كتابة واضحة في الصورة. الرجاء رفع صورة تحتوي تصميماً أو نصاً واضحاً.');
+          URL.revokeObjectURL(url);
+          return;
+        }
+
+        await wait(200);
+
+        const outDataUrl = buildOutputDataUrl(img, OUTPUT_MAX_DIM);
+previewImg.src = outDataUrl;
+hiddenData.value = outDataUrl;
+
+dz.classList.remove('analyzing');
+dz.classList.add('accepted');
+
+        if (window.showToast) window.showToast('تم قبول صورة التصميم بنجاح.', 'جودة HD مؤكدة', 'ok');
+      } catch (err) {
+        shakeReject('تعذّر تحليل الصورة. حاول برفع صورة أخرى.');
+      } finally {
+        URL.revokeObjectURL(url);
+      }
+    };
+
+    img.onerror = () => {
+      shakeReject('تعذّر فتح الصورة. حاول برفع ملف آخر.');
+      URL.revokeObjectURL(url);
+    };
+
+    img.src = url;
+  }
+
+  function drawSample(img, maxDim) {
+    const ratio = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+    const sw = Math.max(1, Math.round(img.naturalWidth * ratio));
+    const sh = Math.max(1, Math.round(img.naturalHeight * ratio));
+    const canvas = document.createElement('canvas');
+    canvas.width = sw; canvas.height = sh;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, sw, sh);
+    return { ctx, sw, sh };
+  }
+
+  function toGrayscale(ctx, w, h) {
+    const { data } = ctx.getImageData(0, 0, w, h);
+    const gray = new Float32Array(w * h);
+    for (let i = 0, p = 0; i < data.length; i += 4, p++) {
+      gray[p] = data[i] * 0.299 + data[i + 1] * 0.587 + data[i + 2] * 0.114;
     }
+    return gray;
+  }
 
-    if (
-      data?.error === 'TELEGRAM_TIMEOUT' ||
-      data?.error === 'TELEGRAM_SEND_FAILED' ||
-      data?.error === 'SERVER_ERROR'
-    ) {
-      await resolveAfterUncertainOutcome(orderId);
-      return;
+  function laplacianVariance(gray, w, h) {
+    let sum = 0, sumSq = 0, count = 0;
+    for (let y = 1; y < h - 1; y++) {
+      const row = y * w, rowUp = row - w, rowDown = row + w;
+      for (let x = 1; x < w - 1; x++) {
+        const lap =
+          gray[rowUp + x] + gray[rowDown + x] +
+          gray[row + x - 1] + gray[row + x + 1] -
+          4 * gray[row + x];
+        sum += lap; sumSq += lap * lap; count++;
+      }
     }
+    if (!count) return 0;
+    const mean = sum / count;
+    return (sumSq / count) - (mean * mean);
+  }
 
-    await resolveAfterUncertainOutcome(orderId);
-  } catch (err) {
-    await resolveAfterUncertainOutcome(orderId);
-  } finally {
-    clearTimeout(timer);
-    clearTimeout(softNoticeTimer);
+  function sobelEdgeDensity(gray, w, h) {
+    let edgeCount = 0, total = 0;
+    const threshold = 60;
+    for (let y = 1; y < h - 1; y++) {
+      const row = y * w, rowUp = row - w, rowDown = row + w;
+      for (let x = 1; x < w - 1; x++) {
+        const gx =
+          -gray[rowUp + x - 1] + gray[rowUp + x + 1] +
+          -2 * gray[row + x - 1] + 2 * gray[row + x + 1] +
+          -gray[rowDown + x - 1] + gray[rowDown + x + 1];
+        const gy =
+          -gray[rowUp + x - 1] - 2 * gray[rowUp + x] - gray[rowUp + x + 1] +
+          gray[rowDown + x - 1] + 2 * gray[rowDown + x] + gray[rowDown + x + 1];
+        const mag = Math.sqrt(gx * gx + gy * gy);
+        if (mag > threshold) edgeCount++;
+        total++;
+      }
+    }
+    return total ? edgeCount / total : 0;
+  }
 
-    if (btn) {
-  stopSubmitWater(btn);
-  btn.disabled = false;
-  btn.classList.remove('sending');
-  const lbl = btn.querySelector('.submit-btn-label');
-  if (lbl) lbl.textContent = btn.dataset.originalText || oldText;
+  function buildOutputDataUrl(img, maxDim) {
+    const ratio = Math.min(1, maxDim / Math.max(img.naturalWidth, img.naturalHeight));
+    const w = Math.max(1, Math.round(img.naturalWidth * ratio));
+    const h = Math.max(1, Math.round(img.naturalHeight * ratio));
+    const canvas = document.createElement('canvas');
+    canvas.width = w; canvas.height = h;
+    const ctx = canvas.getContext('2d');
+    ctx.drawImage(img, 0, 0, w, h);
+    return canvas.toDataURL('image/png');
+  }
+
+  resetMetrics();
+})();
+
+/* ══════════════════════════════════════
+   TEXT DESIGN STUDIO — LOGIC
+   يُحمَّل بعد سكريبت الصفحة الرئيسي (في وسم <script> خاص أو ملف منفصل)
+══════════════════════════════════════ */
+(() => {
+  'use strict';
+
+  const stage      = document.getElementById('tdzStage');
+  const shirtImg   = document.getElementById('tdzShirtImg');
+  const textLayer  = document.getElementById('tdzTextLayer');
+  const textEl     = document.getElementById('tdzTextEl');
+  const textInput  = document.getElementById('tdzTextInput');
+  const sizeNum    = document.getElementById('tdzSizeNum');
+  const sizeUp     = document.getElementById('tdzSizeUp');
+  const sizeDown   = document.getElementById('tdzSizeDown');
+  const saveBtn    = document.getElementById('tdzSaveBtn');
+  const saveLabel  = document.getElementById('tdzSaveLabel');
+  const statusBox  = document.getElementById('tdzStatus');
+  const editAgainBtn = document.getElementById('tdzEditAgain');
+  const colorWhiteBtn = document.getElementById('tdzColorWhite');
+  const colorBlackBtn = document.getElementById('tdzColorBlack');
+  const hiddenOut   = document.getElementById('fTextDesignImage');
+const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
+  const designToggleCard   = document.getElementById('tdzDesignToggleCard');
+  const designToggleSwitch = document.getElementById('tdzDesignToggleSwitch');
+  const designTogglePrevImg= document.getElementById('tdzDesignTogglePreviewImg');
+  const imageLayer         = document.getElementById('tdzImageLayer');
+  const imageLayerImg      = document.getElementById('tdzImageLayerImg');
+  const imgSizeField       = document.getElementById('tdzImgSizeField');
+  const imgSizeNum         = document.getElementById('tdzImgSizeNum');
+  const imgSizeUp          = document.getElementById('tdzImgSizeUp');
+  const imgSizeDown        = document.getElementById('tdzImgSizeDown');
+  const fUploadedOnShirt   = document.getElementById('fUploadedDesignOnShirt');
+  if (!stage || !textLayer) return; // القسم غير موجود في الصفحة
+  const SHIRT_IMAGES = { white: 'images/white1.png', black: 'images/black1.png' };
+  const MIN_SIZE = 10;
+  const MAX_SIZE = 70;
+  const STEP     = 3;
+
+  // إحداثيات النص كنسبة من المنطقة (0..1) — تبقى صحيحة عند تغيير حجم الشاشة
+  let posXPct = 0.5;
+  let posYPct = 0.46;
+  let imgPosXPct = 0.5;
+  let imgPosYPct = 0.46;
+  let imgScalePct = 100;
+  const IMG_MIN_SCALE = 30;
+  const IMG_MAX_SCALE = 200;
+  const IMG_SCALE_STEP = 10;
+  let designOnShirtEnabled = false;
+  let fontSize = 42;
+  let currentColor = 'white';
+  let savedOnce = false;
+
+  /* ── مزامنة لون التيشرت مع السلايدر الرئيسي إن وُجد ── */
+  function applyColor(color) {
+    currentColor = color === 'black' ? 'black' : 'white';
+    shirtImg.src = SHIRT_IMAGES[currentColor];
+    stage.classList.toggle('tdz-dark', currentColor === 'black');
+
+    [colorWhiteBtn, colorBlackBtn].forEach(b => b && b.classList.remove('active'));
+    if (currentColor === 'white' && colorWhiteBtn) colorWhiteBtn.classList.add('active');
+    if (currentColor === 'black' && colorBlackBtn) colorBlackBtn.classList.add('active');
+  }
+
+  colorWhiteBtn?.addEventListener('click', () => applyColor('white'));
+  colorBlackBtn?.addEventListener('click', () => applyColor('black'));
+/* ── ربط مع صورة التصميم المقبولة في قسم "ارفق تصميمك" ── */
+  function checkUploadedDesignAvailability() {
+    const approvedImg = document.getElementById('fDesignImage')?.value || '';
+    if (approvedImg) {
+      if (designToggleWrap) designToggleWrap.style.display = '';
+      if (designTogglePrevImg) designTogglePrevImg.src = approvedImg;
+      if (imageLayerImg) imageLayerImg.src = approvedImg;
+    } else {
+      if (designToggleWrap) designToggleWrap.style.display = 'none';
+      setDesignOnShirt(false);
+    }
+  }
+
+  function setDesignOnShirt(enabled) {
+    designOnShirtEnabled = enabled;
+    if (designToggleSwitch) {
+      designToggleSwitch.classList.toggle('on', enabled);
+      designToggleSwitch.setAttribute('aria-checked', enabled ? 'true' : 'false');
+    }
+    if (designToggleCard) designToggleCard.classList.toggle('active', enabled);
+    if (imageLayer) imageLayer.style.display = enabled ? 'flex' : 'none';
+    if (imgSizeField) imgSizeField.style.display = enabled ? '' : 'none';
+    if (enabled) markUnsaved();
+  }
+
+  designToggleSwitch?.addEventListener('click', () => setDesignOnShirt(!designOnShirtEnabled));
+  designToggleSwitch?.addEventListener('keydown', e => {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); setDesignOnShirt(!designOnShirtEnabled); }
+  });
+
+  const fDesignImageEl = document.getElementById('fDesignImage');
+if (fDesignImageEl) {
+  const _observer = new MutationObserver(checkUploadedDesignAvailability);
+  _observer.observe(fDesignImageEl, { attributes: true, attributeFilter: ['value'] });
+}
+// استدعاء مبدئي واحد فقط
+checkUploadedDesignAvailability();
+  checkUploadedDesignAvailability();
+  // إن كان نظام السلايدر الرئيسي (showSlide) موجوداً، نتزامن معه تلقائياً
+  window.syncDesignMockup = function (slideIndex) {
+    applyColor(slideIndex === 1 ? 'black' : 'white');
+  };
+
+  /* ── النص ── */
+  function refreshTextContent() {
+    const val = textInput.value.trim();
+    textEl.textContent = val || 'اكتب نصك هنا';
+    stage.classList.toggle('tdz-has-text', val.length > 0);
+    markUnsaved();
+  }
+  textInput?.addEventListener('input', refreshTextContent);
+
+  /* ── الحجم ── */
+  function applySize(px) {
+    fontSize = Math.min(MAX_SIZE, Math.max(MIN_SIZE, px));
+    textEl.style.fontSize = fontSize + 'px';
+    sizeNum.textContent = fontSize;
+    markUnsaved();
+  }
+
+  sizeUp?.addEventListener('click', () => applySize(fontSize + STEP));
+  sizeDown?.addEventListener('click', () => applySize(fontSize - STEP));
+  
+function applyImgScale(pct) {
+    imgScalePct = Math.min(IMG_MAX_SCALE, Math.max(IMG_MIN_SCALE, pct));
+    if (imageLayer) {
+      imageLayer.style.width  = (imgScalePct * 0.6) + '%';
+      imageLayer.style.height = (imgScalePct * 0.6) + '%';
+    }
+    if (imgSizeNum) imgSizeNum.textContent = imgScalePct;
+    markUnsaved();
+  }
+
+  imgSizeUp?.addEventListener('click',   () => applyImgScale(imgScalePct + IMG_SCALE_STEP));
+  imgSizeDown?.addEventListener('click', () => applyImgScale(imgScalePct - IMG_SCALE_STEP));
+  
+  
+  /* ── الموضع ── */
+  function applyPosition() {
+    textLayer.style.left = (posXPct * 100) + '%';
+    textLayer.style.top  = (posYPct * 100) + '%';
+  }
+
+  function clamp01(n) { return Math.min(1, Math.max(0, n)); }
+
+  /* ── السحب (Pointer Events: يدعم اللمس والماوس معاً) ── */
+  let dragging = false;
+  let dragStartX = 0, dragStartY = 0;
+  let startPosX = 0, startPosY = 0;
+
+  function getStageRect() { return stage.getBoundingClientRect(); }
+
+  function onPointerDown(e) {
+    dragging = true;
+    textLayer.classList.add('dragging');
+    const rect = getStageRect();
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    startPosX = posXPct;
+    startPosY = posYPct;
+    textLayer.setPointerCapture?.(e.pointerId);
+    e.preventDefault();
+  }
+
+  function onPointerMove(e) {
+    if (!dragging) return;
+    const rect = getStageRect();
+    const dx = (e.clientX - dragStartX) / rect.width;
+    const dy = (e.clientY - dragStartY) / rect.height;
+    posXPct = clamp01(startPosX + dx);
+    posYPct = clamp01(startPosY + dy);
+    applyPosition();
+    markUnsaved();
+  }
+
+  function onPointerUp(e) {
+    if (!dragging) return;
+    dragging = false;
+    textLayer.classList.remove('dragging');
+    textLayer.releasePointerCapture?.(e.pointerId);
+  }
+
+  textLayer.addEventListener('pointerdown', onPointerDown);
+  window.addEventListener('pointermove', onPointerMove);
+  window.addEventListener('pointerup', onPointerUp);
+  window.addEventListener('pointercancel', onPointerUp);
+/* ── سحب طبقة الصورة ── */
+  function applyImagePosition() {
+    if (!imageLayer) return;
+    imageLayer.style.left = (imgPosXPct * 100) + '%';
+    imageLayer.style.top  = (imgPosYPct * 100) + '%';
+  }
+
+  let imgDragging = false;
+  let imgDragStartX = 0, imgDragStartY = 0;
+  let imgStartPosX = 0, imgStartPosY = 0;
+
+  function onImgPointerDown(e) {
+    imgDragging = true;
+    imageLayer.classList.add('dragging');
+    imgDragStartX = e.clientX;
+    imgDragStartY = e.clientY;
+    imgStartPosX = imgPosXPct;
+    imgStartPosY = imgPosYPct;
+    imageLayer.setPointerCapture?.(e.pointerId);
+    e.preventDefault();
+  }
+
+  function onImgPointerMove(e) {
+    if (!imgDragging) return;
+    const rect = getStageRect();
+    const dx = (e.clientX - imgDragStartX) / rect.width;
+    const dy = (e.clientY - imgDragStartY) / rect.height;
+    imgPosXPct = clamp01(imgStartPosX + dx);
+    imgPosYPct = clamp01(imgStartPosY + dy);
+    applyImagePosition();
+    markUnsaved();
+  }
+
+  function onImgPointerUp(e) {
+    if (!imgDragging) return;
+    imgDragging = false;
+    imageLayer.classList.remove('dragging');
+    imageLayer.releasePointerCapture?.(e.pointerId);
+  }
+
+  imageLayer?.addEventListener('pointerdown', onImgPointerDown);
+  window.addEventListener('pointermove',  onImgPointerMove);
+  window.addEventListener('pointerup',    onImgPointerUp);
+  window.addEventListener('pointercancel',onImgPointerUp);
+  /* ── حالة الحفظ ── */
+  function markUnsaved() {
+    if (!savedOnce) return;
+    savedOnce = false;
+    statusBox.style.display = 'none';
+    saveBtn.style.display = '';
+    saveBtn.classList.remove('tdz-saved');
+    saveLabel.textContent = 'حفظ التصميم ✓';
+    if (hiddenOut) {
+  hiddenOut.value = '';
+  hiddenOut.dataset.exportKey = '';
+}
+  }
+
+  editAgainBtn?.addEventListener('click', () => {
+    statusBox.style.display = 'none';
+    saveBtn.style.display = '';
+  });
+
+  /* ── EXPORT / SAVE STATE ── */
+const EXPORT_SIZE = 1600;
+let exportLock = false;
+let lastExportKey = '';
+
+function tdzLoadImage(src) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => resolve(img);
+    img.onerror = () => reject(new Error('IMAGE_LOAD_FAILED'));
+    img.src = src;
+  });
 }
 
-submitLock = false;
+function tdzWrapTextToLines(ctx, text, maxWidth) {
+  const paragraphs = String(text || '').split(/\n+/);
+  const lines = [];
+
+  for (const paragraph of paragraphs) {
+    const words = paragraph.trim().split(/\s+/).filter(Boolean);
+
+    if (!words.length) {
+      lines.push('');
+      continue;
+    }
+
+    let current = '';
+
+    for (const word of words) {
+      const test = current ? `${current} ${word}` : word;
+
+      if (ctx.measureText(test).width > maxWidth && current) {
+        lines.push(current);
+        current = word;
+      } else {
+        current = test;
+      }
+    }
+
+    if (current) lines.push(current);
+  }
+
+  return lines.length ? lines : [''];
+}
+
+function tdzDrawContain(ctx, img, boxX, boxY, boxW, boxH) {
+  const iw = img.naturalWidth || img.width;
+  const ih = img.naturalHeight || img.height;
+  if (!iw || !ih) return;
+
+  const ratio = Math.min(boxW / iw, boxH / ih);
+  const dw = iw * ratio;
+  const dh = ih * ratio;
+  const dx = boxX + (boxW - dw) / 2;
+  const dy = boxY + (boxH - dh) / 2;
+
+  ctx.drawImage(img, dx, dy, dw, dh);
+}
+
+function getExportKey() {
+  return JSON.stringify({
+    color: currentColor,
+    text: textInput?.value?.trim() || '',
+    fontSize: fontSize,
+    posXPct,
+    posYPct,
+    designOnShirtEnabled,
+    imgPosXPct,
+    imgPosYPct,
+    imgScalePct,
+    imageSrc: imageLayerImg?.src || '',
+  });
+}
+
+const _shirtImgCache = {};
+async function tdzLoadImageCached(src) {
+  if (_shirtImgCache[src]) return _shirtImgCache[src];
+  const img = await tdzLoadImage(src);
+  _shirtImgCache[src] = img;
+  return img;
+}
+
+async function exportDesignPNG() {
+  const stageEl = document.getElementById('tdzStage');
+  const shirtEl = document.getElementById('tdzShirtImg');
+  const textElLive = document.getElementById('tdzTextEl');
+  const textLayerEl = document.getElementById('tdzTextLayer');
+  const imageLayerEl = document.getElementById('tdzImageLayer');
+  const imageEl = document.getElementById('tdzImageLayerImg');
+
+  if (!stageEl || !shirtEl) throw new Error('MISSING_STAGE');
+
+  const text = (textInput?.value || '').trim();
+  const hasImage = !!(designOnShirtEnabled && imageEl?.src);
+  if (!text && !hasImage) throw new Error('NO_EXPORT_CONTENT');
+
+  if (document.fonts?.ready) {
+    try { await document.fonts.ready; } catch (_) {}
+  }
+const exportFamily = customFontFamily || activeFontFamily || 'Tajawal';
+await document.fonts.load(`700 ${Math.max(8, Math.round(fontSize))}px "${exportFamily}"`).catch(() => {});
+  const stageRect = stageEl.getBoundingClientRect();
+  if (!stageRect.width || !stageRect.height) throw new Error('INVALID_STAGE');
+
+  const canvas = document.createElement('canvas');
+  canvas.width = EXPORT_SIZE;
+  canvas.height = EXPORT_SIZE;
+
+  const ctx = canvas.getContext('2d', { alpha: true });
+  if (!ctx) throw new Error('CANVAS_CTX_FAILED');
+
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = 'high';
+  ctx.clearRect(0, 0, EXPORT_SIZE, EXPORT_SIZE);
+
+  // التيشرت كما يظهر للمستخدم
+  const shirt = await tdzLoadImageCached(SHIRT_IMAGES[currentColor]);
+  const shirtRect = shirtEl.getBoundingClientRect();
+  const shirtBoxX = ((shirtRect.left - stageRect.left) / stageRect.width) * EXPORT_SIZE;
+  const shirtBoxY = ((shirtRect.top - stageRect.top) / stageRect.height) * EXPORT_SIZE;
+  const shirtBoxW = (shirtRect.width / stageRect.width) * EXPORT_SIZE;
+  const shirtBoxH = (shirtRect.height / stageRect.height) * EXPORT_SIZE;
+  tdzDrawContain(ctx, shirt, shirtBoxX, shirtBoxY, shirtBoxW, shirtBoxH);
+
+  // الصورة المرفوعة فوق التيشرت كما تظهر الآن
+  if (hasImage) {
+    try {
+      const overlay = await tdzLoadImage(imageEl.src);
+      const layerRect = imageLayerEl.getBoundingClientRect();
+      const layerBoxX = ((layerRect.left - stageRect.left) / stageRect.width) * EXPORT_SIZE;
+      const layerBoxY = ((layerRect.top - stageRect.top) / stageRect.height) * EXPORT_SIZE;
+      const layerBoxW = (layerRect.width / stageRect.width) * EXPORT_SIZE;
+      const layerBoxH = (layerRect.height / stageRect.height) * EXPORT_SIZE;
+      tdzDrawContain(ctx, overlay, layerBoxX, layerBoxY, layerBoxW, layerBoxH);
+    } catch (_) {}
+  }
+
+  // النص كما يظهر للمستخدم الآن
+  if (text) {
+    const textRect = textLayerEl.getBoundingClientRect();
+    const textCenterX = (((textRect.left - stageRect.left) + textRect.width / 2) / stageRect.width) * EXPORT_SIZE;
+    const textCenterY = (((textRect.top - stageRect.top) + textRect.height / 2) / stageRect.height) * EXPORT_SIZE;
+
+    const textStyle = getComputedStyle(textElLive);
+    const liveFontSize = parseFloat(textStyle.fontSize) || fontSize;
+    const liveLineHeight = parseFloat(textStyle.lineHeight) || liveFontSize * 1.15;
+
+    const scale = EXPORT_SIZE / stageRect.width;
+    const exportFontSize = Math.max(8, Math.round(liveFontSize * scale));
+    const exportLineHeight = liveLineHeight * scale;
+
+    const maxLineWidth = Math.max(40, ((textRect.width - 12) / stageRect.width) * EXPORT_SIZE);
+
+    ctx.save();
+    const exportFamily = customFontFamily || activeFontFamily || 'Tajawal';
+    
+ctx.font = `700 ${exportFontSize}px "${exportFamily}", Tajawal, system-ui, sans-serif`;
+    ctx.fillStyle = currentColor === 'black' ? '#ffffff' : '#111111';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.direction = 'rtl';
+
+    const lines = tdzWrapTextToLines(ctx, text, maxLineWidth);
+    const totalHeight = exportLineHeight * lines.length;
+    let startY = textCenterY - totalHeight / 2 + exportLineHeight / 2;
+
+    lines.forEach(line => {
+      ctx.fillText(line, textCenterX, startY);
+      startY += exportLineHeight;
+    });
+
+    ctx.restore();
+  }
+
+  return canvas.toDataURL('image/png');
+}
+
+async function getFinalTextDesignImage(force = false) {
+  const hiddenOut = document.getElementById('fTextDesignImage');
+  const key = getExportKey();
+
+  if (!force && hiddenOut?.value && hiddenOut.dataset.exportKey === key) {
+    return hiddenOut.value;
+  }
+
+  if (exportLock && !force) {
+    return hiddenOut?.value || null;
+  }
+
+  exportLock = true;
+  try {
+    const dataUrl = await exportDesignPNG();
+    if (hiddenOut) {
+      hiddenOut.value = dataUrl;
+      hiddenOut.dataset.exportKey = key;
+    }
+    return dataUrl;
+  } catch (err) {
+    return null;
+  } finally {
+    exportLock = false;
   }
 }
 
-/* ── RESET ── */
-function resetForm() {
-  if (ui.fName) ui.fName.value = '';
-  if (ui.fPhone) ui.fPhone.value = '';
-  if (ui.fNotes) ui.fNotes.value = '';
+window.exportDesignPNG = exportDesignPNG;
+window.getTextDesignImage = getFinalTextDesignImage;
 
-  ui.fWilaya.value = '';
-  ui.fRegion.value = '';
+/* ── زر الحفظ ── */
+saveBtn?.addEventListener('click', async () => {
+  const hasText = (textInput?.value || '').trim().length > 0;
+  const hasImage = !!(designOnShirtEnabled && imageLayerImg?.src);
 
-  wilayaTriggerText.textContent = 'اختر الولاية...';
-  wilayaTriggerText.classList.add('placeholder');
+  if (!hasText && !hasImage) {
+    window.showToast?.('أضف نصًا أو فعّل التصميم المرفوع أولاً.', 'لا يوجد محتوى', 'error');
+    return;
+  }
 
- regionTriggerText.textContent = 'اختر المنطقة...';
-  regionTriggerText.classList.add('placeholder');
+  saveBtn.disabled = true;
+  saveLabel.textContent = 'جارٍ الحفظ...';
 
-  regionTrigger.classList.add('disabled');
-  ui.regionAnim.classList.remove('show');
-  hideDeliveryPrice();
+  try {
+    const dataUrl = await getFinalTextDesignImage(true);
+    if (!dataUrl) throw new Error('EXPORT_FAILED');
 
-  setDeliveryMode('desk');
+    savedOnce = true;
+    if (hiddenOut) hiddenOut.value = dataUrl;
 
-  if (ui.fQty) ui.fQty.value = '1';
-  if (ui.qtyNum) ui.qtyNum.textContent = '1';
+    saveBtn.style.display = 'none';
+    statusBox.style.display = 'flex';
 
-  if (ui.fColor) ui.fColor.value = 'أبيض';
-  if (ui.sumColor) ui.sumColor.textContent = 'أبيض';
-  if (ui.sumDot) ui.sumDot.className = 'sum-dot white';
-  if (ui.sumSize) ui.sumSize.textContent = 'M';
-  if (ui.sizeCurrent) ui.sizeCurrent.textContent = 'M';
-
-  buildPicker(1);
-  updatePriceDisplay(1);
-
-  currentSlide = 0;
-  currentSize = 0;
-  showSlide(0, false);
-  goToSize(0, false);
-
-  if (ui.submitBtn) stopSubmitWater(ui.submitBtn);
-if (ui.formWrap) ui.formWrap.style.display = '';
-  if (ui.successMsg) ui.successMsg.classList.remove('show');
-
-  newOrderId();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
-}
-/* ── EASTER EGG ── */
-(() => {
-  const mark      = $('brandMark');
-  const brandLink = $('brandLink');
-  const ring      = $('markRing');
-  const circle    = $('ringCircle');
-  const eggOverlay= $('eggOverlay');
-  const HOLD_MS   = 3000;
-  const CIRCUMFERENCE = 2*Math.PI*22;
-  let holdTimer=null, startTime=0, rafId=null, triggered=false;
-
-  function startHold(e){ e.preventDefault(); triggered=false; startTime=Date.now(); ring.classList.add('charging');
-    function tick(){ const elapsed=Date.now()-startTime, pct=Math.min(elapsed/HOLD_MS,1), dash=pct*CIRCUMFERENCE;
-      circle.style.strokeDasharray=`${dash} ${CIRCUMFERENCE}`;
-      if(pct<1) rafId=requestAnimationFrame(tick); else triggerEgg(); }
-    rafId=requestAnimationFrame(tick); }
-  function cancelHold(){ if(triggered) return; cancelAnimationFrame(rafId); ring.classList.remove('charging'); circle.style.strokeDasharray='0 200'; }
-  function triggerEgg(){ triggered=true; ring.classList.remove('charging'); circle.style.strokeDasharray='0 200';
-    const emojis=['✦','◆','✧','▣','◌','✦','◆'];
-    const rect=mark.getBoundingClientRect(), cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    emojis.forEach((em,i)=>{ const el=document.createElement('div'); el.className='egg-star'; el.textContent=em;
-      const angle=(i/emojis.length)*2*Math.PI, dist=60+Math.random()*40;
-      el.style.setProperty('--tx',Math.cos(angle)*dist+'px'); el.style.setProperty('--ty',Math.sin(angle)*dist+'px');
-      el.style.left=cx+'px'; el.style.top=cy+'px'; el.style.animationDelay=(i*.05)+'s';
-      document.body.appendChild(el); setTimeout(()=>el.remove(),3000); });
-    setTimeout(()=>{ eggOverlay.classList.add('show'); document.body.style.overflow='hidden'; },200); }
-  function closeEgg(){ eggOverlay.classList.remove('show'); document.body.style.overflow=''; triggered=false; }
-  window.closeEgg = closeEgg;
-
-  brandLink.addEventListener('click', e=>{ if(triggered) e.preventDefault(); });
-  mark.addEventListener('mousedown',  startHold);
-  window.addEventListener('mouseup',  cancelHold);
-  mark.addEventListener('touchstart', startHold, {passive:false});
-  window.addEventListener('touchcancel', cancelHold);
-})();
-
-window.changeQty   = changeQty;
-window.submitOrder = submitOrder;
-window.resetForm   = resetForm;
-
-/* ── INIT ── */
-showSlide(0, false);
-goToSize(0, false);
-updatePriceDisplay(1);
-setDeliveryMode('desk');
-refreshRegionAvailability();
-
-// ربط زر المسح المخصص بحقل البحث
-const clearBtn = $('luxSearchClear');
-if (clearBtn) {
-  clearBtn.addEventListener('click', () => {
-    sheetSearch.value = '';
-    sheetSearch.focus();
-    clearBtn.classList.remove('visible');
-    renderSheetItems(overlay._items, overlay._selected, '');
-  });
-}
-// إظهار/إخفاء زر المسح عند الكتابة
-sheetSearch.addEventListener('input', () => {
-  renderSheetItems(overlay._items, overlay._selected, sheetSearch.value);
-  if (clearBtn) clearBtn.classList.toggle('visible', sheetSearch.value.length > 0);
+    window.showToast?.('تم حفظ التصميم كما يظهر الآن.', 'تم الحفظ', 'ok');
+  } catch (err) {
+    console.error(err);
+    window.showToast?.('تعذّر حفظ التصميم. تأكد من وجود محتوى صالح.', 'خطأ في الحفظ', 'error');
+  } finally {
+    saveBtn.disabled = false;
+    saveLabel.textContent = 'حفظ التصميم ✓';
+  }
 });
 
-const revIO = new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting) e.target.classList.add('show')}),{threshold:.08});
-document.querySelectorAll('.reveal').forEach(el=>revIO.observe(el));
-window.addEventListener('resize',()=>renderSizeCarousel(false));
+  
+/* ══════════════════════════════════════
+   FONT PICKER LOGIC
+══════════════════════════════════════ */
+
+
+let activeFontFamily = 'Tajawal';
+let customFontFamily = null;
+let loadedFonts = new Set();
+
+function applyFontToStage(family) {
+  activeFontFamily = family;
+  if (textEl) textEl.style.fontFamily = `"${family}", Tajawal, system-ui, sans-serif`;
+  markUnsaved();
+}
+
+
+
+
+/* ── رفع الخط المخصص ── */
+const fontDropzone  = document.getElementById('tdzFontDropzone');
+const fontFileInput = document.getElementById('tdzFontFileInput');
+const fontAccepted  = document.getElementById('tdzFontAccepted');
+const fontDzInner   = document.getElementById('tdzFontDzInner');
+const fontNameEl    = document.getElementById('tdzFontName');
+const fontRemoveBtn = document.getElementById('tdzFontRemoveBtn');
+
+const ALLOWED_FONT_EXT = ['.ttf', '.otf', '.woff', '.woff2'];
+
+function fontExtOk(filename) {
+  return ALLOWED_FONT_EXT.some(ext => filename.toLowerCase().endsWith(ext));
+}
+
+function prettyFontName(filename) {
+  return filename.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ');
+}
+
+async function applyCustomFont(file) {
+  if (!fontExtOk(file.name)) {
+    fontDropzone.classList.add('shake');
+    setTimeout(() => fontDropzone.classList.remove('shake'), 460);
+    window.showToast?.('صيغة الخط غير مدعومة. استخدم TTF أو OTF أو WOFF.', 'خطأ', 'error');
+    return;
+  }
+
+  try {
+    const arrayBuffer = await file.arrayBuffer();
+    const blob = new Blob([arrayBuffer], { type: file.type || 'font/ttf' });
+    const blobUrl = URL.createObjectURL(blob);
+    const familyName = `CustomFont_${Date.now()}`;
+
+    const face = new FontFace(familyName, `url(${blobUrl})`);
+    await face.load();
+    document.fonts.add(face);
+    await document.fonts.ready.catch(() => {});
+    loadedFonts.add(familyName);
+    customFontFamily = familyName;
+
+    // تحديث واجهة الدروب زون
+    if (fontNameEl) fontNameEl.textContent = prettyFontName(file.name);
+    if (fontDzInner) fontDzInner.style.display = 'none';
+    if (fontAccepted) fontAccepted.style.display = 'flex';
+
+    // إلغاء تحديد بطاقات المعرض
+    
+
+    applyFontToStage(familyName);
+    window.showToast?.('تم تحميل الخط بنجاح.', 'خط مخصص', 'ok');
+  } catch (err) {
+    fontDropzone.classList.add('shake');
+    setTimeout(() => fontDropzone.classList.remove('shake'), 460);
+    window.showToast?.('تعذّر قراءة ملف الخط. جرّب ملفاً آخر.', 'خطأ', 'error');
+  }
+}
+
+fontDropzone?.addEventListener('click', () => {
+  if (fontAccepted?.style.display === 'flex') return;
+  fontFileInput?.click();
+});
+fontDropzone?.addEventListener('keydown', e => {
+  if ((e.key === 'Enter' || e.key === ' ') && fontAccepted?.style.display !== 'flex') {
+    e.preventDefault();
+    fontFileInput?.click();
+  }
+});
+fontFileInput?.addEventListener('change', () => {
+  const f = fontFileInput.files?.[0];
+  if (f) applyCustomFont(f);
+  fontFileInput.value = '';
+});
+
+['dragenter','dragover'].forEach(ev => {
+  fontDropzone?.addEventListener(ev, e => {
+    e.preventDefault();
+    if (fontAccepted?.style.display === 'flex') return;
+    fontDropzone.classList.add('drag-over');
+  });
+});
+['dragleave','drop'].forEach(ev => {
+  fontDropzone?.addEventListener(ev, e => {
+    e.preventDefault();
+    fontDropzone.classList.remove('drag-over');
+  });
+});
+fontDropzone?.addEventListener('drop', e => {
+  const f = e.dataTransfer?.files?.[0];
+  if (f) applyCustomFont(f);
+});
+
+fontRemoveBtn?.addEventListener('click', e => {
+  e.stopPropagation();
+  customFontFamily = null;
+  if (fontAccepted) fontAccepted.style.display = 'none';
+  if (fontDzInner) fontDzInner.style.display = '';
+  // أعد تفعيل الخط الأول من المعرض
+  applyFontToStage('Tajawal');
+});
+  /* ── تهيئة أولية ── */
+  applyColor('white');
+  applySize(42);
+  applyPosition();
+  refreshTextContent();
+  applyImagePosition();
+  applyImgScale(100);
+  
+  
 })();
+
+
+
 </script>
 </body>
 </html>
