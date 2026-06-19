@@ -1526,8 +1526,8 @@ input, textarea {
 /* منطقة طباعة إرشادية خفيفة */
 .tdz-print-area{
   position:absolute;
-  top:30%;left:30%;
-  width:40%;height:32%;
+  top:24%;left:21%;
+  width:58%;height:46%;
   border:1px dashed rgba(255,255,255,.14);
   border-radius:10px;
   pointer-events:none;
@@ -2156,7 +2156,9 @@ input, textarea {
         </div>
         <div class="price-right">
           <div class="price-badge" id="priceBadge">السعر النهائي</div>
+          <span class="price-ship" id="priceDesignLine" style="display:none;font-size:.72rem;color:#7fd8ff;font-weight:600"></span>
           <span class="price-ship" id="priceTotalLine" style="display:none;font-size:.72rem;color:rgba(255,255,255,.55);font-weight:600"></span>
+          
           <span class="price-ship">حسب كمية ومكان ولاية</span>
         </div>
       </div>
@@ -3711,6 +3713,8 @@ function buildPicker(qty) {
 }
 /* ── PRICE SYSTEM ── */
 const PRICE_STEP = 20;
+let designSurchargePerUnit = 0;
+let designSurchargeBreakdown = { text: null, image: null };
 
 function getDiscountByQty(qty) {
   // جدول تخفيضات واضح وقابل للتعديل بسهولة
@@ -3739,10 +3743,12 @@ function updatePriceDisplay(qty) {
 
   const discount    = getDiscountByQty(qty);
   const unitPrice   = roundPrice(BASE_PRICE * (1 - discount / 100));
+  const surcharge   = designSurchargePerUnit || 0;
+  const unitFinal   = unitPrice + surcharge;
 
   // ✅ السعر القديم ثابت دائمًا — لا يُخصَّم
   const oldUnit     = roundPrice(BASE_PRICE_OLD);
-  const total       = unitPrice * qty;
+  const total       = unitFinal * qty;
 
   // Animation
   ui.priceAmount.style.transition = 'none';
@@ -3750,12 +3756,11 @@ function updatePriceDisplay(qty) {
   ui.priceAmount.style.opacity    = '0';
 
   setTimeout(() => {
-    ui.priceAmount.textContent = unitPrice.toLocaleString('ar-DZ');
+    ui.priceAmount.textContent = unitFinal.toLocaleString('ar-DZ');
 
-    // ✅ السعر القديم يظهر فقط إذا كان أعلى من الحالي
     if (ui.priceOld) {
       ui.priceOld.textContent = oldUnit.toLocaleString('ar-DZ') + ' دج';
-      ui.priceOld.style.display = oldUnit > unitPrice ? 'inline' : 'none';
+      ui.priceOld.style.display = oldUnit > unitFinal ? 'inline' : 'none';
     }
 
     ui.priceAmount.style.transition = 'transform .3s cubic-bezier(.22,1,.36,1), opacity .25s ease';
@@ -3778,9 +3783,27 @@ function updatePriceDisplay(qty) {
     ui.priceLabelUnit.textContent     = 'سعر القطعة الواحدة';
   }
 
+  // Design surcharge line
+  
+const dl = document.getElementById('priceDesignLine');
+  if (dl) {
+    if (surcharge > 0) {
+      const parts = [];
+      if (designSurchargeBreakdown.text) {
+        const t = designSurchargeBreakdown.text;
+        const areaTxt = t.areaCm2 ? ` (${t.areaCm2} سم²)` : '';
+        parts.push(`نص${areaTxt} +${t.price} دج`);
+      }
+      if (designSurchargeBreakdown.image) parts.push(`صورة +${designSurchargeBreakdown.image.price} دج`);
+      dl.textContent = `تخصيص: ${parts.join(' · ')}`;
+      dl.style.display = 'block';
+    } else {
+      dl.style.display = 'none';
+    }
+  }
   // Total line
   if (ui.priceTotalLine) {
-    if (qty > 1) {
+    if (qty > 1 || surcharge > 0) {
       ui.priceTotalLine.textContent  = `المجموع: ${total.toLocaleString('ar-DZ')} دج`;
       ui.priceTotalLine.style.display = 'block';
     } else {
@@ -3789,6 +3812,12 @@ function updatePriceDisplay(qty) {
   }
 }
 
+window.setDesignSurcharge = function(amount, breakdown) {
+  designSurchargePerUnit = Math.max(0, Math.round(amount || 0));
+  designSurchargeBreakdown = breakdown || { text: null, image: null };
+  const qty = parseInt(ui.fQty?.value, 10) || 1;
+  updatePriceDisplay(qty);
+};
 /* ── QTY ── */
 function changeQty(delta) {
   let val = parseInt(ui.fQty.value,10); if(isNaN(val)) val=1;
@@ -4360,6 +4389,7 @@ if (!name || !phone) {
   notes,
   deliveryMode,
   deliveryPrice,
+  designSurcharge: designSurchargePerUnit,
   items: itemSpecs.length > 0 ? itemSpecs : null,
   designImage,
   textDesignImage
@@ -5276,6 +5306,147 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   let currentColor = 'white';
   let savedOnce = false;
 
+
+
+  /* ══════════════════════════════════════
+     نظام تسعير التخصيص بحسب الحجم الحقيقي
+  ══════════════════════════════════════ */
+  // المساحة الحقيقية (بالسنتيمتر) التي تمثلها منطقة الطباعة tdzPrintArea
+  // ⚠️ عدّل هاتين القيمتين حسب القياس الفعلي على التيشرت الحقيقي (نفس منطق معايرة المنطقة التي قمت بها سابقاً)
+  const PRINT_AREA_REAL_WIDTH_CM  = 30;
+  const PRINT_AREA_REAL_HEIGHT_CM = 40;
+
+  // نظام تسعير احتياطي (يُستخدم فقط إن تعذّر قياس المساحة الحقيقية)
+  const FONT_SIZE_PRICE_TIERS = [
+    { minPx:  0, maxPx: 24,       price:  150, label: 'نص صغير'      },
+    { minPx: 25, maxPx: 34,       price:  300, label: 'نص متوسط'     },
+    { minPx: 35, maxPx: 44,       price:  500, label: 'نص كبير'      },
+    { minPx: 45, maxPx: 54,       price:  750, label: 'نص كبير جداً' },
+    { minPx: 55, maxPx: Infinity, price: 1000, label: 'نص ضخم'       },
+  ];
+  const THIN_CHARS = new Set('اأإآىوردذزهة ');
+  let fontWidthMultiplier = 1.0;
+
+  // التسعير الدقيق: يُحسب من المساحة الحقيقية (سم²) للنص فعلياً
+  const TEXT_MIN_PRICE     = 100;
+  const TEXT_FREE_AREA_CM2 = 6;
+  const TEXT_PRICE_PER_CM2 = 10;
+  const TEXT_MAX_PRICE     = 2000;
+
+  function getTextPriceByArea(widthCm, heightCm) {
+    const areaCm2 = Math.max(0, widthCm * heightCm);
+    const extra   = Math.max(0, areaCm2 - TEXT_FREE_AREA_CM2);
+    let price = TEXT_MIN_PRICE + extra * TEXT_PRICE_PER_CM2;
+    price = Math.min(TEXT_MAX_PRICE, Math.round(price / 50) * 50);
+    let label = 'نص صغير';
+    if (areaCm2 > 60) label = 'نص ضخم';
+    else if (areaCm2 > 30) label = 'نص كبير';
+    else if (areaCm2 > 12) label = 'نص متوسط';
+    return { price, label, areaCm2: Math.round(areaCm2 * 10) / 10 };
+  }
+
+  function getCmScale() {
+    const printArea = document.getElementById('tdzPrintArea');
+    if (!printArea) return null;
+    const rect = printArea.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    return {
+      pxPerCmX: rect.width  / PRINT_AREA_REAL_WIDTH_CM,
+      pxPerCmY: rect.height / PRINT_AREA_REAL_HEIGHT_CM,
+    };
+  }
+
+  function getTextSizeCm() {
+    const scale = getCmScale();
+    if (!scale || !textEl) return null;
+    const rect = textEl.getBoundingClientRect();
+    if (!rect.width || !rect.height) return null;
+    return {
+      widthCm:  rect.width  / scale.pxPerCmX,
+      heightCm: rect.height / scale.pxPerCmY,
+    };
+  }
+
+  function getImageSizeCm() {
+    const scale = getCmScale();
+    if (!scale || !imageLayerImg || !imageLayerImg.naturalWidth || !imageLayer) return null;
+    const boxRect = imageLayer.getBoundingClientRect();
+    if (!boxRect.width || !boxRect.height) return null;
+
+    // الصورة تُعرض بـ object-fit:contain داخل الصندوق، فنحسب الحجم المعروض فعلياً لا حجم الصندوق
+    const imgRatio = imageLayerImg.naturalWidth / imageLayerImg.naturalHeight;
+    const boxRatio = boxRect.width / boxRect.height;
+    let renderW, renderH;
+    if (boxRatio > imgRatio) {
+      renderH = boxRect.height;
+      renderW = renderH * imgRatio;
+    } else {
+      renderW = boxRect.width;
+      renderH = renderW / imgRatio;
+    }
+    return {
+      widthCm:  renderW / scale.pxPerCmX,
+      heightCm: renderH / scale.pxPerCmY,
+    };
+  }
+
+  function countSignificantChars(text) {
+    return [...(text || '')].filter(ch => !THIN_CHARS.has(ch)).length;
+  }
+
+  function getTextPriceInfo(px) {
+    const eff = Math.round(px * fontWidthMultiplier);
+    for (const tier of FONT_SIZE_PRICE_TIERS) {
+      if (eff >= tier.minPx && eff <= tier.maxPx) return tier;
+    }
+    return FONT_SIZE_PRICE_TIERS[FONT_SIZE_PRICE_TIERS.length - 1];
+  }
+
+  function getImagePriceInfo(widthCm, heightCm) {
+    const shortSide = Math.min(widthCm, heightCm);
+    const longSide  = Math.max(widthCm, heightCm);
+
+    if (shortSide <= 10 && longSide <= 10) {
+      return { price: 500,  label: 'شعار صغير (حتى 10×10 سم)' };
+    }
+    if (shortSide <= 21 && longSide <= 29.7) {
+      return { price: 800,  label: 'تصميم متوسط (حتى A4)' };
+    }
+    return { price: 1200, label: 'تصميم كبير (حتى A3)' };
+  }
+
+  let _designLineParts = { text: null, image: null };
+
+  function recalcDesignSurcharge() {
+    let total = 0;
+    _designLineParts = { text: null, image: null };
+
+    const textVal = (textInput?.value || '').trim();
+    if (textVal.length > 0) {
+      const sizeCm = getTextSizeCm();
+      let textInfo;
+      if (sizeCm && sizeCm.widthCm > 0 && sizeCm.heightCm > 0) {
+        textInfo = getTextPriceByArea(sizeCm.widthCm, sizeCm.heightCm);
+      } else {
+        const tierInfo = getTextPriceInfo(fontSize);
+        textInfo = { price: tierInfo.price, label: tierInfo.label, areaCm2: null };
+      }
+      total += textInfo.price;
+      _designLineParts.text = textInfo;
+    }
+
+    if (designOnShirtEnabled && imageLayerImg?.src) {
+      const size = getImageSizeCm();
+      if (size) {
+        const info = getImagePriceInfo(size.widthCm, size.heightCm);
+        total += info.price;
+        _designLineParts.image = info;
+      }
+    }
+
+    window.setDesignSurcharge?.(total, _designLineParts);
+    checkDesignBoundary();
+  }
   /* ── مزامنة لون التيشرت مع السلايدر الرئيسي إن وُجد ── */
   function applyColor(color) {
     currentColor = color === 'black' ? 'black' : 'white';
@@ -5312,6 +5483,7 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
     if (imageLayer) imageLayer.style.display = enabled ? 'flex' : 'none';
     if (imgSizeField) imgSizeField.style.display = enabled ? '' : 'none';
     if (enabled) markUnsaved();
+    recalcDesignSurcharge();
   }
 
   designToggleSwitch?.addEventListener('click', () => setDesignOnShirt(!designOnShirtEnabled));
@@ -5324,8 +5496,38 @@ if (fDesignImageEl) {
   const _observer = new MutationObserver(checkUploadedDesignAvailability);
   _observer.observe(fDesignImageEl, { attributes: true, attributeFilter: ['value'] });
 }
+let _boundaryWarnTimer = null;
+
 // استدعاء مبدئي واحد فقط
 checkUploadedDesignAvailability();
+imageLayerImg?.addEventListener('load', recalcDesignSurcharge);
+
+  function checkDesignBoundary() {
+    const printArea = document.getElementById('tdzPrintArea');
+    if (!printArea) return;
+    const pa  = printArea.getBoundingClientRect();
+    const tolerance = pa.width * 0.06;
+    let out = false;
+
+    if ((textInput?.value || '').trim() && textLayer) {
+      const r = textLayer.getBoundingClientRect();
+      if (r.left < pa.left - tolerance || r.right  > pa.right  + tolerance ||
+          r.top  < pa.top  - tolerance || r.bottom > pa.bottom + tolerance) out = true;
+    }
+
+    if (designOnShirtEnabled && imageLayer?.style.display !== 'none') {
+      const r = imageLayer.getBoundingClientRect();
+      if (r.left < pa.left - tolerance || r.right  > pa.right  + tolerance ||
+          r.top  < pa.top  - tolerance || r.bottom > pa.bottom + tolerance) out = true;
+    }
+
+    clearTimeout(_boundaryWarnTimer);
+    if (out) {
+      _boundaryWarnTimer = setTimeout(() => {
+        window.showToast?.('قم بتعديل التصميم أو الخط داخل التيشرت', 'إضبط أبعاد', 'warn');
+      }, 700);
+    }
+  }
   // إن كان نظام السلايدر الرئيسي (showSlide) موجوداً، نتزامن معه تلقائياً
   window.syncDesignMockup = function (slideIndex) {
     applyColor(slideIndex === 1 ? 'black' : 'white');
@@ -5337,6 +5539,7 @@ checkUploadedDesignAvailability();
     textEl.textContent = val || 'اكتب نصك هنا';
     stage.classList.toggle('tdz-has-text', val.length > 0);
     markUnsaved();
+    recalcDesignSurcharge();
   }
   let _tdzInputTimer = null;
   textInput?.addEventListener('input', () => {
@@ -5350,6 +5553,7 @@ checkUploadedDesignAvailability();
     textEl.style.fontSize = fontSize + 'px';
     sizeNum.textContent = fontSize;
     markUnsaved();
+    recalcDesignSurcharge();
   }
 
   sizeUp?.addEventListener('click', () => applySize(fontSize + STEP));
@@ -5363,6 +5567,7 @@ function applyImgScale(pct) {
     }
     if (imgSizeNum) imgSizeNum.textContent = imgScalePct;
     markUnsaved();
+    recalcDesignSurcharge();
   }
 
   imgSizeUp?.addEventListener('click',   () => applyImgScale(imgScalePct + IMG_SCALE_STEP));
@@ -5412,6 +5617,7 @@ function applyImgScale(pct) {
     dragging = false;
     textLayer.classList.remove('dragging');
     textLayer.releasePointerCapture?.(e.pointerId);
+    checkDesignBoundary();
   }
 
   textLayer.addEventListener('pointerdown', onPointerDown);
@@ -5456,6 +5662,7 @@ function applyImgScale(pct) {
     imgDragging = false;
     imageLayer.classList.remove('dragging');
     imageLayer.releasePointerCapture?.(e.pointerId);
+    checkDesignBoundary();
   }
 
   imageLayer?.addEventListener('pointerdown', onImgPointerDown);
@@ -5786,6 +5993,17 @@ async function applyCustomFont(file) {
     loadedFonts.add(familyName);
     customFontFamily = familyName;
 
+    try {
+      const _tc = document.createElement('canvas');
+      const _tx = _tc.getContext('2d');
+      const _ts = 'أبجد هوزحطي';
+      _tx.font = `700 42px "Tajawal"`;
+      const _bw = _tx.measureText(_ts).width;
+      _tx.font = `700 42px "${familyName}"`;
+      const _cw = _tx.measureText(_ts).width;
+      fontWidthMultiplier = (_bw > 0) ? Math.max(1.0, _cw / _bw) : 1.0;
+    } catch (_) { fontWidthMultiplier = 1.0; }
+
     // تحديث واجهة الدروب زون
     if (fontNameEl) fontNameEl.textContent = prettyFontName(file.name);
     if (fontDzInner) fontDzInner.style.display = 'none';
@@ -5840,10 +6058,11 @@ fontDropzone?.addEventListener('drop', e => {
 fontRemoveBtn?.addEventListener('click', e => {
   e.stopPropagation();
   customFontFamily = null;
+  fontWidthMultiplier = 1.0;
   if (fontAccepted) fontAccepted.style.display = 'none';
   if (fontDzInner) fontDzInner.style.display = '';
-  // أعد تفعيل الخط الأول من المعرض
   applyFontToStage('Tajawal');
+  recalcDesignSurcharge();
 });
   /* ── تهيئة أولية ── */
   applyColor('white');
