@@ -2378,8 +2378,6 @@ input, textarea {
   <div class="copy-toast-bar"></div>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/fabric@5/dist/fabric.min.js"></script>
-
 <script>
 (() => {
 'use strict';
@@ -4298,8 +4296,7 @@ function stopSubmitWater(btn) {
     const notes   = ui.fNotes?.value.trim() || '';
     const deliveryPrice = getSelectedDeliveryPrice();
 const designImage = document.getElementById('fDesignImage')?.value || null;
-const textDesignImage = await (window.getTextDesignImage ? window.getTextDesignImage() : Promise.resolve(null));
-    if (!name || !phone) {
+if (!name || !phone) {
       showToast('الرجاء ملء الاسم ورقم الهاتف.', 'حقول مطلوبة', 'error');
       submitLock = false;
       return;
@@ -4314,7 +4311,13 @@ const textDesignImage = await (window.getTextDesignImage ? window.getTextDesignI
       submitLock = false;
       return;
     }
-
+    const _tdzStatus = window.tdzDesignStatus?.();
+    if (_tdzStatus?.needsSave && !_tdzStatus?.isSaved) {
+      showToast('لا تنس حفظ تصميمك قبل المتابعة', 'على مهلك', 'warn');
+      submitLock = false;
+      return;
+    }
+    const textDesignImage = await (window.getTextDesignImage ? window.getTextDesignImage() : Promise.resolve(null));
     const city    = deliveryMode === 'home' ? `${wilaya} - ${region}` : wilaya;
     const orderId = ensureOrderId();
 
@@ -4569,7 +4572,11 @@ const textDesignImage = await (window.getTextDesignImage ? window.getTextDesignI
   }, { threshold: 0.08 });
 
   document.querySelectorAll('.reveal').forEach(el => revIO.observe(el));
-  window.addEventListener('resize', () => renderSizeCarousel(false));
+  let _resizeTimer = null;
+  window.addEventListener('resize', () => {
+    clearTimeout(_resizeTimer);
+    _resizeTimer = setTimeout(() => renderSizeCarousel(false), 150);
+  });
 })();
 
 (() => {
@@ -5316,7 +5323,6 @@ if (fDesignImageEl) {
 }
 // استدعاء مبدئي واحد فقط
 checkUploadedDesignAvailability();
-  checkUploadedDesignAvailability();
   // إن كان نظام السلايدر الرئيسي (showSlide) موجوداً، نتزامن معه تلقائياً
   window.syncDesignMockup = function (slideIndex) {
     applyColor(slideIndex === 1 ? 'black' : 'white');
@@ -5329,7 +5335,11 @@ checkUploadedDesignAvailability();
     stage.classList.toggle('tdz-has-text', val.length > 0);
     markUnsaved();
   }
-  textInput?.addEventListener('input', refreshTextContent);
+  let _tdzInputTimer = null;
+  textInput?.addEventListener('input', () => {
+    clearTimeout(_tdzInputTimer);
+    _tdzInputTimer = setTimeout(refreshTextContent, 120);
+  });
 
   /* ── الحجم ── */
   function applySize(px) {
@@ -5675,6 +5685,12 @@ async function getFinalTextDesignImage(force = false) {
 
 window.exportDesignPNG = exportDesignPNG;
 window.getTextDesignImage = getFinalTextDesignImage;
+
+window.tdzDesignStatus = function() {
+  const hasText = (textInput?.value || '').trim().length > 0;
+  const needsSave = hasText || designOnShirtEnabled;
+  return { needsSave, isSaved: savedOnce };
+};
 
 /* ── زر الحفظ ── */
 saveBtn?.addEventListener('click', async () => {
