@@ -353,11 +353,14 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
   inset:0;
   z-index:9000;
   background:rgba(0,0,0,0);
-  transition:background .35s ease;
+  visibility:hidden;
+  transition:background .35s ease, visibility 0s linear .35s;
   pointer-events:none;
 }
 .lux-sheet-overlay.show{
   background:rgba(0,0,0,.7);
+  visibility:visible;
+  transition:background .35s ease, visibility 0s linear 0s;
   pointer-events:auto;
   backdrop-filter:blur(6px);
   -webkit-backdrop-filter:blur(6px);
@@ -374,11 +377,11 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
   border:1px solid rgba(255,255,255,.1);
   border-bottom:none;
   box-shadow:0 -24px 80px rgba(0,0,0,.8);
-  transform:translateY(100%);
+  transform:translateY(115%);
   transition:transform .45s cubic-bezier(.22,1,.36,1);
   display:flex;
   flex-direction:column;
-  max-height:82vh;
+  max-height:82dvh;
   will-change:transform;
 }
 .lux-sheet-overlay.show .lux-sheet{
