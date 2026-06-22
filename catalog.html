@@ -1734,7 +1734,7 @@ input, textarea {
   position:absolute;top:46%;left:50%;
   transform:translate(-50%,-50%);
   cursor:grab;touch-action:none;
-  width:60%;height:60%;
+  width:32%;height:32%;
   display:flex;align-items:center;justify-content:center;
   border-radius:8px;transition:background .2s ease;
 }
@@ -1865,8 +1865,149 @@ input, textarea {
   color: #ff8080;
 }
 
+.alfont-discover{
+  display:flex;align-items:center;gap:14px;padding:13px 16px;
+  border-radius:16px;border:1px solid rgba(120,210,255,.22);
+  background:radial-gradient(circle at 0% 50%,rgba(120,210,255,.07),transparent 55%),rgba(255,255,255,.03);
+  text-decoration:none;color:inherit;margin-bottom:14px;
+  position:relative;overflow:hidden;
+  transition:border-color .3s,background .3s,transform .25s;
+}
+.alfont-discover:hover{
+  border-color:rgba(120,210,255,.5);
+  background:radial-gradient(circle at 0% 50%,rgba(120,210,255,.13),transparent 55%),rgba(255,255,255,.05);
+  transform:translateY(-1px);
+}
+.alfont-discover::before{
+  content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(120,210,255,.09),transparent);
+  animation:alFontSweep 3s ease-in-out infinite;pointer-events:none;
+}
+@keyframes alFontSweep{0%,100%{left:-80%}55%{left:130%}}
+.alfont-ico{
+  flex:none;width:44px;height:44px;border-radius:13px;
+  border:1px solid rgba(120,210,255,.35);background:rgba(80,180,255,.10);
+  display:grid;place-items:center;font-size:1.4rem;font-weight:900;color:#7fd8ff;
+}
+.alfont-info{flex:1;min-width:0}
+.alfont-info strong{display:block;font-size:.88rem;color:#fff;margin-bottom:3px}
+.alfont-info span{font-size:.7rem;color:rgba(255,255,255,.38);letter-spacing:.04em}
+.alfont-arr{flex:none;font-size:.9rem;color:rgba(120,210,255,.6);transition:transform .25s}
+.alfont-discover:hover .alfont-arr{transform:translateX(-5px)}
 
 
+/* ── LOGO WIZARD ── */
+.logo-wizard-section{max-width:780px;margin:0 auto 22px}
+.logo-wizard-card{
+  border:1px solid rgba(255,255,255,.10);
+  background:
+    radial-gradient(circle at 100% 0%,rgba(255,255,255,.06),transparent 42%),
+    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
+  border-radius:30px;padding:26px 22px 24px;
+  box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;overflow:hidden;
+}
+.logo-wizard-card::before{
+  content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);
+  animation:lwSweep 4s ease-in-out infinite;pointer-events:none;
+}
+@keyframes lwSweep{0%,100%{left:-80%}55%{left:130%}}
+.lw-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.lw-header-ico{
+  flex:none;width:50px;height:50px;border-radius:15px;
+  border:1.5px solid rgba(255,255,255,.2);
+  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
+  display:grid;place-items:center;color:rgba(255,255,255,.75);
+  box-shadow:0 0 18px rgba(255,255,255,.06),inset 0 1px 0 rgba(255,255,255,.12);
+}
+.lw-header-ico svg{width:22px;height:22px}
+.lw-header-info{flex:1;min-width:0}
+.lw-header-badge{
+  display:inline-flex;padding:3px 11px;border-radius:999px;
+  font-size:.58rem;letter-spacing:.22em;font-weight:800;
+  border:1px solid rgba(255,255,255,.18);
+  background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);margin-bottom:6px;
+}
+.lw-header-info h4{font-size:.98rem;font-weight:700;color:#fff;margin-bottom:3px;letter-spacing:.02em}
+.lw-header-info p{font-size:.74rem;color:rgba(255,255,255,.42);line-height:1.5}
+.lw-enter-btn{
+  flex:none;display:inline-flex;align-items:center;gap:8px;
+  padding:10px 18px;border-radius:999px;
+  border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);
+  color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;letter-spacing:.06em;
+  text-decoration:none;transition:all .3s ease;white-space:nowrap;
+}
+.lw-enter-btn:hover{
+  background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.45);
+  color:#fff;transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.3);
+}
+.lw-enter-btn svg{width:13px;height:13px;flex:none}
+.lw-steps-label{
+  font-size:.62rem;letter-spacing:.22em;color:rgba(255,255,255,.25);
+  text-transform:uppercase;margin-bottom:12px;
+}
+.lw-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
+.lw-step{
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+  padding:11px 8px;border-radius:16px;text-align:center;
+  border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);
+}
+.lw-step.lw-alt{border-color:rgba(255,255,255,.11);background:rgba(255,255,255,.05)}
+.lw-sn{
+  width:24px;height:24px;border-radius:50%;
+  display:grid;place-items:center;font-size:.68rem;font-weight:800;
+  border:1.5px solid rgba(255,255,255,.2);
+  background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);flex:none;
+}
+.lw-step.lw-alt .lw-sn{
+  border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.11);color:#fff;
+}
+.lw-st{font-size:.7rem;color:rgba(255,255,255,.55);line-height:1.35;letter-spacing:.01em}
+.lw-prompt-section{
+  border:1px solid rgba(120,210,255,.2);border-radius:18px;
+  background:rgba(80,180,255,.04);padding:16px;position:relative;overflow:hidden;
+}
+.lw-prompt-section::before{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:radial-gradient(circle at 50% 0%,rgba(120,210,255,.08),transparent 55%);
+  pointer-events:none;animation:lwPromptPulse 3s ease-in-out infinite;
+}
+@keyframes lwPromptPulse{0%,100%{opacity:.4}50%{opacity:1}}
+.lw-prompt-top{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  margin-bottom:12px;position:relative;z-index:1;
+}
+.lw-prompt-badge{
+  display:flex;align-items:center;gap:8px;
+  font-size:.68rem;color:rgba(255,255,255,.65);letter-spacing:.04em;line-height:1.4;flex:1;min-width:0;
+}
+.lw-prompt-dot{
+  flex:none;width:8px;height:8px;border-radius:50%;
+  background:#7fd8ff;box-shadow:0 0 8px rgba(120,210,255,.6);
+  animation:lwDotBlink 2s ease-in-out infinite;
+}
+@keyframes lwDotBlink{0%,100%{opacity:1}50%{opacity:.35}}
+.lw-copy-btn{
+  flex:none;display:inline-flex;align-items:center;gap:6px;
+  padding:7px 14px;border-radius:999px;
+  border:1.5px solid rgba(120,210,255,.42);background:rgba(80,180,255,.12);
+  color:#7fd8ff;font-size:.72rem;font-weight:700;letter-spacing:.08em;
+  cursor:pointer;font-family:inherit;transition:all .25s ease;
+}
+.lw-copy-btn:hover{background:rgba(80,180,255,.22);border-color:rgba(120,210,255,.7);transform:translateY(-1px)}
+.lw-copy-btn.copied{background:rgba(60,220,130,.12);border-color:rgba(60,220,130,.45);color:#3cdc82}
+.lw-copy-btn svg{flex:none;transition:transform .2s}
+.lw-copy-btn:hover svg{transform:scale(1.15)}
+.lw-prompt-box{
+  position:relative;z-index:1;font-size:.72rem;color:rgba(255,255,255,.5);
+  line-height:1.8;padding:12px 14px;border-radius:12px;
+  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);
+  font-family:'Courier New',Consolas,monospace;direction:ltr;text-align:left;word-break:break-word;
+}
+@media(max-width:480px){
+  .lw-header{gap:10px}
+  .lw-enter-btn{padding:9px 14px;font-size:.76rem}
+}
 </style>
 </head>
 <body>
@@ -1941,12 +2082,64 @@ input, textarea {
     </div>
     <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
   </div>
+  <div class="logo-wizard-section reveal">
+  <div class="logo-wizard-card">
+
+    <div class="lw-header">
+      <div class="lw-header-ico">
+       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M12 19l7-7 3 3-7 7-3-3z"/>
+  <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
+  <path d="M2 2l7.586 7.586"/>
+  <circle cx="11" cy="11" r="2"/>
+</svg>
+      </div>
+      <div class="lw-header-info">
+        <div class="lw-header-badge">AI LOGO MAKER</div>
+        <h4>صمّم شعارك بالذكاء الاصطناعي</h4>
+        <p>أخرج شعارا احترافيا مجانا ثم ارفعه على تيشرتك</p>
+      </div>
+      <a href="https://www.design.com/s/logo-maker?code=25OFFSEM" target="_blank" rel="noopener noreferrer" class="lw-enter-btn">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+        ادخل
+      </a>
+    </div>
+
+    <div class="lw-steps-label">دليل سريع — ٩ خطوات</div>
+    <div class="lw-steps">
+      <div class="lw-step">      <span class="lw-sn">١</span><span class="lw-st">أدخل الموقع</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">٢</span><span class="lw-st">أكتب عنوانا ثم Start Now</span></div>
+      <div class="lw-step">      <span class="lw-sn">٣</span><span class="lw-st">أكتب Art Style Keywords</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">٤</span><span class="lw-st">اختر تصميمك</span></div>
+      <div class="lw-step">      <span class="lw-sn">٥</span><span class="lw-st">Continue</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">٦</span><span class="lw-st">Switch to Editor</span></div>
+      <div class="lw-step">      <span class="lw-sn">٧</span><span class="lw-st">اعمل Screenshot</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">٨</span><span class="lw-st">أدخل ChatGPT</span></div>
+      <div class="lw-step">      <span class="lw-sn">٩</span><span class="lw-st">اختر صورة الـ Screenshot</span></div>
+    </div>
+
+    <div class="lw-prompt-section">
+      <div class="lw-prompt-top">
+        <div class="lw-prompt-badge">
+          <span class="lw-prompt-dot"></span>
+          أنسخ هذا البرومت وأرسله مع Screenshot في ChatGPT
+        </div>
+        <button class="lw-copy-btn" id="lwCopyBtn" type="button" onclick="lwCopyPrompt()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
+          <span id="lwCopyLabel">نسخ</span>
+        </button>
+      </div>
+      <div class="lw-prompt-box">Remove background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the true background. Enhance the design clarity and sharpness while preserving the original style. Export as a transparent PNG in maximum resolution. No modifications, no enhancement, no redesign. If the text "Since 2026" appears anywhere in the image, remove it completely while keeping all other logo elements unchanged.</div>
+    </div>
+
+  </div>
+</div>
 <div class="design-upload-section reveal">
     <div class="design-upload-card">
       <div class="design-upload-header">
         <div class="design-upload-badge">HD ONLY</div>
         <h3 class="design-upload-title">ارفق تصميمك</h3>
-        <p class="design-upload-sub">ارفع صورة واضحة للجملة أو الكتابة التي تريدها مطبوعة على تيشرتك</p>
+        <p class="design-upload-sub">ارفع صورة تصميم للجملة أو الكتابة التي صممتها على تيشرتك  </p>
       </div>
 
       <div class="design-dropzone" id="designDropzone" tabindex="0" role="button" aria-label="رفع صورة التصميم">
@@ -2062,7 +2255,15 @@ input, textarea {
       <div class="tdz-field">
           
       
-  <label>الخط المستخدم</label>
+ <a href="https://alfont.com" target="_blank" rel="noopener noreferrer" class="alfont-discover">
+  <div class="alfont-ico">∆</div>
+  <div class="alfont-info">
+    <strong>إكتشف الخط الذي يناسب ذوقك</strong>
+    <span>alfont.com هو الموقع المضمون الذي يتوافق مع صيغ الخطوط داخل الخط المستخدم</span>
+  </div>
+  <div class="alfont-arr">←</div>
+</a>
+<label>الخط المستخدم</label>
   
   <!-- زر رفع الفونت -->
   <div class="tdz-font-upload-row">
@@ -5461,13 +5662,42 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   colorWhiteBtn?.addEventListener('click', () => applyColor('white'));
   colorBlackBtn?.addEventListener('click', () => applyColor('black'));
 /* ── ربط مع صورة التصميم المقبولة في قسم "ارفق تصميمك" ── */
+function trimTransparent(dataUrl) {
+  return new Promise(resolve => {
+    const img = new Image();
+    img.onload = () => {
+      const c = document.createElement('canvas');
+      c.width = img.width; c.height = img.height;
+      const x = c.getContext('2d');
+      x.drawImage(img, 0, 0);
+      const d = x.getImageData(0,0,img.width,img.height).data;
+      let x1=img.width, y1=img.height, x2=0, y2=0;
+      for (let r=0;r<img.height;r++)
+        for (let s=0;s<img.width;s++)
+          if (d[(r*img.width+s)*4+3]>8) {
+            if(s<x1)x1=s; if(s>x2)x2=s;
+            if(r<y1)y1=r; if(r>y2)y2=r;
+          }
+      if(x2<x1){resolve(dataUrl);return;}
+      const o=document.createElement('canvas');
+      o.width=x2-x1+1; o.height=y2-y1+1;
+      o.getContext('2d').drawImage(img,x1,y1,o.width,o.height,0,0,o.width,o.height);
+      resolve(o.toDataURL('image/png'));
+    };
+    img.onerror=()=>resolve(dataUrl);
+    img.src=dataUrl;
+  });
+}
   function checkUploadedDesignAvailability() {
     const approvedImg = document.getElementById('fDesignImage')?.value || '';
     if (approvedImg) {
       if (designToggleWrap) designToggleWrap.style.display = '';
       if (designTogglePrevImg) designTogglePrevImg.src = approvedImg;
-      if (imageLayerImg) imageLayerImg.src = approvedImg;
-    } else {
+      if (imageLayerImg) {
+  trimTransparent(approvedImg).then(src => {
+    imageLayerImg.src = src;
+  });
+}          } else {
       if (designToggleWrap) designToggleWrap.style.display = 'none';
       setDesignOnShirt(false);
     }
@@ -5562,8 +5792,8 @@ imageLayerImg?.addEventListener('load', recalcDesignSurcharge);
 function applyImgScale(pct) {
     imgScalePct = Math.min(IMG_MAX_SCALE, Math.max(IMG_MIN_SCALE, pct));
     if (imageLayer) {
-      imageLayer.style.width  = (imgScalePct * 0.6) + '%';
-      imageLayer.style.height = (imgScalePct * 0.6) + '%';
+      imageLayer.style.width  = (imgScalePct * 0.32) + '%';
+imageLayer.style.height = (imgScalePct * 0.32) + '%';
     }
     if (imgSizeNum) imgSizeNum.textContent = imgScalePct;
     markUnsaved();
@@ -6075,7 +6305,29 @@ fontRemoveBtn?.addEventListener('click', e => {
   
 })();
 
-
+function lwCopyPrompt() {
+  const text = 'Remove background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the true background. Enhance the design clarity and sharpness while preserving the original style. Export as a transparent PNG in maximum resolution. No modifications, no enhancement, no redesign. If the text "Since 2026" appears anywhere in the image, remove it completely while keeping all other logo elements unchanged.';
+  const btn   = document.getElementById('lwCopyBtn');
+  const label = document.getElementById('lwCopyLabel');
+  const finish = () => {
+    btn.classList.add('copied');
+    label.textContent = 'تم ✓';
+    setTimeout(() => { btn.classList.remove('copied'); label.textContent = 'نسخ'; }, 2600);
+  };
+  if (navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text).then(finish).catch(() => {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove(); finish();
+    });
+  } else {
+    const ta = document.createElement('textarea');
+    ta.value = text; ta.style.cssText = 'position:fixed;opacity:0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); ta.remove(); finish();
+  }
+}
 
 </script>
 </body>
