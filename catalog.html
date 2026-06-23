@@ -1998,6 +1998,26 @@ input, textarea {
 .lw-copy-btn.copied{background:rgba(60,220,130,.12);border-color:rgba(60,220,130,.45);color:#3cdc82}
 .lw-copy-btn svg{flex:none;transition:transform .2s}
 .lw-copy-btn:hover svg{transform:scale(1.15)}
+.lw-prompt-toggle-btn{
+  flex:none;width:30px;height:30px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;padding:0;
+  border:1.5px solid rgba(255,255,255,.14);
+  background:rgba(255,255,255,.05);
+  color:rgba(255,255,255,.5);
+  cursor:pointer;font-family:inherit;transition:.25s ease;
+}
+.lw-prompt-toggle-btn:hover{
+  background:rgba(255,255,255,.1);
+  border-color:rgba(255,255,255,.28);
+  color:#fff;
+}
+.lw-prompt-toggle-btn.active{
+  border-color:rgba(120,210,255,.5);
+  background:rgba(80,180,255,.12);
+  color:#7fd8ff;
+}
+.lw-prompt-toggle-btn svg{width:14px;height:14px;transition:transform .3s ease}
+.lw-prompt-toggle-btn.active svg{transform:rotate(180deg)}
 .lw-prompt-box{
   position:relative;z-index:1;font-size:.72rem;color:rgba(255,255,255,.5);
   line-height:1.8;padding:12px 14px;border-radius:12px;
@@ -2190,12 +2210,15 @@ input, textarea {
           <span class="lw-prompt-dot"></span>
           أنسخ هذا البرومت وأرسله مع Screenshot في ChatGPT
         </div>
+        <button class="lw-prompt-toggle-btn" id="lwToggleBtn" type="button" onclick="lwTogglePrompt()" title="تبديل البرومت" aria-label="تبديل البرومت">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
+        </button>
         <button class="lw-copy-btn" id="lwCopyBtn" type="button" onclick="lwCopyPrompt()">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
           <span id="lwCopyLabel">نسخ</span>
         </button>
       </div>
-      <div class="lw-prompt-box">Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged</div>
+     <div class="lw-prompt-box" id="lwPromptBox">Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged</div>
     </div>
 
   </div>
@@ -6371,8 +6394,29 @@ fontRemoveBtn?.addEventListener('click', e => {
   
 })();
 
+const LW_PROMPT_VISIBLE = 'Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged';
+
+const LW_PROMPT_HIDDEN = 'Remove background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the true background. Enhance the design clarity and sharpness while preserving the original style. Export as a transparent PNG in maximum resolution. No modifications, no enhancement, no redesign. If the text "Since 2026" appears anywhere in the image, remove it completely while keeping all other logo elements unchanged.';
+
+let lwUsingHiddenPrompt = false;
+
+function lwTogglePrompt() {
+  lwUsingHiddenPrompt = !lwUsingHiddenPrompt;
+  const box = document.getElementById('lwPromptBox');
+  const toggleBtn = document.getElementById('lwToggleBtn');
+  if (box) box.textContent = lwUsingHiddenPrompt ? LW_PROMPT_HIDDEN : LW_PROMPT_VISIBLE;
+  if (toggleBtn) toggleBtn.classList.toggle('active', lwUsingHiddenPrompt);
+
+  if (lwUsingHiddenPrompt) {
+    window.showToast?.('الأن لديك برومت يبقي الكتابة مصممة من موقع', 'بالكتابة', 'ok');
+  } else {
+    window.showToast?.('هذا برومت يترك logo فقط اعد تبديل ان اردته هو وكتابة معا', 'بلا كتابة', 'warn');
+  }
+}
+window.lwTogglePrompt = lwTogglePrompt;
+
 function lwCopyPrompt() {
-  const text = 'Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged';
+  const text = lwUsingHiddenPrompt ? LW_PROMPT_HIDDEN : LW_PROMPT_VISIBLE;
   const btn   = document.getElementById('lwCopyBtn');
   const label = document.getElementById('lwCopyLabel');
   const finish = () => {
