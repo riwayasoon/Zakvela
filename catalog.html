@@ -2008,6 +2008,73 @@ input, textarea {
   .lw-header{gap:10px}
   .lw-enter-btn{padding:9px 14px;font-size:.76rem}
 }
+
+.lw-ai-note{
+  display:flex;
+  align-items:flex-start;
+  gap:12px;
+  margin:14px 0 18px;
+  padding:14px 15px;
+  border-radius:18px;
+  border:1px solid rgba(120,210,255,.18);
+  background:linear-gradient(135deg,rgba(80,180,255,.08),rgba(255,255,255,.03));
+  box-shadow:0 10px 30px rgba(0,0,0,.18);
+  position:relative;
+  overflow:hidden;
+}
+
+.lw-ai-note::after{
+  content:'';
+  position:absolute;
+  inset:auto -35px -35px auto;
+  width:120px;
+  height:120px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(120,210,255,.18),transparent 70%);
+  pointer-events:none;
+}
+
+.lw-ai-note-icon{
+  flex:none;
+  width:34px;
+  height:34px;
+  border-radius:12px;
+  display:grid;
+  place-items:center;
+  background:rgba(120,210,255,.12);
+  border:1px solid rgba(120,210,255,.28);
+  color:#7fd8ff;
+  font-size:.72rem;
+  font-weight:800;
+  letter-spacing:.12em;
+}
+
+.lw-ai-note-text{
+  position:relative;
+  z-index:1;
+  min-width:0;
+}
+
+.lw-ai-note-text strong{
+  display:block;
+  font-size:.88rem;
+  color:#fff;
+  margin-bottom:5px;
+  line-height:1.4;
+}
+
+.lw-ai-note-text p{
+  margin:0;
+  font-size:.77rem;
+  line-height:1.8;
+  color:rgba(255,255,255,.62);
+}
+
+.lw-ai-note-text span{
+  color:#fff;
+  font-weight:700;
+}
+
 </style>
 </head>
 <body>
@@ -2117,7 +2184,17 @@ input, textarea {
       <div class="lw-step lw-alt"><span class="lw-sn">٨</span><span class="lw-st">أدخل ChatGPT</span></div>
       <div class="lw-step">      <span class="lw-sn">٩</span><span class="lw-st">اختر صورة الـ Screenshot</span></div>
     </div>
-
+<div class="lw-ai-note">
+  <div class="lw-ai-note-icon">AI</div>
+  <div class="lw-ai-note-text">
+    <strong>يمكنك تعديل اللوغو بالذكاء الاصطناعي</strong>
+    <p>
+      بعد الضغط على <span>Switch to Editor</span>، افتح قسم <span>logo</span>، اضغط على اللوغو
+      ثم من الأعلى اضغط الزر الأزرق <span>Ai edit</span>، اكتب التعديل المطلوب بعدها اضغط <span>↑</span> لإرسال تعديل ثم إنتظر
+      وبعدها خذ <span>screenshot</span> ثم أكمل الخطوة الأخيرة التالية<span>...</span>
+    </p>
+  </div>
+</div>
     <div class="lw-prompt-section">
       <div class="lw-prompt-top">
         <div class="lw-prompt-badge">
