@@ -3355,6 +3355,8 @@ async function waitForOrderSettlement(orderId) {
 }
 
 function showSuccessUI() {
+  zvSound.stopWaterLoop();
+  zvSound.playWaveCrash();
   if (ui.formWrap) ui.formWrap.style.display = 'none';
   if (ui.successMsg) ui.successMsg.classList.add('show');
   showToast('تم استلام الطلب بنجاح.', 'تم الإرسال', 'ok');
@@ -4084,7 +4086,11 @@ const dl = document.getElementById('priceDesignLine');
         const areaTxt = t.areaCm2 ? ` (${t.areaCm2} سم²)` : '';
         parts.push(`نص${areaTxt} +${t.price} دج`);
       }
-      if (designSurchargeBreakdown.image) parts.push(`صورة +${designSurchargeBreakdown.image.price} دج`);
+      if (designSurchargeBreakdown.image) {
+        const im = designSurchargeBreakdown.image;
+        const areaTxt = im.areaCm2 ? ` (${im.areaCm2} سم²)` : '';
+        parts.push(`صورة${areaTxt} +${im.price} دج`);
+      }
       dl.textContent = `تخصيص: ${parts.join(' · ')}`;
       dl.style.display = 'block';
     } else {
@@ -4131,7 +4137,137 @@ function getSelectedDeliveryPrice() {
 let submitWaterRAF = null;
 const SEND_WATER_DURATION = 14000;
 const SEND_WATER_MAX = 96;
+/* ── SOUND ENGINE: WATER ── */
+const zvSound = (() => {
+  let ctx = null;
+  let bubbleNodes = null;
 
+  function getCtx() {
+    if (!ctx) {
+      const AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return null;
+      ctx = new AC();
+    }
+    if (ctx.state === 'suspended') ctx.resume().catch(() => {});
+    return ctx;
+  }
+
+  function makeNoiseBuffer(c, seconds) {
+    const len = Math.floor(c.sampleRate * seconds);
+    const buf = c.createBuffer(1, len, c.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) data[i] = Math.random() * 2 - 1;
+    return buf;
+  }
+
+  function startWaterLoop() {
+    const c = getCtx();
+    if (!c || bubbleNodes) return;
+
+    const noiseBuf = makeNoiseBuffer(c, 2);
+    const noise = c.createBufferSource();
+    noise.buffer = noiseBuf;
+    noise.loop = true;
+
+    const bandpass = c.createBiquadFilter();
+    bandpass.type = 'bandpass';
+    bandpass.frequency.value = 900;
+    bandpass.Q.value = 0.7;
+
+    const gain = c.createGain();
+    gain.gain.value = 0;
+
+    const lfo = c.createOscillator();
+    lfo.frequency.value = 0.35;
+    const lfoGain = c.createGain();
+    lfoGain.gain.value = 350;
+    lfo.connect(lfoGain);
+    lfoGain.connect(bandpass.frequency);
+
+    noise.connect(bandpass);
+    bandpass.connect(gain);
+    gain.connect(c.destination);
+
+    noise.start();
+    lfo.start();
+    gain.gain.linearRampToValueAtTime(0.05, c.currentTime + 0.6);
+
+    const bubbleTimer = setInterval(() => {
+      if (!bubbleNodes) return;
+      const t = c.currentTime;
+      const osc = c.createOscillator();
+      const og = c.createGain();
+      osc.type = 'sine';
+      const freq = 220 + Math.random() * 480;
+      osc.frequency.setValueAtTime(freq, t);
+      osc.frequency.exponentialRampToValueAtTime(freq * 1.8, t + 0.09);
+      og.gain.setValueAtTime(0, t);
+      og.gain.linearRampToValueAtTime(0.04, t + 0.015);
+      og.gain.exponentialRampToValueAtTime(0.0001, t + 0.12);
+      osc.connect(og);
+      og.connect(c.destination);
+      osc.start(t);
+      osc.stop(t + 0.13);
+    }, 260);
+
+    bubbleNodes = { noise, bandpass, gain, lfo, lfoGain, bubbleTimer };
+  }
+
+  function stopWaterLoop() {
+    if (!bubbleNodes || !ctx) return;
+    const t = ctx.currentTime;
+    bubbleNodes.gain.gain.cancelScheduledValues(t);
+    bubbleNodes.gain.gain.linearRampToValueAtTime(0, t + 0.35);
+    clearInterval(bubbleNodes.bubbleTimer);
+    const nodes = bubbleNodes;
+    bubbleNodes = null;
+    setTimeout(() => {
+      try { nodes.noise.stop(); } catch (_) {}
+      try { nodes.lfo.stop(); } catch (_) {}
+    }, 400);
+  }
+
+  function playWaveCrash() {
+    const c = getCtx();
+    if (!c) return;
+    const t = c.currentTime;
+
+    const noiseBuf = makeNoiseBuffer(c, 1.2);
+    const noise = c.createBufferSource();
+    noise.buffer = noiseBuf;
+
+    const lowpass = c.createBiquadFilter();
+    lowpass.type = 'lowpass';
+    lowpass.frequency.setValueAtTime(2400, t);
+    lowpass.frequency.exponentialRampToValueAtTime(220, t + 0.8);
+
+    const gain = c.createGain();
+    gain.gain.setValueAtTime(0, t);
+    gain.gain.linearRampToValueAtTime(0.5, t + 0.04);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.9);
+
+    noise.connect(lowpass);
+    lowpass.connect(gain);
+    gain.connect(c.destination);
+    noise.start(t);
+    noise.stop(t + 1.0);
+
+    const thump = c.createOscillator();
+    const thumpGain = c.createGain();
+    thump.type = 'sine';
+    thump.frequency.setValueAtTime(140, t);
+    thump.frequency.exponentialRampToValueAtTime(45, t + 0.3);
+    thumpGain.gain.setValueAtTime(0.35, t);
+    thumpGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.35);
+    thump.connect(thumpGain);
+    thumpGain.connect(c.destination);
+    thump.start(t);
+    thump.stop(t + 0.4);
+  }
+
+  return { startWaterLoop, stopWaterLoop, playWaveCrash };
+})();
+window.zvSound = zvSound;
 /* ── Water Engine ── */
 const _waterState = new WeakMap();
 const MAX_BUB = 35;
@@ -4549,6 +4685,7 @@ function startSubmitWater(btn) {
   s.active      = true;
   s.currentFill = 0;
   s.targetFill  = 0;
+  zvSound.startWaterLoop();
 
   const start = performance.now();
 
@@ -4587,6 +4724,7 @@ function startSubmitWater(btn) {
 function stopSubmitWater(btn) {
   cancelAnimationFrame(submitWaterRAF);
   submitWaterRAF = null;
+  zvSound.stopWaterLoop();
 
   const s = _waterState.get(btn);
   if (s) {
@@ -5590,7 +5728,7 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   let imgScalePct = 100;
   const IMG_MIN_SCALE = 30;
   const IMG_MAX_SCALE = 200;
-  const IMG_SCALE_STEP = 10;
+  const IMG_SCALE_STEP = 5;
   let designOnShirtEnabled = false;
   let fontSize = 42;
   let currentColor = 'white';
@@ -5617,12 +5755,11 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   const THIN_CHARS = new Set('اأإآىوردذزهة ');
   let fontWidthMultiplier = 1.0;
 
-  // التسعير الدقيق: يُحسب من المساحة الحقيقية (سم²) للنص فعلياً
-  const TEXT_MIN_PRICE     = 100;
-  const TEXT_FREE_AREA_CM2 = 6;
+ // التسعير الدقيق: يُحسب من المساحة الحقيقية (سم²) للنص فعلياً — معايرة وفق سوق طباعة DTF بالجزائر
+  const TEXT_MIN_PRICE     = 150;
+  const TEXT_FREE_AREA_CM2 = 8;
   const TEXT_PRICE_PER_CM2 = 10;
-  const TEXT_MAX_PRICE     = 2000;
-
+  const TEXT_MAX_PRICE     = 2500;
   function getTextPriceByArea(widthCm, heightCm) {
     const areaCm2 = Math.max(0, widthCm * heightCm);
     const extra   = Math.max(0, areaCm2 - TEXT_FREE_AREA_CM2);
@@ -5692,17 +5829,22 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
     return FONT_SIZE_PRICE_TIERS[FONT_SIZE_PRICE_TIERS.length - 1];
   }
 
-  function getImagePriceInfo(widthCm, heightCm) {
-    const shortSide = Math.min(widthCm, heightCm);
-    const longSide  = Math.max(widthCm, heightCm);
+  // تسعير الصورة بالمساحة الحقيقية (سم²) — صورة كاملة الألوان تستهلك حبر أكثر من النص
+  const IMAGE_MIN_PRICE     = 250;
+  const IMAGE_FREE_AREA_CM2 = 8;
+  const IMAGE_PRICE_PER_CM2 = 14;
+  const IMAGE_MAX_PRICE     = 3000;
 
-    if (shortSide <= 10 && longSide <= 10) {
-      return { price: 500,  label: 'شعار صغير (حتى 10×10 سم)' };
-    }
-    if (shortSide <= 21 && longSide <= 29.7) {
-      return { price: 800,  label: 'تصميم متوسط (حتى A4)' };
-    }
-    return { price: 1200, label: 'تصميم كبير (حتى A3)' };
+  function getImagePriceByArea(widthCm, heightCm) {
+    const areaCm2 = Math.max(0, widthCm * heightCm);
+    const extra   = Math.max(0, areaCm2 - IMAGE_FREE_AREA_CM2);
+    let price = IMAGE_MIN_PRICE + extra * IMAGE_PRICE_PER_CM2;
+    price = Math.min(IMAGE_MAX_PRICE, Math.round(price / 50) * 50);
+    let label = 'تصميم صغير';
+    if (areaCm2 > 600) label = 'تصميم ضخم';
+    else if (areaCm2 > 300) label = 'تصميم كبير';
+    else if (areaCm2 > 100) label = 'تصميم متوسط';
+    return { price, label, areaCm2: Math.round(areaCm2 * 10) / 10 };
   }
 
   let _designLineParts = { text: null, image: null };
@@ -5728,7 +5870,7 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
     if (designOnShirtEnabled && imageLayerImg?.src) {
       const size = getImageSizeCm();
       if (size) {
-        const info = getImagePriceInfo(size.widthCm, size.heightCm);
+       const info = getImagePriceByArea(size.widthCm, size.heightCm);
         total += info.price;
         _designLineParts.image = info;
       }
