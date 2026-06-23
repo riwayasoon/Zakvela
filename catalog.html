@@ -2129,7 +2129,7 @@ input, textarea {
           <span id="lwCopyLabel">نسخ</span>
         </button>
       </div>
-      <div class="lw-prompt-box">Remove background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the true background. Enhance the design clarity and sharpness while preserving the original style. Export as a transparent PNG in maximum resolution. No modifications, no enhancement, no redesign. If the text "Since 2026" appears anywhere in the image, remove it completely while keeping all other logo elements unchanged.</div>
+      <div class="lw-prompt-box">Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged</div>
     </div>
 
   </div>
@@ -6306,7 +6306,7 @@ fontRemoveBtn?.addEventListener('click', e => {
 })();
 
 function lwCopyPrompt() {
-  const text = 'Remove background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the true background. Enhance the design clarity and sharpness while preserving the original style. Export as a transparent PNG in maximum resolution. No modifications, no enhancement, no redesign. If the text "Since 2026" appears anywhere in the image, remove it completely while keeping all other logo elements unchanged.';
+  const text = 'Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged';
   const btn   = document.getElementById('lwCopyBtn');
   const label = document.getElementById('lwCopyLabel');
   const finish = () => {
