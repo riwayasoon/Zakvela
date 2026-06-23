@@ -2009,71 +2009,51 @@ input, textarea {
   .lw-enter-btn{padding:9px 14px;font-size:.76rem}
 }
 
-.lw-ai-note{
-  display:flex;
-  align-items:flex-start;
-  gap:12px;
-  margin:14px 0 18px;
-  padding:14px 15px;
-  border-radius:18px;
-  border:1px solid rgba(120,210,255,.18);
-  background:linear-gradient(135deg,rgba(80,180,255,.08),rgba(255,255,255,.03));
-  box-shadow:0 10px 30px rgba(0,0,0,.18);
-  position:relative;
-  overflow:hidden;
+/* ── AI TIP SIDE CARD ── */
+.lw-ai-tip{
+  margin:14px 0;border-radius:16px;
+  border:1px solid rgba(120,210,255,.22);
+  background:radial-gradient(circle at 100% 50%,rgba(120,210,255,.06),transparent 55%),rgba(255,255,255,.03);
+  padding:13px 14px;position:relative;overflow:hidden;
+  display:flex;gap:12px;align-items:flex-start;
 }
-
-.lw-ai-note::after{
-  content:'';
-  position:absolute;
-  inset:auto -35px -35px auto;
-  width:120px;
-  height:120px;
-  border-radius:50%;
-  background:radial-gradient(circle,rgba(120,210,255,.18),transparent 70%);
-  pointer-events:none;
+.lw-ai-tip::before{
+  content:'';position:absolute;right:0;top:0;bottom:0;width:2.5px;
+  background:linear-gradient(180deg,rgba(120,210,255,0) 0%,rgba(120,210,255,.7) 40%,rgba(120,210,255,.7) 60%,rgba(120,210,255,0) 100%);
 }
-
-.lw-ai-note-icon{
-  flex:none;
-  width:34px;
-  height:34px;
-  border-radius:12px;
-  display:grid;
-  place-items:center;
-  background:rgba(120,210,255,.12);
-  border:1px solid rgba(120,210,255,.28);
-  color:#7fd8ff;
-  font-size:.72rem;
-  font-weight:800;
-  letter-spacing:.12em;
+.lw-ai-tip::after{
+  content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
+  background:linear-gradient(90deg,transparent,rgba(120,210,255,.06),transparent);
+  animation:alFontSweep 3.2s ease-in-out infinite;pointer-events:none;
 }
-
-.lw-ai-note-text{
-  position:relative;
-  z-index:1;
-  min-width:0;
+.lw-ai-tip-icon{
+  flex:none;width:36px;height:36px;border-radius:10px;
+  border:1px solid rgba(120,210,255,.38);background:rgba(80,180,255,.10);
+  display:grid;place-items:center;color:#7fd8ff;font-size:1rem;font-weight:900;
 }
-
-.lw-ai-note-text strong{
-  display:block;
-  font-size:.88rem;
-  color:#fff;
-  margin-bottom:5px;
-  line-height:1.4;
+.lw-ai-tip-body{flex:1;min-width:0}
+.lw-ai-tip-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  font-size:.58rem;letter-spacing:.18em;color:rgba(120,210,255,.8);
+  text-transform:uppercase;margin-bottom:6px;
 }
-
-.lw-ai-note-text p{
-  margin:0;
-  font-size:.77rem;
-  line-height:1.8;
-  color:rgba(255,255,255,.62);
+.lw-ai-tip-dot{
+  width:5px;height:5px;border-radius:50%;background:#7fd8ff;
+  box-shadow:0 0 6px rgba(120,210,255,.8);flex:none;
+  animation:lwDotBlink 2s ease-in-out infinite;
 }
-
-.lw-ai-note-text span{
-  color:#fff;
-  font-weight:700;
+.lw-ai-tip-desc{font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:10px}
+.lw-ai-tip-flow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;direction:ltr}
+.lw-ai-tip-node{
+  padding:3px 8px;border-radius:7px;font-size:.60rem;letter-spacing:.04em;
+  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
+  color:rgba(255,255,255,.48);white-space:nowrap;
 }
+.lw-ai-tip-node.lw-node-hl{
+  border-color:rgba(120,210,255,.48);background:rgba(80,180,255,.12);
+  color:#7fd8ff;font-weight:700;box-shadow:0 0 10px rgba(120,210,255,.15);
+}
+.lw-ai-tip-chevron{color:rgba(255,255,255,.18);font-size:.55rem;flex:none}
 
 </style>
 </head>
@@ -2184,17 +2164,26 @@ input, textarea {
       <div class="lw-step lw-alt"><span class="lw-sn">٨</span><span class="lw-st">أدخل ChatGPT</span></div>
       <div class="lw-step">      <span class="lw-sn">٩</span><span class="lw-st">اختر صورة الـ Screenshot</span></div>
     </div>
-<div class="lw-ai-note">
-  <div class="lw-ai-note-icon">AI</div>
-  <div class="lw-ai-note-text">
-    <strong>يمكنك تعديل اللوغو بالذكاء الاصطناعي</strong>
-    <p>
-      بعد الضغط على <span>Switch to Editor</span>، افتح قسم <span>logo</span>، اضغط على اللوغو
-      ثم من الأعلى اضغط الزر الأزرق <span>Ai edit</span>، اكتب التعديل المطلوب بعدها اضغط <span>↑</span> لإرسال تعديل ثم إنتظر
-      وبعدها خذ <span>screenshot</span> ثم أكمل الخطوة الأخيرة التالية<span>...</span>
-    </p>
-  </div>
-</div>
+
+    <div class="lw-ai-tip">
+      <div class="lw-ai-tip-icon">✦</div>
+      <div class="lw-ai-tip-body">
+        <div class="lw-ai-tip-badge"><span class="lw-ai-tip-dot"></span> تعديل اللوغو بالذكاء الاصطناعي</div>
+        <p class="lw-ai-tip-desc">بعد اختيار تصميمك يمكنك تعديله بالـ AI مباشرة — اتبع هذا المسار السريع</p>
+        <div class="lw-ai-tip-flow">
+          <div class="lw-ai-tip-node">Switch to Editor</div>
+          <div class="lw-ai-tip-chevron">›</div>
+          <div class="lw-ai-tip-node">قسم Logo</div>
+          <div class="lw-ai-tip-chevron">›</div>
+          <div class="lw-ai-tip-node lw-node-hl">AI Edit ✦</div>
+          <div class="lw-ai-tip-chevron">›</div>
+          <div class="lw-ai-tip-node">اكتب التعديل</div>
+          <div class="lw-ai-tip-chevron">›</div>
+          <div class="lw-ai-tip-node">Screenshot</div>
+        </div>
+      </div>
+    </div>
+
     <div class="lw-prompt-section">
       <div class="lw-prompt-top">
         <div class="lw-prompt-badge">
