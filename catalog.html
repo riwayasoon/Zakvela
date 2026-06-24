@@ -7,6 +7,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+
+<link rel="preload" as="image" href="images/white.png" fetchpriority="high">
+<link rel="preload" as="image" href="images/black.png">
+<link rel="preload" as="image" href="imag/white1.png">
+<link rel="preload" as="image" href="imag/black1.png">
+
 <style>
 :root{
   --bg:#050505;
@@ -2118,7 +2124,7 @@ input, textarea {
     <div class="slider-track-wrap" id="sliderWrap">
       <div class="slider-track" id="sliderTrack">
         <div class="slide slide-white">
-          <img src="images/white.png" alt="" class="product-img">
+          <img src="images/white.png" alt="" class="product-img" loading="eager" fetchpriority="high">
           <div class="slide-label">أبيض — White</div>
         </div>
         <div class="slide slide-black">
@@ -5727,6 +5733,7 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   const fUploadedOnShirt   = document.getElementById('fUploadedDesignOnShirt');
   if (!stage || !textLayer) return; // القسم غير موجود في الصفحة
   const SHIRT_IMAGES = { white: 'imag/white1.png', black: 'imag/black1.png' };
+  Object.values(SHIRT_IMAGES).forEach(src => { new Image().src = src; });
   const MIN_SIZE = 2;
   const MAX_SIZE = 40;
   const STEP     = 2;
