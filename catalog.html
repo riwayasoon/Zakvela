@@ -4,10 +4,8 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>ZAKVELA | المنتجات</title>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="icon" type="image/png" href="images/favicon.png">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
 <style>
 :root{
@@ -5719,8 +5717,8 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   if (!stage || !textLayer) return; // القسم غير موجود في الصفحة
   const SHIRT_IMAGES = { white: 'imag/white1.png', black: 'imag/black1.png' };
   const MIN_SIZE = 10;
-  const MAX_SIZE = 70;
-  const STEP     = 3;
+  const MAX_SIZE = 40;
+  const STEP     = 2;
 
   // إحداثيات النص كنسبة من المنطقة (0..1) — تبقى صحيحة عند تغيير حجم الشاشة
   let posXPct = 0.5;
@@ -5728,8 +5726,8 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   let imgPosXPct = 0.5;
   let imgPosYPct = 0.46;
   let imgScalePct = 100;
-  const IMG_MIN_SCALE = 30;
-  const IMG_MAX_SCALE = 200;
+  const IMG_MIN_SCALE = 10;
+  const IMG_MAX_SCALE = 100;
   const IMG_SCALE_STEP = 5;
   let designOnShirtEnabled = false;
   let fontSize = 42;
@@ -5748,11 +5746,8 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
 
   // نظام تسعير احتياطي (يُستخدم فقط إن تعذّر قياس المساحة الحقيقية)
   const FONT_SIZE_PRICE_TIERS = [
-    { minPx:  0, maxPx: 24,       price:  150, label: 'نص صغير'      },
-    { minPx: 25, maxPx: 34,       price:  300, label: 'نص متوسط'     },
-    { minPx: 35, maxPx: 44,       price:  500, label: 'نص كبير'      },
-    { minPx: 45, maxPx: 54,       price:  750, label: 'نص كبير جداً' },
-    { minPx: 55, maxPx: Infinity, price: 1000, label: 'نص ضخم'       },
+    { minPx: 10, maxPx: 18, price: 1800, label: 'نص صغير' },
+    { minPx: 20, maxPx: 40, price: 2000, label: 'نص كبير' },
   ];
   const THIN_CHARS = new Set('اأإآىوردذزهة ');
   let fontWidthMultiplier = 1.0;
@@ -5831,24 +5826,19 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
     return FONT_SIZE_PRICE_TIERS[FONT_SIZE_PRICE_TIERS.length - 1];
   }
 
-  // تسعير الصورة بالمساحة الحقيقية (سم²) — صورة كاملة الألوان تستهلك حبر أكثر من النص
-  const IMAGE_MIN_PRICE     = 250;
-  const IMAGE_FREE_AREA_CM2 = 8;
-  const IMAGE_PRICE_PER_CM2 = 14;
-  const IMAGE_MAX_PRICE     = 3000;
+  // تسعير الصورة: سعر ثابت حسب نسبة التكبير المختارة (10%–45% = صغير، 50%–100% = كبير) — مطابق تماماً لتسعير المورد
+  const IMAGE_SMALL_PRICE        = 1800;
+  const IMAGE_LARGE_PRICE        = 2000;
+  const IMAGE_SIZE_THRESHOLD_PCT = 50;
 
-  function getImagePriceByArea(widthCm, heightCm) {
-    const areaCm2 = Math.max(0, widthCm * heightCm);
-    const extra   = Math.max(0, areaCm2 - IMAGE_FREE_AREA_CM2);
-    let price = IMAGE_MIN_PRICE + extra * IMAGE_PRICE_PER_CM2;
-    price = Math.min(IMAGE_MAX_PRICE, Math.round(price / 50) * 50);
-    let label = 'تصميم صغير';
-    if (areaCm2 > 600) label = 'تصميم ضخم';
-    else if (areaCm2 > 300) label = 'تصميم كبير';
-    else if (areaCm2 > 100) label = 'تصميم متوسط';
-    return { price, label, areaCm2: Math.round(areaCm2 * 10) / 10 };
+  function getImagePriceByScale(scalePct) {
+    const isLarge = scalePct >= IMAGE_SIZE_THRESHOLD_PCT;
+    return {
+      price: isLarge ? IMAGE_LARGE_PRICE : IMAGE_SMALL_PRICE,
+      label: isLarge ? 'تصميم كبير' : 'تصميم صغير',
+      areaCm2: null
+    };
   }
-
   let _designLineParts = { text: null, image: null };
 
   function recalcDesignSurcharge() {
@@ -5857,25 +5847,16 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
 
     const textVal = (textInput?.value || '').trim();
     if (textVal.length > 0) {
-      const sizeCm = getTextSizeCm();
-      let textInfo;
-      if (sizeCm && sizeCm.widthCm > 0 && sizeCm.heightCm > 0) {
-        textInfo = getTextPriceByArea(sizeCm.widthCm, sizeCm.heightCm);
-      } else {
-        const tierInfo = getTextPriceInfo(fontSize);
-        textInfo = { price: tierInfo.price, label: tierInfo.label, areaCm2: null };
-      }
+      const tierInfo = getTextPriceInfo(fontSize);
+      const textInfo = { price: tierInfo.price, label: tierInfo.label, areaCm2: null };
       total += textInfo.price;
       _designLineParts.text = textInfo;
     }
 
     if (designOnShirtEnabled && imageLayerImg?.src) {
-      const size = getImageSizeCm();
-      if (size) {
-       const info = getImagePriceByArea(size.widthCm, size.heightCm);
-        total += info.price;
-        _designLineParts.image = info;
-      }
+      const info = getImagePriceByScale(imgScalePct);
+      total += info.price;
+      _designLineParts.image = info;
     }
 
     window.setDesignSurcharge?.(total, _designLineParts);
