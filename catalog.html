@@ -2074,7 +2074,14 @@ input, textarea {
   color:#7fd8ff;font-weight:700;box-shadow:0 0 10px rgba(120,210,255,.15);
 }
 .lw-ai-tip-chevron{color:rgba(255,255,255,.18);font-size:.55rem;flex:none}
-
+/* ── ZOOM LENS ── */
+.tdz-zoom-lens{position:absolute;bottom:16px;left:16px;width:132px;height:132px;border-radius:20px;border:1.5px solid rgba(255,255,255,.22);background:rgba(0,0,0,.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow:hidden;z-index:20;box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.06);pointer-events:none;animation:lensAppear .32s cubic-bezier(.22,1,.36,1)}
+@keyframes lensAppear{from{opacity:0;transform:scale(.82) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.tdz-zoom-lens canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.tdz-zoom-lens::before,.tdz-zoom-lens::after{content:'';position:absolute;background:rgba(255,255,255,.28);pointer-events:none;z-index:2}
+.tdz-zoom-lens::before{width:1px;height:22px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.tdz-zoom-lens::after{width:22px;height:1px;top:50%;left:50%;transform:translate(-50%,-50%)}
+.tdz-zoom-badge{position:absolute;bottom:6px;left:50%;transform:translateX(-50%);font-size:.52rem;letter-spacing:.12em;color:rgba(255,255,255,.35);background:rgba(0,0,0,.32);padding:2px 8px;border-radius:999px;z-index:3;white-space:nowrap;pointer-events:none}
 </style>
 </head>
 <body>
@@ -2172,17 +2179,17 @@ input, textarea {
       </a>
     </div>
 
-    <div class="lw-steps-label">دليل سريع — ٩ خطوات</div>
+    <div class="lw-steps-label">دليل سريع — 9 خطوات</div>
     <div class="lw-steps">
-      <div class="lw-step">      <span class="lw-sn">١</span><span class="lw-st">أدخل الموقع</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">٢</span><span class="lw-st">أكتب عنوانا ثم Start Now</span></div>
-      <div class="lw-step">      <span class="lw-sn">٣</span><span class="lw-st">أكتب Art Style Keywords</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">٤</span><span class="lw-st">اختر تصميمك</span></div>
-      <div class="lw-step">      <span class="lw-sn">٥</span><span class="lw-st">Continue</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">٦</span><span class="lw-st">Switch to Editor</span></div>
-      <div class="lw-step">      <span class="lw-sn">٧</span><span class="lw-st">اعمل Screenshot</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">٨</span><span class="lw-st">أدخل ChatGPT</span></div>
-      <div class="lw-step">      <span class="lw-sn">٩</span><span class="lw-st">اختر صورة الـ Screenshot</span></div>
+      <div class="lw-step">      <span class="lw-sn">1</span><span class="lw-st">أدخل الموقع</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">2</span><span class="lw-st">أكتب عنوانا ثم Start Now</span></div>
+      <div class="lw-step">      <span class="lw-sn">3</span><span class="lw-st">أكتب Art Style Keywords</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">4</span><span class="lw-st">اختر تصميمك</span></div>
+      <div class="lw-step">      <span class="lw-sn">5</span><span class="lw-st">Continue</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">6</span><span class="lw-st">Switch to Editor</span></div>
+      <div class="lw-step">      <span class="lw-sn">7</span><span class="lw-st">اعمل Screenshot</span></div>
+      <div class="lw-step lw-alt"><span class="lw-sn">8</span><span class="lw-st">أدخل ChatGPT</span></div>
+      <div class="lw-step">      <span class="lw-sn">9</span><span class="lw-st">اختر صورة الـ Screenshot</span></div>
     </div>
 
     <div class="lw-ai-tip">
@@ -2332,7 +2339,11 @@ input, textarea {
           <img id="tdzImageLayerImg" alt="">
         </div>
 
-        <div class="tdz-empty-hint" id="tdzEmptyHint">أكتب جملتك وحسب</div>
+       <div class="tdz-empty-hint" id="tdzEmptyHint">أكتب جملتك وحسب</div>
+        <div class="tdz-zoom-lens" id="tdzZoomLens" style="display:none" aria-hidden="true">
+          <canvas id="tdzZoomCanvas"></canvas>
+          <div class="tdz-zoom-badge">× 3.5</div>
+        </div>
       </div>
     </div>
 
@@ -5716,7 +5727,7 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
   const fUploadedOnShirt   = document.getElementById('fUploadedDesignOnShirt');
   if (!stage || !textLayer) return; // القسم غير موجود في الصفحة
   const SHIRT_IMAGES = { white: 'imag/white1.png', black: 'imag/black1.png' };
-  const MIN_SIZE = 10;
+  const MIN_SIZE = 2;
   const MAX_SIZE = 40;
   const STEP     = 2;
 
@@ -5861,6 +5872,7 @@ const designToggleWrap   = document.getElementById('tdzDesignToggleWrap');
 
     window.setDesignSurcharge?.(total, _designLineParts);
     checkDesignBoundary();
+    renderZoomLens();
   }
   /* ── مزامنة لون التيشرت مع السلايدر الرئيسي إن وُجد ── */
   function applyColor(color) {
@@ -5972,6 +5984,73 @@ imageLayerImg?.addEventListener('load', recalcDesignSurcharge);
       }, 700);
     }
   }
+  /* ── ZOOM LENS ── */
+  const ZOOM_FACTOR = 3.5;
+  const ZOOM_PX = 132;
+
+  function shouldShowLens() {
+    const hasSmallText = (textInput?.value||'').trim().length > 0 && fontSize < 10;
+    const hasSmallImg  = designOnShirtEnabled && imgScalePct < 25;
+    return hasSmallText || hasSmallImg;
+  }
+
+  function renderZoomLens() {
+    const zoomLens   = document.getElementById('tdzZoomLens');
+    const zoomCanvas = document.getElementById('tdzZoomCanvas');
+    if (!zoomLens || !zoomCanvas || !stage) return;
+    if (!shouldShowLens()) { zoomLens.style.display = 'none'; return; }
+    zoomLens.style.display = 'block';
+
+    const dpr = devicePixelRatio || 1;
+    const sz  = ZOOM_PX * dpr;
+    if (zoomCanvas.width !== sz) {
+      zoomCanvas.width  = sz; zoomCanvas.height = sz;
+      zoomCanvas.style.width = ZOOM_PX + 'px'; zoomCanvas.style.height = ZOOM_PX + 'px';
+    }
+    const ctx = zoomCanvas.getContext('2d');
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.clearRect(0, 0, ZOOM_PX, ZOOM_PX);
+
+    const sRect  = stage.getBoundingClientRect();
+    const focusX = (designOnShirtEnabled && imgScalePct < 25) ? imgPosXPct : posXPct;
+    const focusY = (designOnShirtEnabled && imgScalePct < 25) ? imgPosYPct : posYPct;
+    const dynamicZoom = Math.max(ZOOM_FACTOR, 30 / Math.max(1, fontSize));
+    const areaW  = ZOOM_PX / dynamicZoom;
+    const areaH  = ZOOM_PX / dynamicZoom;
+    const areaX  = focusX * sRect.width  - areaW / 2;
+    const areaY  = focusY * sRect.height - areaH / 2;
+
+    const shirtEl = document.getElementById('tdzShirtImg');
+    if (shirtEl?.complete && shirtEl.naturalWidth) {
+      const sr = shirtEl.getBoundingClientRect();
+      ctx.drawImage(shirtEl,
+    (sr.left - sRect.left - areaX) * dynamicZoom,
+        (sr.top  - sRect.top  - areaY) * dynamicZoom,
+        sr.width * dynamicZoom, sr.height * dynamicZoom);
+    }
+    if (designOnShirtEnabled && imageLayerImg?.complete && imageLayerImg.naturalWidth && imageLayer?.style.display !== 'none') {
+      const lr = imageLayer.getBoundingClientRect();
+      ctx.drawImage(imageLayerImg,
+    (lr.left - sRect.left - areaX) * dynamicZoom,
+        (lr.top  - sRect.top  - areaY) * dynamicZoom,
+        lr.width * dynamicZoom, lr.height * dynamicZoom);
+    }
+    const textVal = (textInput?.value||'').trim();
+    if (textVal && textLayer) {
+      const tr = textLayer.getBoundingClientRect();
+      ctx.save();
+      ctx.font = `700 ${Math.round(fontSize * dynamicZoom)}px "${customFontFamily||activeFontFamily||'Tajawal'}", Tajawal, sans-serif`;
+      ctx.fillStyle = currentColor === 'black' ? '#fff' : '#111';
+      ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.direction = 'rtl';
+      ctx.fillText(textVal,
+        (tr.left - sRect.left + tr.width  / 2 - areaX) * dynamicZoom,
+        (tr.top  - sRect.top  + tr.height / 2 - areaY) * dynamicZoom);
+      ctx.restore();
+    }
+    ctx.strokeStyle = 'rgba(255,255,255,.08)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(.5, .5, ZOOM_PX - 1, ZOOM_PX - 1);
+  }
   // إن كان نظام السلايدر الرئيسي (showSlide) موجوداً، نتزامن معه تلقائياً
   window.syncDesignMockup = function (slideIndex) {
     applyColor(slideIndex === 1 ? 'black' : 'white');
@@ -6054,6 +6133,7 @@ imageLayer.style.height = (imgScalePct * 0.32) + '%';
     posYPct = clamp01(startPosY + dy);
     applyPosition();
     markUnsaved();
+    if (shouldShowLens()) renderZoomLens();
   }
 
   function onPointerUp(e) {
@@ -6062,6 +6142,7 @@ imageLayer.style.height = (imgScalePct * 0.32) + '%';
     textLayer.classList.remove('dragging');
     textLayer.releasePointerCapture?.(e.pointerId);
     checkDesignBoundary();
+    renderZoomLens();
   }
 
   textLayer.addEventListener('pointerdown', onPointerDown);
@@ -6099,14 +6180,16 @@ imageLayer.style.height = (imgScalePct * 0.32) + '%';
     imgPosYPct = clamp01(imgStartPosY + dy);
     applyImagePosition();
     markUnsaved();
+    if (shouldShowLens()) renderZoomLens();
   }
 
   function onImgPointerUp(e) {
     if (!imgDragging) return;
     imgDragging = false;
     imageLayer.classList.remove('dragging');
-    imageLayer.releasePointerCapture?.(e.pointerId);
+    دimageLayer.releasePointerCapture?.(e.pointerId);
     checkDesignBoundary();
+    renderZoomLens();
   }
 
   imageLayer?.addEventListener('pointerdown', onImgPointerDown);
