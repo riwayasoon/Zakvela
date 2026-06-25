@@ -500,6 +500,12 @@
       line-height:1.8;
       font-size:.98rem;
     }
+    .card.active p{
+      color:#fff;
+      -webkit-text-stroke:0.45px #fff;
+      transition:color .25s ease, -webkit-text-stroke .25s ease;
+    }
+    .card{ cursor:pointer; }
 
     .split{
       display:grid;
@@ -1174,7 +1180,13 @@
       });
     }, { threshold: 0.12 });
     items.forEach(el => io.observe(el));
-
+document.querySelectorAll('.card').forEach(card => {
+      card.addEventListener('click', () => {
+        const isActive = card.classList.contains('active');
+        document.querySelectorAll('.card').forEach(c => c.classList.remove('active'));
+        if (!isActive) card.classList.add('active');
+      });
+    });
     const links = [...document.querySelectorAll('.nav-links a')];
     const sections = ['home', 'about', 'features', 'contact']
       .map(id => document.getElementById(id))
