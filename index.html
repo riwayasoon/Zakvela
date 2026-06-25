@@ -1,908 +1,1122 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
-<title>ZAKVELA | 360° View</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
-<link rel="icon" href="image/favicon.png">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ZAKVELA | Luxury Minimal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="icon" href="im/favicon.png">
 <link rel="apple-touch-icon" href="im/favicon.png">
-<style>
-/* ══════════════════════════════════════
-   TOKENS
-══════════════════════════════════════ */
-:root{
-  --bg:#050505;
-  --text:#f5f5f5;
-  --muted:rgba(255,255,255,.55);
-  --line:rgba(255,255,255,.08);
-  --glass:rgba(255,255,255,.04);
-  --shadow:0 24px 70px rgba(0,0,0,.6);
-}
+  <style>
+    :root{
+      --bg:#050505;
+      --bg-2:#0b0b0b;
+      --card:rgba(255,255,255,.04);
+      --card-2:rgba(255,255,255,.07);
+      --line:rgba(255,255,255,.10);
+      --text:#f5f5f5;
+      --muted:rgba(255,255,255,.68);
+      --soft:rgba(255,255,255,.40);
+      --accent:#ffffff;
+      --radius:24px;
+      --shadow:0 20px 60px rgba(0,0,0,.45);
+    }
 
-/* ══════════════════════════════════════
-   RESET
-══════════════════════════════════════ */
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent;margin:0;padding:0}
-a{color:var(--text) !important;text-decoration:none !important}
-html,body{height:100%;overflow:hidden}
-body{
-  font-family:
-    "Tajawal",
-    system-ui,
-    -apple-system,
-    sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  display:flex;flex-direction:column;
-  align-items:center;justify-content:center;
-  position:relative;
-  overflow:hidden;
-  user-select:none;
-}
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:
+        "Tajawal",
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        "Segoe UI",
+        Roboto,
+        Arial,
+        sans-serif;
+      background:
+        radial-gradient(circle at top, rgba(255,255,255,.08), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(255,255,255,.06), transparent 18%),
+        linear-gradient(180deg, #0a0a0a 0%, #050505 55%, #030303 100%);
+      color:var(--text);
+      overflow-x:hidden;
+    }
 
-/* ══════════════════════════════════════
-   AMBIENT
-══════════════════════════════════════ */
-#ambient{
-  position:fixed;inset:0;pointer-events:none;z-index:0;
-}
-.amb{
-  position:absolute;border-radius:50%;filter:blur(90px);
-  transition:opacity 1.4s ease, background .8s ease;
-}
-.amb-top{
-  width:700px;height:500px;
-  top:-200px;left:50%;transform:translateX(-50%);
-  background:radial-gradient(circle,rgba(255,255,255,.14),transparent 70%);
-  opacity:.9;
-}
-.amb-bot{
-  width:500px;height:300px;
-  bottom:-140px;left:50%;transform:translateX(-50%);
-  background:radial-gradient(circle,rgba(255,255,255,.06),transparent 70%);
-  opacity:.7;
-}
+    a{color:inherit;text-decoration:none}
+    .container{
+      width:min(1180px, calc(100% - 32px));
+      margin-inline:auto;
+    }
 
-/* ══════════════════════════════════════
-   TOPBAR
-══════════════════════════════════════ */
-.topbar{
-  position:fixed;top:0;left:0;right:0;z-index:100;
-  height:62px;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:0 22px;
-  backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px);
-  background:rgba(5,5,5,.65);
-  border-bottom:1px solid var(--line);
-}
-.brand{display:flex;align-items:center;gap:10px}
-.mark{
-  width:36px;height:36px;border-radius:11px;
-  border:1px solid rgba(255,255,255,.15);
-  display:grid;place-items:center;
-  background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.02));
-  font-weight:800;font-size:.82rem;letter-spacing:.06em;
-  color:var(--text) !important;
-}
-.brand-name{font-size:.88rem;letter-spacing:.3em;font-weight:700;color:var(--text) !important}
-.brand-sub{font-size:.6rem;letter-spacing:.22em;color:var(--muted) !important;margin-top:2px}
-.back-btn{
-  display:inline-flex;align-items:center;gap:6px;
-  padding:8px 16px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.11);
-  background:var(--glass);
-  font-size:.78rem;color:var(--muted) !important;
-  transition:.2s ease;
-}
-.back-btn:hover{color:var(--text) !important;border-color:rgba(255,255,255,.22);background:rgba(255,255,255,.07)}
+    .topbar{
+      position:sticky;
+      top:0;
+      z-index:50;
+      backdrop-filter:blur(18px);
+      background:rgba(5,5,5,.55);
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
 
-/* ══════════════════════════════════════
-   STAGE
-══════════════════════════════════════ */
-.stage{
-  position:relative;z-index:1;
-  display:flex;flex-direction:column;align-items:center;
-  width:100%;
-  height:100vh;
-  padding-top:62px;
-  justify-content:center;
-  gap:0;
-}
+    .nav{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:20px;
+      min-height:82px;
+    }
 
-/* ══════════════════════════════════════
-   VIEWER
-══════════════════════════════════════ */
-.viewer-wrap{
-  position:relative;
-  width:min(88vw,380px);
-  flex:none;
-}
+    .brand{
+      display:flex;
+      align-items:center;
+      gap:14px;
+      min-width:max-content;
+    }
 
-/* container صورة مع zoom */
-.viewer{
-  position:relative;
-  width:100%;
-  aspect-ratio:3/4;
-  border-radius:24px;
-  overflow:hidden;
-  background:
-    radial-gradient(circle at 50% 10%,rgba(255,255,255,.10),transparent 55%),
-    linear-gradient(180deg,#111,#060606);
-  box-shadow:
-    0 30px 80px rgba(0,0,0,.65),
-    inset 0 1px 0 rgba(255,255,255,.06);
-  touch-action:none;
-  cursor:grab;
-}
-.viewer:active{cursor:grabbing}
+    .mark{
+      width:42px;height:42px;
+      border:1px solid rgba(255,255,255,.16);
+      border-radius:14px;
+      display:grid;
+      place-items:center;
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.02));
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.10);
+      font-weight:800;
+      letter-spacing:.08em;
+      position:relative;
+      overflow:visible!important;
+    }
+    
+    .brand-text{
+      display:flex;
+      flex-direction:column;
+      line-height:1.05;
+    }
 
-/* الصورة الحالية */
-.frame-img{
-  position:absolute;inset:0;
-  width:100%;height:100%;
-  object-fit:contain;
-  display:block;
-  transform-origin:center center;
-  will-change:transform;
-  transition:opacity .18s ease;
-  pointer-events:none;
-  padding:16px;
-}
-.frame-img.hidden{opacity:0}
+    .brand-text strong{
+      font-size:.95rem;
+      letter-spacing:.32em;
+      font-weight:700;
+    }
 
-/* Preload canvas */
-.frame-preload{display:none}
+    .brand-text span{
+      font-size:.72rem;
+      letter-spacing:.26em;
+      color:var(--muted);
+      margin-top:6px;
+    }
 
-/* ظل أرضي */
-.ground{
-  position:absolute;bottom:-10px;left:50%;
-  transform:translateX(-50%);
-  width:60%;height:18px;
-  border-radius:50%;
-  background:radial-gradient(ellipse,rgba(0,0,0,.5),transparent 70%);
-  filter:blur(6px);
-  pointer-events:none;
-  transition:opacity .3s ease;
-}
+    .nav-links{
+      display:flex;
+      gap:26px;
+      align-items:center;
+      flex-wrap:wrap;
+      justify-content:center;
+      color:var(--muted);
+      font-size:.95rem;
+    }
 
-/* overlay عند اللمس المزدوج للزووم */
-.zoom-badge{
-  position:absolute;top:12px;left:12px;
-  display:flex;align-items:center;gap:5px;
-  padding:5px 11px;border-radius:999px;
-  background:rgba(0,0,0,.45);
-  backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.09);
-  font-size:.62rem;letter-spacing:.14em;color:var(--muted);
-  opacity:0;transition:opacity .3s ease;
-  pointer-events:none;
-  z-index:5;
-}
-.zoom-badge.show{opacity:1}
+    .nav-links a{
+      position:relative;
+      padding:10px 0;
+      transition:.25s ease;
+    }
 
-/* Badge 360 */
-.badge360{
-  position:absolute;top:12px;right:12px;
-  width:42px;height:42px;border-radius:50%;
-  border:1.5px solid rgba(255,255,255,.14);
-  background:rgba(0,0,0,.4);
-  backdrop-filter:blur(8px);
-  display:grid;place-items:center;
-  font-size:.56rem;font-weight:800;letter-spacing:.04em;
-  color:rgba(255,255,255,.5);line-height:1.1;text-align:center;
-  z-index:5;
-}
+    .nav-links a::after{
+      content:"";
+      position:absolute;
+      left:0;
+      bottom:2px;
+      width:0;
+      height:1px;
+      background:#fff;
+      transition:.25s ease;
+      opacity:.9;
+    }
 
-/* hint اسحب */
-.drag-hint-overlay{
-  position:absolute;
-  bottom:14px;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:6px;
-  padding:6px 14px;border-radius:999px;
-  background:rgba(0,0,0,.45);backdrop-filter:blur(8px);
-  border:1px solid rgba(255,255,255,.08);
-  font-size:.64rem;letter-spacing:.14em;color:var(--muted);
-  pointer-events:none;
-  transition:opacity .5s ease;
-  z-index:5;
-}
-.drag-hint-overlay.fade{opacity:0}
+    .nav-links a:hover,
+    .nav-links a.active{color:#fff}
 
-/* ══════════════════════════════════════
-   LOADER
-══════════════════════════════════════ */
-.loader-wrap{
-  position:absolute;inset:0;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  gap:14px;z-index:20;
-  background:rgba(5,5,5,.85);
-  border-radius:24px;
-  transition:opacity .5s ease;
-}
-.loader-wrap.done{opacity:0;pointer-events:none}
-.loader-ring{
-  width:48px;height:48px;border-radius:50%;
-  border:2px solid rgba(255,255,255,.08);
-  border-top-color:rgba(255,255,255,.7);
-  animation:spin .8s linear infinite;
-}
-@keyframes spin{to{transform:rotate(360deg)}}
-.loader-pct{font-size:.78rem;letter-spacing:.2em;color:var(--muted)}
-.loader-bar-wrap{
-  width:120px;height:2px;border-radius:999px;
-  background:rgba(255,255,255,.08);overflow:hidden;
-}
-.loader-bar{
-  height:100%;border-radius:999px;
-  background:rgba(255,255,255,.7);
-  width:0%;transition:width .2s ease;
-}
+    .nav-links a:hover::after{width:100%}
+    .nav-links a.active::after{width:100%;transition:none}
+    .nav-cta{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      padding:12px 18px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.14);
+      background:linear-gradient(180deg, rgba(255,255,255,.10), rgba(255,255,255,.04));
+      box-shadow:var(--shadow);
+      transition:.25s ease;
+      white-space:nowrap;
+      cursor:pointer;
+      user-select:none;
+      position:relative;
+      overflow:hidden;
+    }
 
-/* Placeholder SVG عند غياب الصور */
-.placeholder-svg{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  flex-direction:column;gap:12px;
-}
-.placeholder-svg svg{opacity:.18}
-.placeholder-note{
-  font-size:.7rem;letter-spacing:.14em;color:var(--muted);
-  text-align:center;padding:0 24px;line-height:1.7;
-  max-width:240px;
-}
+    .nav-cta:hover{
+      transform:translateY(-1px);
+      border-color:rgba(255,255,255,.24);
+      background:linear-gradient(180deg, rgba(255,255,255,.14), rgba(255,255,255,.06));
+    }
 
-/* ══════════════════════════════════════
-   CONTROLS
-══════════════════════════════════════ */
-.controls{
-  display:flex;flex-direction:column;align-items:center;
-  gap:12px;
-  margin-top:16px;
-  width:min(88vw,380px);
-}
+.nav-cta-canvas{
+      position:absolute;inset:0;
+      width:100%;height:100%;
+      pointer-events:none;
+      border-radius:inherit;
+    }
 
-/* ألوان */
-.color-row{
-  display:flex;align-items:center;gap:10px;
-}
-.cdot{
-  width:24px;height:24px;border-radius:50%;
-  cursor:pointer;transition:.25s ease;
-  position:relative;border:2px solid transparent;
-}
-.cdot::after{
-  content:'';position:absolute;inset:-4px;
-  border-radius:50%;border:1.5px solid transparent;
-  transition:.25s ease;
-}
-.cdot:hover{transform:scale(1.15)}
-.cdot.active{transform:scale(1.15)}
-.cdot.active::after{border-color:rgba(255,255,255,.5)}
-.cdot-white{background:linear-gradient(145deg,#eee,#fff);box-shadow:0 2px 8px rgba(255,255,255,.1)}
-.cdot-black{background:linear-gradient(145deg,#1c1c1c,#111)}
+    .hero{
+      position:relative;
+      padding:72px 0 36px;
+      min-height:calc(100vh - 82px);
+      display:grid;
+      align-items:center;
+      overflow:hidden;
+    }
 
-/* info bar */
-.info-bar{
-  display:flex;align-items:center;gap:24px;
-  padding:12px 24px;border-radius:18px;
-  border:1px solid var(--line);
-  background:var(--glass);
-  backdrop-filter:blur(12px);
-}
-.inf{display:flex;flex-direction:column;align-items:center;gap:2px}
-.inf-lbl{font-size:.58rem;letter-spacing:.18em;color:var(--muted);text-transform:uppercase}
-.inf-val{font-size:.88rem;font-weight:700;letter-spacing:.04em}
-.inf-sep{width:1px;height:24px;background:var(--line)}
+    .hero::before,
+    .hero::after{
+      content:"";
+      position:absolute;
+      inset:auto;
+      border-radius:50%;
+      pointer-events:none;
+      filter:blur(6px);
+      opacity:.55;
+    }
 
-/* شريط التقدم / السحب */
-.scrub-wrap{
-  position:relative;width:100%;height:40px;
-  border-radius:999px;
-  border:1px solid var(--line);
-  background:var(--glass);
-  backdrop-filter:blur(10px);
-  overflow:hidden;
-  touch-action:none;cursor:grab;
-}
-.scrub-wrap:active{cursor:grabbing}
-.scrub-fill{
-  position:absolute;inset:0;right:auto;
-  background:linear-gradient(90deg,rgba(255,255,255,.04),rgba(255,255,255,.09));
-  border-radius:999px;
-  pointer-events:none;
-  transition:width .04s linear;
-}
-.scrub-thumb{
-  position:absolute;top:50%;
-  width:30px;height:30px;
-  transform:translateY(-50%);
-  border-radius:50%;
-  background:linear-gradient(145deg,rgba(255,255,255,.18),rgba(255,255,255,.07));
-  border:1.5px solid rgba(255,255,255,.22);
-  box-shadow:0 4px 14px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.12);
-  display:grid;place-items:center;
-  font-size:.65rem;color:rgba(255,255,255,.4);
-  will-change:left;pointer-events:none;
-  transition:transform .1s ease;
-}
-.scrub-wrap:active .scrub-thumb{transform:translateY(-50%) scale(1.1)}
-.scrub-label{
-  position:absolute;inset:0;
-  display:flex;align-items:center;justify-content:center;
-  font-size:.62rem;letter-spacing:.16em;color:rgba(255,255,255,.18);
-  pointer-events:none;transition:opacity .3s ease;
-}
-.scrub-label.fade{opacity:0}
+    .hero::before{
+      width:520px;height:520px;
+      left:-180px;top:30px;
+      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 68%);
+    }
 
-/* زر auto spin */
-.auto-btn{
-  position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
-  z-index:50;
-  display:flex;align-items:center;gap:7px;
-  padding:10px 22px;border-radius:999px;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(8,8,8,.82);
-  backdrop-filter:blur(16px);
-  color:var(--muted) !important;
-  font-size:.76rem;letter-spacing:.14em;
-  cursor:pointer;transition:.25s ease;
-}
-.auto-btn:hover{color:var(--text) !important;border-color:rgba(255,255,255,.22)}
-.auto-btn.on .spin-ico{animation:spinIco .7s linear infinite}
-@keyframes spinIco{to{transform:rotate(360deg)}}
-.spin-ico{display:inline-block;font-size:.9rem}
+    .hero::after{
+      width:420px;height:420px;
+      right:-140px;bottom:-120px;
+      background:radial-gradient(circle, rgba(255,255,255,.08), transparent 68%);
+    }
 
-/* zoom controls */
-.zoom-bar{
-  position:absolute;right:10px;top:50%;transform:translateY(-50%);
-  display:flex;flex-direction:column;gap:6px;z-index:6;
-}
-.zoom-btn{
-  width:30px;height:30px;border-radius:50%;
-  border:1px solid rgba(255,255,255,.12);
-  background:rgba(0,0,0,.5);backdrop-filter:blur(8px);
-  color:rgba(255,255,255,.6);font-size:.95rem;
-  display:grid;place-items:center;cursor:pointer;
-  transition:.2s ease;
-}
-.zoom-btn:hover{color:#fff;background:rgba(255,255,255,.1)}
-.zoom-btn:active{transform:scale(.92)}
+    .hero-grid{
+      display:grid;
+      grid-template-columns:1.15fr .85fr;
+      gap:34px;
+      align-items:center;
+      position:relative;
+      z-index:1;
+    }
 
-/* RESPONSIVE */
-@media(max-width:400px){
-  .info-bar{gap:14px;padding:10px 16px}
-  .topbar{padding:0 14px}
-}
-@media(max-height:680px){
-  .controls{gap:8px;margin-top:10px}
-  .info-bar{padding:9px 18px}
-}
-</style>
+    .eyebrow{
+      display:inline-flex;
+      align-items:center;
+      gap:10px;
+      color:var(--muted);
+      font-size:.82rem;
+      letter-spacing:.28em;
+      text-transform:uppercase;
+      margin-bottom:18px;
+    }
+
+    .eyebrow::before{
+      content:"";
+      width:38px;height:1px;
+      background:rgba(255,255,255,.35);
+    }
+
+    h1{
+      margin:0;
+      font-size:clamp(3rem, 7vw, 6.4rem);
+      line-height:.94;
+      letter-spacing:.02em;
+      font-weight:700;
+    }
+
+    .title-accent{
+      display:block;
+      color:rgba(255,255,255,.82);
+      font-size:.34em;
+      letter-spacing:.34em;
+      text-transform:uppercase;
+      margin-bottom:18px;
+      font-weight:500;
+    }
+
+    .lead{
+      margin:22px 0 0;
+      max-width:58ch;
+      color:var(--muted);
+      font-size:1.05rem;
+      line-height:1.9;
+    }
+
+    .hero-actions{
+      display:flex;
+      gap:14px;
+      flex-wrap:wrap;
+      margin-top:30px;
+    }
+
+    .btn{
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:10px;
+      min-height:52px;
+      padding:0 22px;
+      border-radius:999px;
+      border:1px solid transparent;
+      transition:.25s ease;
+      cursor:pointer;
+      font-weight:600;
+      letter-spacing:.02em;
+      user-select:none;
+    }
+
+    .btn-primary{
+      background:#fff;
+      color:#111;
+      box-shadow:0 14px 35px rgba(255,255,255,.10);
+    }
+
+    .btn-primary:hover{transform:translateY(-2px)}
+
+    .btn-ghost{
+      background:rgba(255,255,255,.04);
+      color:#fff;
+      border-color:rgba(255,255,255,.12);
+    }
+
+    .btn-ghost:hover{
+      background:rgba(255,255,255,.07);
+      transform:translateY(-2px);
+    }
+
+    .hero-card{
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      border-radius:34px;
+      padding:26px;
+      box-shadow:var(--shadow);
+      position:relative;
+      overflow:hidden;
+      transform:translateZ(0);
+      transition:transform .35s ease;
+    }
+
+    .hero-card::before{
+      content:"";
+      position:absolute;
+      inset:-60% -40%;
+      background:radial-gradient(circle, rgba(255,255,255,.10), transparent 55%);
+      transform:rotate(18deg);
+      pointer-events:none;
+    }
+
+    .product-mock{
+      border-radius:26px;
+      border:1px solid rgba(255,255,255,.09);
+      background:
+        radial-gradient(circle at 50% 0%, rgba(255,255,255,.16), transparent 20%),
+        linear-gradient(180deg, #111 0%, #070707 100%);
+      min-height:520px;
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      align-items:end;
+      justify-content:center;
+      padding:28px;
+    }
+
+    .shirt{
+      width:min(100%, 360px);
+      aspect-ratio:4/5;
+      position:relative;
+      transform:translateY(6px);
+      filter:drop-shadow(0 24px 50px rgba(0,0,0,.4));
+    }
+
+    .shirt .neck{
+      position:absolute;
+      inset:0 16% auto;
+      height:26%;
+      border:20px solid rgba(255,255,255,.94);
+      border-bottom:none;
+      border-radius:0 0 36% 36%;
+      opacity:.95;
+    }
+
+    .shirt .body{
+      position:absolute;
+      inset:18% 0 0;
+      border-radius:22px 22px 34px 34px;
+      background:linear-gradient(180deg, #f6f6f6 0%, #ffffff 100%);
+      box-shadow:inset 0 1px 0 rgba(0,0,0,.06);
+    }
+
+    .shirt .logo{
+      position:absolute;
+      top:28%;
+      left:50%;
+      transform:translateX(-50%);
+      width:72%;
+      z-index:3;
+    }
+
+    .shirt .logo img{
+      width:100%;
+      height:auto;
+      display:block;
+      object-fit:contain;
+    }
+
+    section{
+      padding:28px 0 90px;
+    }
+
+    .section-head{
+      display:flex;
+      justify-content:space-between;
+      gap:18px;
+      align-items:end;
+      margin-bottom:24px;
+    }
+
+    .section-head h2{
+      margin:0;
+      font-size:clamp(1.8rem, 3vw, 2.8rem);
+      letter-spacing:.02em;
+    }
+
+    .section-head p{
+      margin:0;
+      color:var(--muted);
+      max-width:62ch;
+      line-height:1.8;
+    }
+
+    .grid-3{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:18px;
+    }
+
+    .card{
+      border:1px solid rgba(255,255,255,.10);
+      background:linear-gradient(180deg, rgba(255,255,255,.07), rgba(255,255,255,.03));
+      border-radius:var(--radius);
+      padding:22px;
+      box-shadow:var(--shadow);
+      transition:.28s ease;
+    }
+
+    .card:hover{
+      transform:translateY(-4px);
+      border-color:rgba(255,255,255,.18);
+      background:linear-gradient(180deg, rgba(255,255,255,.09), rgba(255,255,255,.04));
+    }
+
+    .card .icon{
+      width:48px;height:48px;
+      display:grid;
+      place-items:center;
+      border-radius:16px;
+      margin-bottom:18px;
+      border:1px solid rgba(255,255,255,.12);
+      background:rgba(255,255,255,.05);
+      font-size:1.2rem;
+    }
+
+    .card h3{
+      margin:0 0 10px;
+      font-size:1.18rem;
+    }
+
+    .card p{
+      margin:0;
+      color:var(--muted);
+      line-height:1.8;
+      font-size:.98rem;
+    }
+
+    .split{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:18px;
+      align-items:stretch;
+      margin-top:18px;
+    }
+
+    .feature-panel{
+      border-radius:28px;
+      padding:26px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        radial-gradient(circle at top right, rgba(255,255,255,.08), transparent 28%),
+        linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
+      box-shadow:var(--shadow);
+      min-height:240px;
+      position:relative;
+      overflow:hidden;
+    }
+
+    .feature-panel h3{
+      margin:0 0 14px;
+      font-size:1.35rem;
+    }
+
+    .feature-panel ul{
+      margin:0;
+      padding:0;
+      list-style:none;
+      display:grid;
+      gap:14px;
+      color:var(--muted);
+    }
+
+    .feature-panel li{
+      display:flex;
+      gap:12px;
+      align-items:flex-start;
+      line-height:1.8;
+    }
+
+    .bullet{
+      flex:none;
+      width:10px;height:10px;
+      margin-top:9px;
+      border-radius:999px;
+      background:#fff;
+      box-shadow:0 0 0 6px rgba(255,255,255,.07);
+    }
+
+    .cta-band{
+      margin-top:18px;
+      padding:28px;
+      border-radius:30px;
+      border:1px solid rgba(255,255,255,.10);
+      background:
+        linear-gradient(135deg, rgba(255,255,255,.10), rgba(255,255,255,.03)),
+        radial-gradient(circle at right top, rgba(255,255,255,.16), transparent 22%);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:18px;
+      box-shadow:var(--shadow);
+    }
+
+    .cta-band strong{
+      display:block;
+      font-size:1.35rem;
+      margin-bottom:6px;
+    }
+
+    .cta-band span{
+      color:var(--muted);
+      line-height:1.7;
+    }
+
+    footer{
+      padding:26px 0 42px;
+      border-top:1px solid rgba(255,255,255,.08);
+      color:var(--muted);
+      font-size:.92rem;
+    }
+
+    .footer-row{
+      display:flex;
+      justify-content:space-between;
+      gap:16px;
+      flex-wrap:wrap;
+      align-items:center;
+    }
+
+    .reveal{
+      opacity:0;
+      transform:translateY(22px);
+      transition:opacity .7s ease, transform .7s ease;
+    }
+
+    .reveal.show{
+      opacity:1;
+      transform:translateY(0);
+    }
+
+    .page-transition{
+      position:fixed;
+      left:50%;top:50%;
+      width:140px;height:140px;
+      border-radius:50%;
+      background:#030303;
+      transform:translate(-50%,-50%) scale(0);
+      opacity:0;pointer-events:none;
+      z-index:99997;
+      transition:transform 1s cubic-bezier(.22,1,.36,1),opacity .18s ease;
+    }
+    .pt-scene{
+      position:fixed;inset:0;z-index:99999;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      pointer-events:none;opacity:0;
+      transition:opacity .3s ease;
+    }
+    .pt-scene.show{opacity:1}
+    .pt-rings{
+      position:absolute;
+      width:88px;height:88px;
+      left:50%;top:50%;
+      margin:-44px 0 0 -44px;
+    }
+    .pt-ring{
+      position:absolute;inset:0;
+      border-radius:22px;
+      border:1px solid rgba(255,255,255,0);
+      opacity:0;
+    }
+    .pt-scene.show .pt-ring:nth-child(1){animation:ptRing 1s .06s cubic-bezier(.22,1,.36,1) forwards}
+    .pt-scene.show .pt-ring:nth-child(2){animation:ptRing 1s .18s cubic-bezier(.22,1,.36,1) forwards}
+    .pt-scene.show .pt-ring:nth-child(3){animation:ptRing 1s .32s cubic-bezier(.22,1,.36,1) forwards}
+    @keyframes ptRing{
+      0%  {transform:scale(.5);opacity:.6;border-color:rgba(255,255,255,.4)}
+      100%{transform:scale(3.4);opacity:0;border-color:rgba(255,255,255,0)}
+    }
+    .pt-mark-wrap{
+      position:relative;z-index:2;
+      opacity:0;transform:scale(.3) rotate(-6deg);
+    }
+    .pt-scene.show .pt-mark-wrap{
+      animation:ptStamp .5s .04s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    @keyframes ptStamp{
+      0%  {opacity:0;transform:scale(.3) rotate(-6deg)}
+      65% {opacity:1;transform:scale(1.08) rotate(1deg)}
+      100%{opacity:1;transform:scale(1) rotate(0deg)}
+    }
+    .pt-mark{
+      width:80px;height:80px;border-radius:22px;
+      border:1.5px solid rgba(255,255,255,.22);
+      background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03));
+      display:grid;place-items:center;
+      font-family:"Tajawal",system-ui,sans-serif;
+      font-weight:800;font-size:1.35rem;
+      letter-spacing:.1em;color:#fff;
+      position:relative;overflow:hidden;
+      box-shadow:
+        0 0 0 10px rgba(255,255,255,.03),
+        0 0 0 22px rgba(255,255,255,.012),
+        inset 0 1px 0 rgba(255,255,255,.22),
+        0 22px 55px rgba(0,0,0,.65);
+    }
+    .pt-mark::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.38) 0%,transparent 58%);
+    }
+    .pt-mark::after{
+      content:'';position:absolute;
+      top:0;left:-110%;width:55%;height:100%;
+      background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
+    }
+    .pt-scene.show .pt-mark::after{animation:ptSweep .65s .42s ease forwards}
+    @keyframes ptSweep{to{left:160%}}
+    .pt-name{
+      margin-top:18px;
+      font-family:"Tajawal",system-ui,sans-serif;
+      font-size:.78rem;letter-spacing:.44em;
+      font-weight:700;color:rgba(255,255,255,.82);
+      display:flex;position:relative;z-index:2;overflow:hidden;
+      direction:ltr;
+    }
+    .pt-letter{
+      display:inline-block;
+      transform:translateY(110%);opacity:0;
+    }
+    .pt-scene.show .pt-letter{
+      animation:ptLetterIn .42s cubic-bezier(.22,1,.36,1) forwards;
+    }
+    @keyframes ptLetterIn{to{transform:translateY(0);opacity:1}}
+    .pt-tagline{
+      margin-top:9px;
+      font-family:"Tajawal",system-ui,sans-serif;
+      font-size:.6rem;letter-spacing:.26em;
+      color:rgba(255,255,255,.28);text-transform:uppercase;
+      opacity:0;transform:translateY(5px);
+      position:relative;z-index:2;
+    }
+    .pt-scene.show .pt-tagline{animation:ptFadeUp .45s .72s ease forwards}
+    .pt-dot{
+      width:3px;height:3px;border-radius:50%;
+      background:rgba(255,255,255,.2);
+      margin-top:12px;opacity:0;position:relative;z-index:2;
+    }
+    .pt-scene.show .pt-dot{animation:ptFadeUp .35s .84s ease forwards}
+    @keyframes ptFadeUp{to{opacity:1;transform:translateY(0)}}
+
+    @media (max-width: 980px){
+      .hero-grid,
+      .grid-3,
+      .split{
+        grid-template-columns:1fr;
+      }
+      .nav{
+        flex-wrap:wrap;
+        padding:14px 0;
+      }
+      .nav-links{
+        order:3;
+        width:100%;
+        justify-content:flex-start;
+        gap:18px;
+      }
+      .hero{
+        padding-top:40px;
+      }
+      .product-mock{
+        min-height:420px;
+      }
+      .cta-band{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+    }
+
+    @media (max-width: 640px){
+      .container{width:min(100% - 22px, 1180px)}
+      h1{font-size:clamp(2.5rem, 14vw, 4.2rem)}
+      .lead{font-size:1rem}
+      .section-head{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+      .nav-cta{
+        width:100%;
+        justify-content:center;
+      }
+      .hero-actions .btn{
+        width:100%;
+      }
+      .btn{
+        min-height:50px;
+      }
+    }
+
+    *{-webkit-tap-highlight-color: transparent}
+
+    a,button,.btn,.contact-links a{
+      -webkit-tap-highlight-color: transparent;
+      outline:none;
+      user-select:none;
+    }
+
+    .contact-links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:16px;
+      margin-top:18px;
+    }
+
+    .contact-links a{
+      position:relative;
+      overflow:hidden;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-width:170px;
+      height:58px;
+      padding:0 28px;
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      letter-spacing:.08em;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.12);
+      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
+      backdrop-filter:blur(12px);
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.08),
+        0 10px 30px rgba(0,0,0,.35);
+      transition:
+        transform .3s ease,
+        border-color .3s ease,
+        background .3s ease,
+        box-shadow .3s ease;
+    }
+
+    .contact-links a::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      border-radius:999px;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
+      opacity:0;
+      transition:.4s ease;
+    }
+
+    .contact-links a::after{
+      content:"";
+      position:absolute;
+      top:0;left:-120%;
+      width:60%;height:100%;
+      background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+      transition:.6s ease;
+    }
+
+    .contact-links a:hover{
+      transform:translateY(-4px);
+      border-color:rgba(255,255,255,.25);
+      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
+      box-shadow:
+        inset 0 1px 0 rgba(255,255,255,.12),
+        0 18px 40px rgba(0,0,0,.45);
+    }
+
+    .contact-links a:hover::before{opacity:1}
+    .contact-links a:hover::after{left:140%}
+
+    a:active,button:active,.btn:active,.contact-links a:active{
+      transform:scale(0.97);
+      background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
+      box-shadow:inset 0 2px 8px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.35);
+      transition:all .12s ease;
+    }
+
+    @media(max-width:640px){
+      .contact-links{width:100%;flex-direction:column}
+      .contact-links a{width:100%}
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      html{scroll-behavior:auto}
+      *,*::before,*::after{animation:none !important;transition:none !important}
+      .reveal{opacity:1;transform:none}
+    }
+  </style>
 </head>
 <body>
+  <header class="topbar">
+    <div class="container">
+      <nav class="nav">
+        <a class="brand" href="#home" aria-label="ZAKVELA">
+          <div class="mark">ZV</div>
+          <div class="brand-text">
+            <strong>ZAKVELA</strong>
+            <span>MADE IN ALGERIA</span>
+          </div>
+        </a>
 
-<div id="ambient">
-  <div class="amb amb-top" id="ambTop"></div>
-  <div class="amb amb-bot"></div>
-</div>
+        <div class="nav-links">
+          <a href="#home" class="active">الرئيسية</a>
+          <a href="#about">عن العلامة</a>
+          <a href="#features">المميزات</a>
+          <a href="#contact">التواصل</a>
+        </div>
 
-<header class="topbar">
-  <a class="brand" href="index.html">
-    <div class="mark">ZV</div>
-    <div>
-      <div class="brand-name">ZAKVELA</div>
-      <div class="brand-sub">MADE IN ALGERIA</div>
+        <a class="nav-cta order-btn" href="catalog.html">اطلب الآن</a>
+      </nav>
     </div>
-  </a>
-  <a class="back-btn" href="index.html">← رجوع</a>
-</header>
+  </header>
 
-<div class="stage">
+  <main id="home" class="hero">
+    <div class="container">
+      <div class="hero-grid">
+        <div class="reveal">
+          <div class="eyebrow">ZAKVELA ESSENTIALS</div>
+          <h1>
+            <span class="title-accent">ZAKVELA</span>
+            Proudly Made in Algeria<br />
+          </h1>
+          <p class="lead">
+            هذا التيشيرت مصنوع من قماش التويل، وهو قماش معروف بمتانته مقارنة ببعض أنواع الأقمشة الخفيفة. ملمسه ناعم نسبيًا ويحافظ على شكله بشكل جيد مع الاستعمال العادي. يتوفر باللونين الأبيض والأسود، ويتميز بتصميم بسيط يمكن تنسيقه بسهولة مع مختلف الملابس.
+          </p>
 
-  <!-- VIEWER -->
-  <div class="viewer-wrap">
-    <div class="viewer" id="viewer">
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="spin.html">اكتشف التصميم</a>
+            <a class="btn btn-ghost" href="#contact">تواصل معنا</a>
+          </div>
+        </div>
 
-      <!-- Loader -->
-      <div class="loader-wrap" id="loaderWrap">
-        <div class="loader-ring"></div>
-        <div class="loader-bar-wrap"><div class="loader-bar" id="loaderBar"></div></div>
-        <div class="loader-pct" id="loaderPct">0%</div>
+        <div class="hero-card reveal">
+          <div class="product-mock">
+            <div class="shirt" aria-hidden="true">
+              <div class="neck"></div>
+              <div class="body"></div>
+              <div class="logo">
+                <img src="image/logo.png" alt="logo">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <section id="about">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <h2>علامة تحمل اسمها، لا أكثر</h2>
+          <p>
+            إضافة صغيرة صممت لتكون جزءا طبيعيا دون لفت إنتباه مصطنع، كل هذ للحفاظ على نظافة المظهر وتوازن في هوية القطعة عند إرتداءها
+          </p>
+        </div>
       </div>
 
- 
+      <div class="grid-3">
+        <article class="card reveal">
+          <div class="icon">✦</div>
+          <h3>Minimal</h3>
+          <p>تقليل العناصر المبهرجة وتصميم معقد حتى يبقى التركيز على العلامة والمنتج فقط</p>
+        </article>
 
-      <!-- صورة العرض -->
-      <img class="frame-img hidden" id="frameImg" alt="ZAKVELA T-Shirt" draggable="false"/>
-      <!-- صورة للـ preload المسبق -->
-      <img class="frame-img hidden" id="frameImgNext" alt="" draggable="false" aria-hidden="true"/>
+        <article class="card reveal">
+          <div class="icon">◌</div>
+          <h3>Brandmark</h3>
+          <p>التفصيل جزء مهم من هوية القطعة للحفاظ على طابع على نحو مميز</p>
+        </article>
 
-      <!-- badges -->
-      <div class="badge360">360°</div>
-      <div class="zoom-badge" id="zoomBadge">🔍 <span id="zoomPct">100%</span></div>
-
-      <!-- hint -->
-      <div class="drag-hint-overlay" id="dragHintOverlay">← اسحب للدوران →</div>
-
-      <!-- ظل -->
-      <div class="ground" id="ground"></div>
-
-      <!-- zoom controls -->
-      <div class="zoom-bar">
-        <div class="zoom-btn" onclick="doZoom(0.25)" title="تكبير">+</div>
-        <div class="zoom-btn" onclick="doZoom(-0.25)" title="تصغير">−</div>
-        <div class="zoom-btn" onclick="resetZoom()" title="إعادة" style="font-size:.6rem;letter-spacing:.02em">FIT</div>
+        <article class="card reveal">
+          <div class="icon">▣</div>
+          <h3>Premium</h3>
+          <p>قماش تويل متين ومريح وعملي بفضل نسيجه ذي الكثافة الجيدة وثباته المعروف في الاستخدام اليومي</p>
+        </article>
       </div>
     </div>
+  </section>
+
+  <section id="features">
+    <div class="container">
+      <div class="section-head reveal">
+        <div>
+          <h2>مواصفات القطعة</h2>
+          <p>
+            قماش تويل معروف بمتانته — ملمس مريح وعملي — تصميم بسيط يسهل تنسيقه — صناعة جزائرية
+          </p>
+        </div>
+      </div>
+
+      <div class="split">
+        <div class="feature-panel reveal">
+          <h3>المقاس</h3>
+          <ul>
+            <li><span class="bullet"></span>مقاسات متدرجة من M إلى XXL.</li>
+            <li><span class="bullet"></span>اختيار المقاس يتم مباشرة أثناء الطلب.</li>
+            <li><span class="bullet"></span>عرض واضح للمقاسات المتوفرة.</li>
+          </ul>
+        </div>
+
+        <div class="feature-panel reveal">
+          <h3>الاستعمال</h3>
+          <ul>
+            <li><span class="bullet"></span>مناسب للاستخدام المتكرر.</li>
+            <li><span class="bullet"></span>نسيج التويل يساعد على الحفاظ على شكل القطعة.</li>
+            <li><span class="bullet"></span>يوفر توازنا جيدا بين المتانة والراحة.</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="cta-band reveal" id="contact">
+        <div class="contact-content">
+          <strong>تواصل مع ZAKVELA</strong>
+          <span>للاستفسارات، الطلبات الخاصة، أو التعاون التجاري.</span>
+
+          <div class="contact-links">
+            <a href="https://wa.me/qr/AQFYXUJWSATEG1" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+            <a href="https://www.facebook.com/zaki.abbas.75457" target="_blank" rel="noopener noreferrer">Facebook</a>
+            <a href="https://t.me/+213774843237" target="_blank" rel="noopener noreferrer">Telegram</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-row">
+        <div>© ZAKVELA — Luxury Minimal Design</div>
+        <div>Made with a clean black / white aesthetic</div>
+      </div>
+    </div>
+  </footer>
+
+  <div class="page-transition" aria-hidden="true"></div>
+  <div class="pt-scene" id="ptScene" aria-hidden="true">
+    <div class="pt-rings">
+      <div class="pt-ring"></div>
+      <div class="pt-ring"></div>
+      <div class="pt-ring"></div>
+    </div>
+    <div class="pt-mark-wrap">
+      <div class="pt-mark">ZV</div>
+    </div>
+    <div class="pt-name" id="ptName"></div>
+    <div class="pt-tagline">Made in Algeria</div>
+    <div class="pt-dot"></div>
   </div>
 
-  <!-- CONTROLS -->
-  <div class="controls">
+  <script>
+    const items = document.querySelectorAll('.reveal');
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('show');
+      });
+    }, { threshold: 0.12 });
+    items.forEach(el => io.observe(el));
 
-    <div class="color-row">
-      <div class="cdot cdot-white active" onclick="setColor('white',this)" title="أبيض"></div>
-      <div class="cdot cdot-black"        onclick="setColor('black',this)" title="أسود"></div>
-    </div>
+    const links = [...document.querySelectorAll('.nav-links a')];
+    const sections = ['home', 'about', 'features', 'contact']
+      .map(id => document.getElementById(id))
+      .filter(Boolean);
 
-    <div class="info-bar">
-      <div class="inf">
-        <span class="inf-lbl">اللون</span>
-        <span class="inf-val" id="infoColor">أبيض</span>
-      </div>
-      <div class="inf-sep"></div>
-      <div class="inf">
-        <span class="inf-lbl">الزاوية</span>
-        <span class="inf-val" id="infoDeg">0°</span>
-      </div>
-      <div class="inf-sep"></div>
-      <div class="inf">
-        <span class="inf-lbl">القماش</span>
-        <span class="inf-val">تويل</span>
-      </div>
-    </div>
-
-    <div class="scrub-wrap" id="scrubWrap">
-      <div class="scrub-fill" id="scrubFill"></div>
-      <div class="scrub-thumb" id="scrubThumb">‹ ›</div>
-      <div class="scrub-label" id="scrubLabel">اسحب للدوران 360°</div>
-    </div>
-
-  </div>
-</div>
-
-<button class="auto-btn" id="autoBtn" onclick="toggleAuto()">
-  <span class="spin-ico" id="spinIco">↻</span>
-  <span id="autoTxt">دوران تلقائي</span>
-</button>
-
-<script>
-/* ══════════════════════════════════════════════
-   ⚙️  CONFIG — عدّل هنا فقط
-══════════════════════════════════════════════ */
-const CFG = {
-  // مجلد الصور لكل لون (مسار نسبي من موقع HTML)
-  dirs: {
-    white: 'images/360/white/',
-    black: 'images/360/black/',
-  },
-  // نمط اسم الملف — {n} يُستبدل برقم الإطار (مع صفر بادئ)
-  filePattern: 'frame-{n}.webp',
-  // عدد أرقام الترقيم  (001 = 3)
-  digits: 3,
-  // عدد الإطارات الإجمالي لكل لون
-  totalFrames: 72,
-  // سرعة Auto-Spin (ms بين إطارين)
-  spinInterval: 55,
-  // حد الـ momentum (كلما زاد كلما انزلق أكثر)
-  momentumFactor: 0.88,
-  // بيكسل لكل إطار أثناء السحب
-  pxPerFrame: 12,
-  // حد الـ zoom
-  minZoom: 1,
-  maxZoom: 4,
-};
-
-/* ══════════════════════════════════════════════
-   STATE
-══════════════════════════════════════════════ */
-let frame      = 0;
-let color      = 'white';
-let autoSpin   = false;
-let autoRaf    = null;
-let lastAutoTs = 0;
-
-let isDragging  = false;
-let dragStartX  = 0;
-let dragStartF  = 0;
-let dragLastX   = 0;
-let dragVel     = 0;   // velocity for momentum
-let momentumRaf = null;
-
-let zoomLevel  = 1;
-let panX       = 0;
-let panY       = 0;
-let isPanning  = false;
-let panStartX  = 0;
-let panStartY  = 0;
-let panOriginX = 0;
-let panOriginY = 0;
-
-// pinch-to-zoom
-let pinchDist0 = 0;
-let pinchZoom0 = 1;
-
-// frames cache: { white: [Image,...], black: [...] }
-const cache = { white: [], black: [] };
-let loadedCount = { white: 0, black: 0 };
-let totalFrames = CFG.totalFrames;
-
-/* ══════════════════════════════════════════════
-   DOM
-══════════════════════════════════════════════ */
-const viewer      = document.getElementById('viewer');
-const frameImg    = document.getElementById('frameImg');
-const loaderWrap  = document.getElementById('loaderWrap');
-const loaderBar   = document.getElementById('loaderBar');
-const loaderPct   = document.getElementById('loaderPct');
-const placeholder = document.getElementById('placeholder');
-const scrubWrap   = document.getElementById('scrubWrap');
-const scrubFill   = document.getElementById('scrubFill');
-const scrubThumb  = document.getElementById('scrubThumb');
-const scrubLabel  = document.getElementById('scrubLabel');
-const infoDeg     = document.getElementById('infoDeg');
-const infoColor   = document.getElementById('infoColor');
-const dragHint    = document.getElementById('dragHintOverlay');
-const zoomBadge   = document.getElementById('zoomBadge');
-const zoomPct     = document.getElementById('zoomPct');
-const ambTop      = document.getElementById('ambTop');
-const autoBtn     = document.getElementById('autoBtn');
-const autoTxt     = document.getElementById('autoTxt');
-const spinIco     = document.getElementById('spinIco');
-
-/* ══════════════════════════════════════════════
-   HELPERS
-══════════════════════════════════════════════ */
-function padNum(n, digits){
-  return String(n).padStart(digits, '0');
-}
-function framePath(col, idx){
-  // idx: 0-based
-  const n = padNum(idx + 1, CFG.digits);
-  return CFG.dirs[col] + CFG.filePattern.replace('{n}', n);
-}
-function clamp(v, min, max){ return Math.min(max, Math.max(min, v)); }
-function wrapFrame(f){ return ((f % totalFrames) + totalFrames) % totalFrames; }
-
-/* ══════════════════════════════════════════════
-   PRELOAD
-══════════════════════════════════════════════ */
-function preloadColor(col, onProgress, onDone){
-  cache[col] = new Array(totalFrames).fill(null);
-  loadedCount[col] = 0;
-  let done = 0;
-
-  for(let i = 0; i < totalFrames; i++){
-    const img = new Image();
-    img.onload = () => {
-      cache[col][i] = img;
-      done++;
-      loadedCount[col] = done;
-      onProgress(done / totalFrames);
-      if(done === totalFrames) onDone();
-    };
-    img.onerror = () => {
-      done++;
-      loadedCount[col] = done;
-      onProgress(done / totalFrames);
-      if(done === totalFrames) onDone();
-    };
-    img.src = framePath(col, i);
-  }
-}
-
-function startLoad(){
-  // Load white first, then black
-  let phase = 0;
-
-  function updateProgress(pct){
-    const overall = (phase * 0.5 + pct * 0.5) * 100;
-    loaderBar.style.width = overall.toFixed(0) + '%';
-    loaderPct.textContent = overall.toFixed(0) + '%';
-  }
-
-  preloadColor('white',
-    p => updateProgress(p),
-    () => {
-      phase = 1;
-      // check if any white frame loaded
-      const hasFrames = cache['white'].some(img => img && img.complete && img.naturalWidth > 0);
-      if(!hasFrames){
-        // No images found — show placeholder
-        loaderWrap.classList.add('done');
-        placeholder.style.display = 'flex';
-        return;
-      }
-      placeholder.style.display = 'none';
-      frameImg.classList.remove('hidden');
-      renderFrame(0);
-      // Now load black
-      preloadColor('black',
-        p => updateProgress(p),
-        () => {
-          loaderWrap.classList.add('done');
+    function updateNav() {
+      let current = sections[0]?.id || '';
+      sections.forEach(sec => {
+        if (sec.getBoundingClientRect().top <= window.innerHeight * 0.5) {
+          current = sec.id;
         }
-      );
+      });
+      links.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
     }
-  );
-}
+    window.addEventListener('scroll', updateNav, { passive: true });
+    updateNav();
 
-/* ══════════════════════════════════════════════
-   RENDER
-══════════════════════════════════════════════ */
-function renderFrame(f){
-  frame = wrapFrame(f);
-  const img = cache[color][frame];
-  if(img && img.naturalWidth > 0){
-    frameImg.src = img.src;
-    frameImg.classList.remove('hidden');
-  }
+    const hero = document.querySelector('.hero');
+    const card = document.querySelector('.hero-card');
+    if (hero && card) {
+      hero.addEventListener('mousemove', (e) => {
+        const rect = hero.getBoundingClientRect();
+        const x = ((e.clientX - rect.left) / rect.width - 0.5) * 8;
+        const y = ((e.clientY - rect.top) / rect.height - 0.5) * 8;
+        card.style.transform = `translate3d(${x}px, ${y}px, 0)`;
+      });
+      hero.addEventListener('mouseleave', () => {
+        card.style.transform = 'translate3d(0,0,0)';
+      });
+    }
 
-  // update UI
-  const deg = Math.round(frame * (360 / totalFrames));
-  infoDeg.textContent = deg + '°';
-  updateScrub();
-}
+    'ZAKVELA'.split('').forEach((ch, i) => {
+      const s = document.createElement('span');
+      s.className = 'pt-letter';
+      s.textContent = ch;
+      s.style.animationDelay = `${0.36 + i * 0.048}s`;
+      document.getElementById('ptName').appendChild(s);
+    });
 
-function updateScrub(){
-  const trackW = scrubWrap.offsetWidth;
-  const thumbW = scrubThumb.offsetWidth;
-  const maxL   = trackW - thumbW - 10;
-  const pct    = frame / totalFrames;
-  const left   = 5 + pct * maxL;
-  scrubThumb.style.left = left.toFixed(1) + 'px';
-  scrubFill.style.width = (left + thumbW / 2) + 'px';
-}
+    let _ptLock = false;
+    let _ptTimer1 = null, _ptTimer2 = null;
 
-/* ══════════════════════════════════════════════
-   ZOOM & PAN
-══════════════════════════════════════════════ */
-function applyTransform(){
-  frameImg.style.transform =
-    `translate(${panX}px,${panY}px) scale(${zoomLevel})`;
-  zoomPct.textContent = Math.round(zoomLevel * 100) + '%';
-  if(zoomLevel > 1){
-    zoomBadge.classList.add('show');
-  } else {
-    zoomBadge.classList.remove('show');
-    panX = 0; panY = 0;
-    frameImg.style.transform = `scale(1)`;
-  }
-}
+    document.querySelectorAll('.order-btn').forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        if (_ptLock) return;
+        _ptLock = true;
 
-function doZoom(delta){
-  zoomLevel = clamp(zoomLevel + delta, CFG.minZoom, CFG.maxZoom);
-  applyTransform();
-}
+        clearTimeout(_ptTimer1);
+        clearTimeout(_ptTimer2);
 
-function resetZoom(){
-  zoomLevel = 1; panX = 0; panY = 0;
-  applyTransform();
-}
+        const overlay = document.querySelector('.page-transition');
+        const scene   = document.getElementById('ptScene');
 
-/* ══════════════════════════════════════════════
-   DRAG TO SPIN
-══════════════════════════════════════════════ */
-function onDragStart(x, y){
-  if(zoomLevel > 1){
-    // pan mode
-    isPanning = true;
-    panStartX = x; panStartY = y;
-    panOriginX = panX; panOriginY = panY;
-    return;
-  }
-  cancelMomentum();
-  isDragging = true;
-  dragStartX = x; dragLastX = x;
-  dragStartF = frame;
-  dragVel = 0;
-  if(autoSpin) toggleAuto();
-  scrubLabel.classList.add('fade');
-  dragHint.classList.add('fade');
-}
+        overlay.style.opacity   = '1';
+        overlay.style.transform = 'translate(-50%,-50%) scale(0)';
+        document.body.style.overflow = 'hidden';
 
-function onDragMove(x, y){
-  if(isPanning){
-    panX = panOriginX + (x - panStartX);
-    panY = panOriginY + (y - panStartY);
-    applyTransform();
-    return;
-  }
-  if(!isDragging) return;
-  dragVel = x - dragLastX;
-  dragLastX = x;
-  const dx     = dragStartX - x;
-  const df     = Math.round(dx / CFG.pxPerFrame);
-  renderFrame(dragStartF + df);
-}
+        requestAnimationFrame(() => {
+          overlay.style.transform = 'translate(-50%,-50%) scale(32)';
+        });
 
-function onDragEnd(){
-  if(isPanning){ isPanning = false; return; }
-  if(!isDragging) return;
-  isDragging = false;
-  startMomentum(dragVel);
-}
+        _ptTimer1 = setTimeout(() => scene.classList.add('show'), 110);
+        _ptTimer2 = setTimeout(() => {
+          window.location.href = btn.getAttribute('href');
+        }, 1600);
 
-function startMomentum(vel){
-  cancelMomentum();
-  let v = -vel / CFG.pxPerFrame;
-  function step(){
-    if(Math.abs(v) < 0.05) return;
-    frame = wrapFrame(frame + v);
-    renderFrame(frame);
-    v *= CFG.momentumFactor;
-    momentumRaf = requestAnimationFrame(step);
-  }
-  momentumRaf = requestAnimationFrame(step);
-}
-function cancelMomentum(){
-  if(momentumRaf){ cancelAnimationFrame(momentumRaf); momentumRaf = null; }
-}
+        /* فتح القفل تلقائياً إن لم يحدث انتقال خلال 3 ثواني */
+        setTimeout(() => {
+          _ptLock = false;
+          document.body.style.overflow = '';
+          overlay.style.opacity = '0';
+          overlay.style.transform = 'translate(-50%,-50%) scale(0)';
+          scene.classList.remove('show');
+        }, 3000);
+      });
+    });
+    
+    (() => {
+      const cta = document.querySelector('.nav-cta');
+      if (!cta) return;
 
-/* ══════════════════════════════════════════════
-   AUTO SPIN
-══════════════════════════════════════════════ */
-function autoLoop(ts){
-  if(!autoSpin) return;
-  if(ts - lastAutoTs >= CFG.spinInterval){
-    frame = wrapFrame(frame + 1);
-    renderFrame(frame);
-    lastAutoTs = ts;
-  }
-  autoRaf = requestAnimationFrame(autoLoop);
-}
+      const canvas = document.createElement('canvas');
+      canvas.className = 'nav-cta-canvas';
+      cta.appendChild(canvas);
+      const ctx = canvas.getContext('2d');
 
-function toggleAuto(){
-  autoSpin = !autoSpin;
-  if(autoSpin){
-    autoBtn.classList.add('on');
-    autoTxt.textContent = 'إيقاف';
-    cancelMomentum();
-    autoRaf = requestAnimationFrame(autoLoop);
-  } else {
-    autoBtn.classList.remove('on');
-    autoTxt.textContent = 'دوران تلقائي';
-    if(autoRaf){ cancelAnimationFrame(autoRaf); autoRaf = null; }
-  }
-}
+      let raf = null, t0 = null;
+      const DUR = 1400, GRID = 3;
 
-/* ══════════════════════════════════════════════
-   COLOR SWITCH
-══════════════════════════════════════════════ */
-function setColor(c, el){
-  color = c;
-  document.querySelectorAll('.cdot').forEach(d => d.classList.remove('active'));
-  el.classList.add('active');
-  infoColor.textContent = c === 'white' ? 'أبيض' : 'أسود';
-  ambTop.style.opacity = c === 'white' ? '.9' : '.3';
-  renderFrame(frame);
-}
+      function resize() {
+        canvas.width  = cta.offsetWidth;
+        canvas.height = cta.offsetHeight;
+      }
+      resize();
+      window.addEventListener('resize', resize, { passive: true });
 
-/* ══════════════════════════════════════════════
-   EVENTS — VIEWER
-══════════════════════════════════════════════ */
-// Mouse
-viewer.addEventListener('mousedown', e=>{
-  e.preventDefault();
-  onDragStart(e.clientX, e.clientY);
-});
-window.addEventListener('mousemove', e=>{ onDragMove(e.clientX, e.clientY); });
-window.addEventListener('mouseup',   ()=>{ onDragEnd(); });
+      function draw(ts) {
+        if (!t0) t0 = ts;
+        const p   = Math.min((ts - t0) / DUR, 1);
+        const ease = 1 - Math.pow(1 - p, 2.4);
+        const w   = canvas.width, h = canvas.height;
+        const cx  = w / 2,        cy = h / 2;
+        const maxR = Math.hypot(cx, cy) + 4;
+        const r   = maxR * ease;
+        const a   = (1 - ease) * 0.28;
 
-// Wheel zoom
-viewer.addEventListener('wheel', e=>{
-  e.preventDefault();
-  const delta = e.deltaY > 0 ? -0.15 : 0.15;
-  zoomLevel = clamp(zoomLevel + delta, CFG.minZoom, CFG.maxZoom);
-  applyTransform();
-}, { passive: false });
+        ctx.clearRect(0, 0, w, h);
 
-// Double-tap / double-click reset zoom
-let lastTap = 0;
-viewer.addEventListener('dblclick', ()=>{ zoomLevel > 1 ? resetZoom() : doZoom(1); });
-viewer.addEventListener('touchstart', e=>{
-  const now = Date.now();
-  if(now - lastTap < 300 && e.touches.length === 1){
-    zoomLevel > 1 ? resetZoom() : doZoom(1);
-  }
-  lastTap = now;
+        /* ── شبكة داخل الدائرة ── */
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.clip();
 
-  if(e.touches.length === 1){
-    onDragStart(e.touches[0].clientX, e.touches[0].clientY);
-  }
-  if(e.touches.length === 2){
-    // pinch start
-    isDragging = false;
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    pinchDist0 = Math.hypot(dx, dy);
-    pinchZoom0 = zoomLevel;
-  }
-}, { passive: true });
+        ctx.strokeStyle = `rgba(255,255,255,${a})`;
+        ctx.lineWidth   = 0.55;
 
-window.addEventListener('touchmove', e=>{
-  if(e.touches.length === 2){
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const dist = Math.hypot(dx, dy);
-    zoomLevel = clamp(pinchZoom0 * (dist / pinchDist0), CFG.minZoom, CFG.maxZoom);
-    applyTransform();
-    return;
-  }
-  if(e.touches.length === 1){
-    onDragMove(e.touches[0].clientX, e.touches[0].clientY);
-  }
-}, { passive: true });
+        const ox = cx % GRID, oy = cy % GRID;
+        for (let x = ox; x < w; x += GRID) {
+          ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, h); ctx.stroke();
+        }
+        for (let y = oy; y < h; y += GRID) {
+          ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(w, y); ctx.stroke();
+        }
+        ctx.restore();
 
-window.addEventListener('touchend', ()=>{ onDragEnd(); });
+        /* ── حلقة الحافة ── */
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.strokeStyle = `rgba(255,255,255,${a * 1.6})`;
+        ctx.lineWidth   = 0.8;
+        ctx.stroke();
 
-/* ══════════════════════════════════════════════
-   SCRUB BAR drag
-══════════════════════════════════════════════ */
-let scrubDragging = false;
-let scrubStartX = 0;
-let scrubStartF = 0;
+        if (p < 1) raf = requestAnimationFrame(draw);
+        else ctx.clearRect(0, 0, w, h);
+      }
 
-scrubWrap.addEventListener('mousedown', e=>{
-  e.preventDefault();
-  scrubDragging = true;
-  scrubStartX = e.clientX;
-  scrubStartF = frame;
-  if(autoSpin) toggleAuto();
-  cancelMomentum();
-});
-window.addEventListener('mousemove', e=>{
-  if(!scrubDragging) return;
-  const dx = e.clientX - scrubStartX;
-  const df = Math.round(dx / (scrubWrap.offsetWidth / totalFrames));
-  renderFrame(scrubStartF + df);
-});
-window.addEventListener('mouseup', ()=>{ scrubDragging = false; });
+      function start() {
+        cancelAnimationFrame(raf);
+        t0 = null;
+        raf = requestAnimationFrame(draw);
+      }
 
-scrubWrap.addEventListener('touchstart', e=>{
-  scrubDragging = true;
-  scrubStartX = e.touches[0].clientX;
-  scrubStartF = frame;
-  if(autoSpin) toggleAuto();
-  cancelMomentum();
-}, { passive: true });
-window.addEventListener('touchmove', e=>{
-  if(!scrubDragging) return;
-  const dx = e.touches[0].clientX - scrubStartX;
-  const df = Math.round(dx / (scrubWrap.offsetWidth / totalFrames));
-  renderFrame(scrubStartF + df);
-}, { passive: true });
-window.addEventListener('touchend', ()=>{ scrubDragging = false; });
-
-/* ══════════════════════════════════════════════
-   RESIZE
-══════════════════════════════════════════════ */
-window.addEventListener('resize', ()=>{ updateScrub(); });
-
-/* ══════════════════════════════════════════════
-   EXPOSE GLOBALS
-══════════════════════════════════════════════ */
-window.setColor  = setColor;
-window.toggleAuto= toggleAuto;
-window.doZoom    = doZoom;
-window.resetZoom = resetZoom;
-
-/* ══════════════════════════════════════════════
-   INIT
-══════════════════════════════════════════════ */
-startLoad();
-</script>
+      cta.addEventListener('mouseenter', start);
+      cta.addEventListener('click',      start);
+      cta.addEventListener('touchstart', start, { passive: true });
+    })();
+  </script>
 </body>
 </html>
