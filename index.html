@@ -297,6 +297,57 @@
       transform:translateY(-2px);
     }
 
+.btn-contact{
+      background:transparent;
+      color:#fff;
+      border:none;
+      border-radius:999px;
+      position:relative;
+      overflow:hidden;
+      isolation:isolate;
+      padding:0 26px;
+    }
+    .btn-contact::before{
+      content:'';
+      position:absolute;
+      inset:-60%;
+      background:conic-gradient(from 0deg,transparent 0% 60%,rgba(255,255,255,.75) 65%,rgba(255,255,255,.15) 70%,transparent 75% 100%);
+      animation:spinContact 2.6s linear infinite;
+      z-index:0;
+    }
+    .btn-contact::after{
+      content:'';
+      position:absolute;
+      inset:1.5px;
+      border-radius:999px;
+      background:#0a0a0a;
+      z-index:1;
+    }
+    .btn-contact>*{position:relative;z-index:2}
+    .btn-contact:hover{transform:translateY(-2px)}
+    @keyframes spinContact{to{transform:rotate(360deg)}}
+    .signal-bars{
+      display:flex;
+      gap:3.5px;
+      align-items:flex-end;
+      height:15px;
+    }
+    .signal-bars b{
+      display:block;
+      width:3.5px;
+      border-radius:2px;
+      background:rgba(255,255,255,.85);
+      animation:barPulse 1.3s ease-in-out infinite;
+      font-style:normal;
+    }
+    .signal-bars b:nth-child(1){height:5px;animation-delay:0s}
+    .signal-bars b:nth-child(2){height:10px;animation-delay:.18s}
+    .signal-bars b:nth-child(3){height:15px;animation-delay:.36s}
+    @keyframes barPulse{
+      0%,100%{opacity:.3;transform:scaleY(.5)}
+      50%{opacity:1;transform:scaleY(1)}
+    }
+
     .hero-card{
       border:1px solid rgba(255,255,255,.10);
       background:
@@ -496,9 +547,10 @@
       box-shadow:0 0 0 6px rgba(255,255,255,.07);
     }
 
-    .cta-band{
+.cta-band{
       margin-top:18px;
       padding:28px;
+      overflow:hidden;
       border-radius:30px;
       border:1px solid rgba(255,255,255,.10);
       background:
@@ -707,89 +759,195 @@
 
     *{-webkit-tap-highlight-color: transparent}
 
-    a,button,.btn,.contact-links a{
+    a,button,.btn{
       -webkit-tap-highlight-color: transparent;
       outline:none;
       user-select:none;
     }
 
-    .contact-links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:16px;
-      margin-top:18px;
-    }
-
-    .contact-links a{
-      position:relative;
-      overflow:hidden;
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      min-width:170px;
-      height:58px;
-      padding:0 28px;
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      letter-spacing:.08em;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.12);
-      background:linear-gradient(180deg, rgba(255,255,255,.08), rgba(255,255,255,.03));
-      backdrop-filter:blur(12px);
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.08),
-        0 10px 30px rgba(0,0,0,.35);
-      transition:
-        transform .3s ease,
-        border-color .3s ease,
-        background .3s ease,
-        box-shadow .3s ease;
-    }
-
-    .contact-links a::before{
-      content:"";
-      position:absolute;
-      inset:0;
-      border-radius:999px;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.08), transparent);
-      opacity:0;
-      transition:.4s ease;
-    }
-
-    .contact-links a::after{
-      content:"";
-      position:absolute;
-      top:0;left:-120%;
-      width:60%;height:100%;
-      background:linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
-      transition:.6s ease;
-    }
-
-    .contact-links a:hover{
-      transform:translateY(-4px);
-      border-color:rgba(255,255,255,.25);
-      background:linear-gradient(180deg, rgba(255,255,255,.12), rgba(255,255,255,.05));
-      box-shadow:
-        inset 0 1px 0 rgba(255,255,255,.12),
-        0 18px 40px rgba(0,0,0,.45);
-    }
-
-    .contact-links a:hover::before{opacity:1}
-    .contact-links a:hover::after{left:140%}
-
-    a:active,button:active,.btn:active,.contact-links a:active{
+    
+      
+      a:active,button:active,.btn:active{
       transform:scale(0.97);
       background:linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.08));
       box-shadow:inset 0 2px 8px rgba(255,255,255,.12),0 8px 20px rgba(0,0,0,.35);
       transition:all .12s ease;
     }
 
-    @media(max-width:640px){
-      .contact-links{width:100%;flex-direction:column}
-      .contact-links a{width:100%}
-    }
+   
+/* ---------- contact hub ---------- */
+.contact-hub {
+  position: relative;
+  width: 260px;
+  height: 260px;
+  margin: 36px auto 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.hub-checkbox {
+  display: none;
+}
+.hub-center {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--card-2);
+  border: 1.5px solid rgba(255,255,255,.22);
+  backdrop-filter: blur(18px);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 5;
+  transition: .35s cubic-bezier(.22,1,.36,1);
+  box-shadow: 0 0 0 10px rgba(255,255,255,.04), 0 0 0 22px rgba(255,255,255,.015);
+  animation: hubPulse 2.6s ease infinite;
+}
+@keyframes hubPulse {
+  0%,100%{ box-shadow:0 0 0 10px rgba(255,255,255,.04),0 0 0 22px rgba(255,255,255,.015);}
+  50%    { box-shadow:0 0 0 16px rgba(255,255,255,.08),0 0 0 36px rgba(255,255,255,.03);}
+}
+#contact-toggle:checked + .hub-center { animation: none; }
+.hub-plus {
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  position: relative;
+  transition: .35s ease;
+}
+.hub-plus::after {
+  content: "";
+  position: absolute;
+  width: 22px;
+  height: 2px;
+  background: #fff;
+  border-radius: 2px;
+  top: 0;
+  left: 0;
+  transform: rotate(90deg);
+  transition: .35s ease;
+}
+#contact-toggle:checked + .hub-center .hub-plus {
+  transform: rotate(45deg);
+}
+#contact-toggle:checked + .hub-center .hub-plus::after {
+  transform: rotate(90deg);  /* يبقى متعامدًا لكن مع دوران الحاوية يصبح شكل الإغلاق */
+}
+.hub-label {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: var(--muted);
+  font-size: .82rem;
+  letter-spacing: .1em;
+  white-space: nowrap;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+#contact-toggle:checked ~ .hub-label {
+  opacity: 0;
+}
 
+/* الفروع */
+.hub-branches {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.hub-branch {
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: var(--card-2);
+  border: 1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(12px);
+  display: grid;
+  place-items: center;
+  color: #fff;
+  font-weight: 700;
+  font-size: .72rem;
+  letter-spacing: .08em;
+  text-decoration: none;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(0);
+  transition: .45s cubic-bezier(.22,1,.36,1);
+  pointer-events: none;
+  box-shadow: 0 0 0 0 rgba(255,255,255,0);
+}
+.hub-branch::before { display: none; }
+
+.hub-branches::after {
+  content: "";
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 180px; height: 180px;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  border: 1px solid rgba(255,255,255,.12);
+  opacity: 0;
+  transition: .5s ease .1s;
+  pointer-events: none;
+}
+#contact-toggle:checked ~ .hub-branches::after {
+  opacity: 1;
+}
+/* مواقع الفروع عند التفعيل */
+#contact-toggle:checked ~ .hub-branches .hub-branch {
+  transform: translate(-50%, -50%) scale(1);
+  pointer-events: auto;
+}
+/* الزوايا والمواقع */
+.hub-branch.wa {
+  --angle: 180;
+  top: 12%;
+  left: 50%;
+}
+.hub-branch.fb {
+  --angle: 300;
+  top: 67%;
+  left: 80%;
+}
+.hub-branch.tg {
+  --angle: 60;
+  top: 67%;
+  left: 20%;
+}
+/* تأخير بسيط لكل فرع */
+#contact-toggle:checked ~ .hub-branches .hub-branch.wa { transition-delay: .08s; }
+#contact-toggle:checked ~ .hub-branches .hub-branch.fb { transition-delay: .14s; }
+#contact-toggle:checked ~ .hub-branches .hub-branch.tg { transition-delay: .20s; }
+
+.hub-branch:hover {
+  background: var(--card);
+  border-color: rgba(255,255,255,.35);
+  transform: translate(-50%, -50%) scale(1.12) !important;
+  box-shadow: 0 0 24px rgba(255,255,255,.20), inset 0 1px 0 rgba(255,255,255,.18);
+}
+
+@media (max-width: 640px) {
+  .contact-hub {
+    width: 180px;
+    height: 180px;
+    margin-top: 20px;
+  }
+  .hub-center {
+    width: 56px;
+    height: 56px;
+  }
+  .hub-branch {
+    width: 44px;
+    height: 44px;
+  }
+  .hub-branches::after {
+    width: 124px;
+    height: 124px;
+  }
+}
     @media (prefers-reduced-motion: reduce){
       html{scroll-behavior:auto}
       *,*::before,*::after{animation:none !important;transition:none !important}
@@ -836,7 +994,10 @@
 
           <div class="hero-actions">
             <a class="btn btn-primary" href="spin.html">اكتشف التصميم</a>
-            <a class="btn btn-ghost" href="#contact">تواصل معنا</a>
+            <a class="btn btn-contact" href="#contact">
+              <span class="signal-bars"><b></b><b></b><b></b></span>
+              <span>تواصل معنا</span>
+            </a>
           </div>
         </div>
 
@@ -924,10 +1085,25 @@
           <strong>تواصل مع ZAKVELA</strong>
           <span>للاستفسارات، الطلبات الخاصة، أو التعاون التجاري.</span>
 
-          <div class="contact-links">
-            <a href="https://wa.me/qr/AQFYXUJWSATEG1" target="_blank" rel="noopener noreferrer">WhatsApp</a>
-            <a href="https://www.facebook.com/zaki.abbas.75457" target="_blank" rel="noopener noreferrer">Facebook</a>
-            <a href="https://t.me/+213774843237" target="_blank" rel="noopener noreferrer">Telegram</a>
+      <div class="contact-hub">
+  <input type="checkbox" id="contact-toggle" class="hub-checkbox">
+  <label for="contact-toggle" class="hub-center" aria-label="فتح قنوات التواصل">
+    <span class="hub-plus"></span>
+  </label>
+  <div class="hub-branches">
+    <a href="https://wa.me/qr/AQFYXUJWSATEG1" target="_blank" rel="noopener noreferrer" class="hub-branch wa" aria-label="WhatsApp">
+      <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+    </a>
+    <a href="https://www.facebook.com/zaki.abbas.75457" target="_blank" rel="noopener noreferrer" class="hub-branch fb" aria-label="Facebook">
+     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+    </a>
+    <a href="https://t.me/+213774843237" target="_blank" rel="noopener noreferrer" class="hub-branch tg" aria-label="Telegram">
+   <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="currentColor"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+    </a>
+  </div>
+  <span class="hub-label">تواصل معنا</span>
+</div>
+           
           </div>
         </div>
       </div>
