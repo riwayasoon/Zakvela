@@ -943,7 +943,19 @@ textarea{resize:vertical;min-height:80px;line-height:1.7}
 /* FOOTER */
 footer{padding:24px 0 40px;border-top:1px solid rgba(255,255,255,.07);color:var(--muted);font-size:.88rem}
 .footer-row{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:center}
+.footer-links{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:20px;
+    flex-wrap:wrap;
+}
 
+.footer-links a{
+    color:rgba(255,255,255,.82);
+    font-weight:700;
+    text-decoration:none;
+}
 /* REVEAL */
 .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s ease,transform .7s ease}
 .reveal.show{opacity:1;transform:translateY(0)}
@@ -2621,8 +2633,14 @@ input, textarea {
 <footer>
   <div class="container">
     <div class="footer-row">
-      <div>© ZAKVELA — Luxury Minimal Design</div>
-      <div>Made in Algeria</div>
+      <div>© ZAKVELA — 2026</div>
+
+      <div class="footer-links">
+        <a href="Terms.html">Terms of Use</a>
+        <a href="Policy.html">Privacy Policy</a>
+      </div>
+
+      <div>Algeria</div>
     </div>
   </div>
 </footer>
