@@ -632,114 +632,125 @@
       transform:translateY(0);
     }
 
-    .page-transition{
-      position:fixed;
-      left:50%;top:50%;
-      width:140px;height:140px;
-      border-radius:50%;
-      background:#030303;
-      transform:translate(-50%,-50%) scale(0);
-      opacity:0;pointer-events:none;
-      z-index:99997;
-      transition:transform 1s cubic-bezier(.22,1,.36,1),opacity .18s ease;
-    }
-    .pt-scene{
+ .seam-transition{
       position:fixed;inset:0;z-index:99999;
-      display:flex;flex-direction:column;
-      align-items:center;justify-content:center;
-      pointer-events:none;opacity:0;
-      transition:opacity .3s ease;
+      pointer-events:none;
+      visibility:hidden;
     }
-    .pt-scene.show{opacity:1}
-    .pt-rings{
+    .seam-transition.show{visibility:visible}
+
+    .seam-thread{
+      position:fixed;left:50%;top:0;
+      width:2px;height:0;
+      transform:translateX(-50%);
+      background:linear-gradient(180deg,transparent,rgba(255,255,255,.92) 35%,rgba(255,255,255,.92) 65%,transparent);
+      box-shadow:0 0 18px rgba(255,255,255,.55),0 0 40px rgba(255,255,255,.22);
+      z-index:1;
+      transition:height .46s cubic-bezier(.16,1,.3,1),opacity .2s ease .15s;
+    }
+    .seam-transition.show .seam-thread{height:100vh}
+    .seam-transition.covered .seam-thread{opacity:0}
+
+    .seam-thread::after{
+      content:'';
       position:absolute;
-      width:88px;height:88px;
-      left:50%;top:50%;
-      margin:-44px 0 0 -44px;
-    }
-    .pt-ring{
-      position:absolute;inset:0;
-      border-radius:22px;
-      border:1px solid rgba(255,255,255,0);
+      left:50%;top:0;
+      width:7px;height:7px;
+      margin-left:-3.5px;margin-top:-3.5px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(255,255,255,.95), rgba(255,255,255,.18) 60%, transparent 76%);
+      box-shadow:0 0 14px rgba(255,255,255,.85),0 0 30px rgba(255,255,255,.35);
       opacity:0;
     }
-    .pt-scene.show .pt-ring:nth-child(1){animation:ptRing 1s .06s cubic-bezier(.22,1,.36,1) forwards}
-    .pt-scene.show .pt-ring:nth-child(2){animation:ptRing 1s .18s cubic-bezier(.22,1,.36,1) forwards}
-    .pt-scene.show .pt-ring:nth-child(3){animation:ptRing 1s .32s cubic-bezier(.22,1,.36,1) forwards}
-    @keyframes ptRing{
-      0%  {transform:scale(.5);opacity:.6;border-color:rgba(255,255,255,.4)}
-      100%{transform:scale(3.4);opacity:0;border-color:rgba(255,255,255,0)}
+    .seam-transition.show .seam-thread::after{
+      animation:seamSpark .46s cubic-bezier(.16,1,.3,1) forwards;
     }
-    .pt-mark-wrap{
-      position:relative;z-index:2;
-      opacity:0;transform:scale(.3) rotate(-6deg);
+    @keyframes seamSpark{
+      0%{top:0%;opacity:0}
+      10%{opacity:1}
+      90%{opacity:1}
+      100%{top:100%;opacity:0}
     }
-    .pt-scene.show .pt-mark-wrap{
-      animation:ptStamp .5s .04s cubic-bezier(.22,1,.36,1) forwards;
+
+    .seam-panel{
+      position:fixed;top:0;width:50vw;height:100vh;
+      z-index:2;
+      background:
+        radial-gradient(circle at 50% 50%, rgba(255,255,255,.05), transparent 60%),
+        repeating-linear-gradient(135deg, rgba(255,255,255,.015) 0 2px, transparent 2px 6px),
+        linear-gradient(180deg, #0b0b0b 0%, #020202 58%, #000 100%);
+      transition:clip-path 1.15s cubic-bezier(.76,0,.24,1);
+      will-change:clip-path;
     }
-    @keyframes ptStamp{
-      0%  {opacity:0;transform:scale(.3) rotate(-6deg)}
-      65% {opacity:1;transform:scale(1.08) rotate(1deg)}
-      100%{opacity:1;transform:scale(1) rotate(0deg)}
+    .seam-panel-l{left:0;clip-path:inset(0 0 0 100%)}
+    .seam-panel-r{right:0;clip-path:inset(0 100% 0 0);transition-delay:.08s}
+    .seam-transition.covered .seam-panel-l{clip-path:inset(0 0 0 0%)}
+    .seam-transition.covered .seam-panel-r{clip-path:inset(0 0% 0 0)}
+
+    .seam-content{
+      position:fixed;inset:0;z-index:4;
+      display:flex;flex-direction:column;
+      align-items:center;justify-content:center;
+      opacity:0;
+      transition:opacity .55s ease;
     }
-    .pt-mark{
-      width:80px;height:80px;border-radius:22px;
-      border:1.5px solid rgba(255,255,255,.22);
-      background:linear-gradient(145deg,rgba(255,255,255,.11),rgba(255,255,255,.03));
+    .seam-transition.reveal-content .seam-content{opacity:1}
+
+    .seam-badge{
+      position:relative;width:74px;height:74px;
+      border-radius:50%;
+      border:1px solid rgba(255,255,255,.28);
+      background:radial-gradient(circle at 32% 28%, rgba(255,255,255,.14), rgba(255,255,255,.02) 60%);
       display:grid;place-items:center;
+      overflow:hidden;
+      box-shadow:0 0 0 1px rgba(255,255,255,.05) inset, 0 18px 40px rgba(0,0,0,.55);
+      transform:scale(.86);
+      transition:transform .7s cubic-bezier(.22,1,.36,1);
+    }
+    .seam-transition.reveal-content .seam-badge{transform:scale(1)}
+    .seam-badge-txt{
       font-family:"Tajawal",system-ui,sans-serif;
-      font-weight:800;font-size:1.35rem;
-      letter-spacing:.1em;color:#fff;
-      position:relative;overflow:hidden;
-      box-shadow:
-        0 0 0 10px rgba(255,255,255,.03),
-        0 0 0 22px rgba(255,255,255,.012),
-        inset 0 1px 0 rgba(255,255,255,.22),
-        0 22px 55px rgba(0,0,0,.65);
-    }
-    .pt-mark::before{
-      content:'';position:absolute;inset:0;
-      background:radial-gradient(circle at 32% 24%,rgba(255,255,255,.38) 0%,transparent 58%);
-    }
-    .pt-mark::after{
-      content:'';position:absolute;
-      top:0;left:-110%;width:55%;height:100%;
-      background:linear-gradient(90deg,transparent,rgba(255,255,255,.28),transparent);
-    }
-    .pt-scene.show .pt-mark::after{animation:ptSweep .65s .42s ease forwards}
-    @keyframes ptSweep{to{left:160%}}
-    .pt-name{
-      margin-top:18px;
-      font-family:"Tajawal",system-ui,sans-serif;
-      font-size:.78rem;letter-spacing:.44em;
-      font-weight:700;color:rgba(255,255,255,.82);
-      display:flex;position:relative;z-index:2;overflow:hidden;
-      direction:ltr;
-    }
-    .pt-letter{
-      display:inline-block;
-      transform:translateY(110%);opacity:0;
-    }
-    .pt-scene.show .pt-letter{
-      animation:ptLetterIn .42s cubic-bezier(.22,1,.36,1) forwards;
-    }
-    @keyframes ptLetterIn{to{transform:translateY(0);opacity:1}}
-    .pt-tagline{
-      margin-top:9px;
-      font-family:"Tajawal",system-ui,sans-serif;
-      font-size:.6rem;letter-spacing:.26em;
-      color:rgba(255,255,255,.28);text-transform:uppercase;
-      opacity:0;transform:translateY(5px);
+      font-weight:800;font-size:1.15rem;
+      letter-spacing:.06em;color:#fff;
       position:relative;z-index:2;
     }
-    .pt-scene.show .pt-tagline{animation:ptFadeUp .45s .72s ease forwards}
-    .pt-dot{
-      width:3px;height:3px;border-radius:50%;
-      background:rgba(255,255,255,.2);
-      margin-top:12px;opacity:0;position:relative;z-index:2;
+    .seam-badge-sheen{
+      position:absolute;top:0;left:-130%;
+      width:60%;height:100%;
+      background:linear-gradient(115deg,transparent,rgba(255,255,255,.4),transparent);
+      transform:skewX(-12deg);
     }
-    .pt-scene.show .pt-dot{animation:ptFadeUp .35s .84s ease forwards}
-    @keyframes ptFadeUp{to{opacity:1;transform:translateY(0)}}
+    .seam-transition.reveal-content .seam-badge-sheen{
+      animation:seamSheen 1.05s .32s ease forwards;
+    }
+    @keyframes seamSheen{to{left:160%}}
+
+    .seam-word{
+      margin-top:16px;
+      font-family:"Tajawal",system-ui,sans-serif;
+      font-weight:700;font-size:.82rem;
+      color:rgba(255,255,255,.88);
+      letter-spacing:.08em;
+      opacity:0;direction:ltr;
+      transition:opacity .6s ease .16s, letter-spacing .75s cubic-bezier(.22,1,.36,1) .16s;
+    }
+    .seam-transition.reveal-content .seam-word{opacity:1;letter-spacing:.42em}
+
+    .seam-line{
+      width:0;height:1px;margin:14px 0;
+      background:rgba(255,255,255,.3);
+      transition:width .6s ease .38s;
+    }
+    .seam-transition.reveal-content .seam-line{width:38px}
+
+    .seam-tag{
+      font-family:"Tajawal",system-ui,sans-serif;
+      font-size:.58rem;letter-spacing:.26em;
+      color:rgba(255,255,255,.32);text-transform:uppercase;
+      opacity:0;transform:translateY(6px);
+      transition:opacity .55s ease .52s, transform .55s ease .52s;
+    }
+    .seam-transition.reveal-content .seam-tag{opacity:1;transform:translateY(0)}
 
     @media (max-width: 980px){
       .hero-grid,
@@ -1157,19 +1168,19 @@
   </div>
 </footer>
 
-  <div class="page-transition" aria-hidden="true"></div>
-  <div class="pt-scene" id="ptScene" aria-hidden="true">
-    <div class="pt-rings">
-      <div class="pt-ring"></div>
-      <div class="pt-ring"></div>
-      <div class="pt-ring"></div>
+  <div class="seam-transition" id="seamTransition" aria-hidden="true">
+    <span class="seam-thread"></span>
+    <div class="seam-panel seam-panel-l"></div>
+    <div class="seam-panel seam-panel-r"></div>
+    <div class="seam-content">
+      <div class="seam-badge">
+        <span class="seam-badge-txt">ZV</span>
+        <span class="seam-badge-sheen"></span>
+      </div>
+      <div class="seam-word">ZAKVELA</div>
+      <div class="seam-line"></div>
+      <div class="seam-tag">Made in Algeria</div>
     </div>
-    <div class="pt-mark-wrap">
-      <div class="pt-mark">ZV</div>
-    </div>
-    <div class="pt-name" id="ptName"></div>
-    <div class="pt-tagline">Made in Algeria</div>
-    <div class="pt-dot"></div>
   </div>
 
   <script>
@@ -1220,16 +1231,8 @@ document.querySelectorAll('.card').forEach(card => {
       });
     }
 
-    'ZAKVELA'.split('').forEach((ch, i) => {
-      const s = document.createElement('span');
-      s.className = 'pt-letter';
-      s.textContent = ch;
-      s.style.animationDelay = `${0.36 + i * 0.048}s`;
-      document.getElementById('ptName').appendChild(s);
-    });
-
     let _ptLock = false;
-    let _ptTimer1 = null, _ptTimer2 = null;
+    let _ptTimer1 = null, _ptTimer2 = null, _ptTimer3 = null;
 
     document.querySelectorAll('.order-btn').forEach(btn => {
       btn.addEventListener('click', e => {
@@ -1239,31 +1242,24 @@ document.querySelectorAll('.card').forEach(card => {
 
         clearTimeout(_ptTimer1);
         clearTimeout(_ptTimer2);
+        clearTimeout(_ptTimer3);
 
-        const overlay = document.querySelector('.page-transition');
-        const scene   = document.getElementById('ptScene');
-
-        overlay.style.opacity   = '1';
-        overlay.style.transform = 'translate(-50%,-50%) scale(0)';
+        const scene = document.getElementById('seamTransition');
         document.body.style.overflow = 'hidden';
+        scene.classList.add('show');
 
-        requestAnimationFrame(() => {
-          overlay.style.transform = 'translate(-50%,-50%) scale(32)';
-        });
-
-        _ptTimer1 = setTimeout(() => scene.classList.add('show'), 110);
-        _ptTimer2 = setTimeout(() => {
+        _ptTimer1 = setTimeout(() => scene.classList.add('covered'), 60);
+        _ptTimer2 = setTimeout(() => scene.classList.add('reveal-content'), 920);
+        _ptTimer3 = setTimeout(() => {
           window.location.href = btn.getAttribute('href');
-        }, 1600);
+        }, 2150);
 
-        /* فتح القفل تلقائياً إن لم يحدث انتقال خلال 3 ثواني */
+        /* فتح القفل تلقائياً إن لم يحدث انتقال خلال مدة أطول من مدة التأثير الكاملة */
         setTimeout(() => {
           _ptLock = false;
           document.body.style.overflow = '';
-          overlay.style.opacity = '0';
-          overlay.style.transform = 'translate(-50%,-50%) scale(0)';
-          scene.classList.remove('show');
-        }, 3000);
+          scene.classList.remove('show', 'covered', 'reveal-content');
+        }, 3600);
       });
     });
     
