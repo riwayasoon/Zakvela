@@ -991,6 +991,42 @@
     height: 124px;
   }
 }
+/* ── Pull-to-Refresh ── */
+body{overscroll-behavior-y:contain}
+#ptr-wrap{
+  position:fixed;top:0;left:50%;
+  transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;
+  gap:10px;z-index:99998;pointer-events:none;
+  padding-top:14px;direction:ltr;
+}
+.ptr-shape{
+  width:16px;height:16px;
+  border:1.5px solid rgba(255,255,255,.6);
+  border-radius:50%;position:relative;
+  will-change:width,height;
+  opacity:0;
+}
+.ptr-dot{
+  width:4px;height:4px;
+  background:rgba(255,255,255,.85);
+  border-radius:50%;opacity:0;
+  position:absolute;top:50%;left:50%;
+}
+.ptr-text{
+  font-family:"Tajawal",system-ui,sans-serif;
+  font-size:.76rem;color:rgba(255,255,255,.52);
+  letter-spacing:.07em;white-space:nowrap;
+  opacity:0;transition:opacity .22s ease;
+}
+#ptr-wrap.ptr-active .ptr-dot{
+  opacity:1;
+  animation:ptrOrbit 1s cubic-bezier(.22,1,.36,1) infinite;
+}
+@keyframes ptrOrbit{
+  from{transform:translate(-50%,-50%) rotate(0deg)   translateX(9px)}
+  to  {transform:translate(-50%,-50%) rotate(360deg) translateX(9px)}
+}
     @media (prefers-reduced-motion: reduce){
       html{scroll-behavior:auto}
       *,*::before,*::after{animation:none !important;transition:none !important}
@@ -1167,7 +1203,10 @@
     </div>
   </div>
 </footer>
-
+<div id="ptr-wrap" aria-hidden="true">
+  <div class="ptr-shape"><div class="ptr-dot"></div></div>
+  <div class="ptr-text">Pull down to refresh</div>
+</div>
   <div class="seam-transition" id="seamTransition" aria-hidden="true">
     <span class="seam-thread"></span>
     <div class="seam-panel seam-panel-l"></div>
@@ -1333,6 +1372,91 @@ document.querySelectorAll('.card').forEach(card => {
       cta.addEventListener('click',      start);
       cta.addEventListener('touchstart', start, { passive: true });
     })();
+   /* ── Pull-to-Refresh ── */
+(function(){
+  var THRESH=75;
+  var el=document.getElementById('ptr-wrap');
+  var sh=el.querySelector('.ptr-shape');
+  var tx=el.querySelector('.ptr-text');
+  var sy=0,raw=0,on=false,busy=false,raf=null;
+
+  /* مقاومة ثلاثية المراحل: بطيء → أبطأ → شبه ثابت */
+  function resist(y){
+    if (y <= 50)  return y * 0.65;
+    if (y <= 120) return 50 * 0.65 + (y - 50) * 0.40;
+    return 50 * 0.65 + 70 * 0.40 + (y - 120) * 0.20;
+}
+  function lerp(a,b,t){return a+(b-a)*t;}
+  function clamp(v,lo,hi){return Math.max(lo,Math.min(hi,v));}
+
+  function morph(p){
+    p=clamp(p,0,1.6);
+    var w,h,br;
+    if(p<0.28){
+      var t=p/0.28,s=Math.round(lerp(16,19,t));
+      w=s;h=s;br=(s/2)+'px';
+    }else if(p<0.66){
+      var t=(p-0.28)/0.38;
+      w=18;h=Math.round(lerp(19,108,t));br='9px';
+    }else{
+      var t2=clamp((p-0.66)/0.54,0,1);
+      w=18;h=Math.round(lerp(108,158,t2));br='9px';
+    }
+    sh.style.width=w+'px';
+    sh.style.height=h+'px';
+    sh.style.borderRadius=br;
+  }
+
+  function frame(){
+    var vis=resist(raw);
+    var p=vis/THRESH;
+    morph(p);
+    sh.style.opacity=vis>3?'1':'0';
+    if(p>=0.30){
+      tx.style.opacity='1';
+      tx.textContent=vis>=THRESH?'Release to refresh':'Pull down to refresh';
+    }else{
+      tx.style.opacity='0';
+    }
+    raf=null;
+  }
+  document.addEventListener('touchstart',function(e){
+    if(busy||window.scrollY>0)return;
+    sy=e.touches[0].clientY;on=true;raw=0;
+  },{passive:true});
+
+  document.addEventListener('touchmove',function(e){
+    if(!on||busy)return;
+    raw=Math.max(e.touches[0].clientY-sy-20,0);
+    if(raw>0&&!raf)raf=requestAnimationFrame(frame);
+  },{passive:true});
+
+  document.addEventListener('touchend',function(){
+    if(!on||busy)return;
+    on=false;
+    if(raf){cancelAnimationFrame(raf);raf=null;}
+    resist(raw)>=THRESH?doRefresh():reset();
+    raw=0;
+  });
+
+  function reset(){
+    sh.style.transition='width .38s cubic-bezier(.22,1,.36,1),height .38s cubic-bezier(.22,1,.36,1),border-radius .35s ease,opacity .22s ease';
+    sh.style.width='16px';sh.style.height='16px';sh.style.borderRadius='8px';sh.style.opacity='0';
+    tx.style.opacity='0';
+    tx.textContent='Pull down to refresh';
+    setTimeout(function(){sh.style.transition='';},450);
+  }
+
+  function doRefresh(){
+    busy=true;
+    sh.style.transition='all .28s cubic-bezier(.22,1,.36,1)';
+    sh.style.width='24px';sh.style.height='24px';sh.style.borderRadius='12px';sh.style.opacity='1';
+    tx.textContent='Refreshing...';
+    tx.style.opacity='1';
+    el.classList.add('ptr-active');
+    setTimeout(function(){location.reload();},1500);
+  }
+})();
   </script>
 </body>
 </html>
