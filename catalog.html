@@ -1919,184 +1919,6 @@ input, textarea {
 .alfont-discover:hover .alfont-arr{transform:translateX(-5px)}
 
 
-/* ── LOGO WIZARD ── */
-.logo-wizard-section{max-width:780px;margin:0 auto 22px}
-.logo-wizard-card{
-  border:1px solid rgba(255,255,255,.10);
-  background:
-    radial-gradient(circle at 100% 0%,rgba(255,255,255,.06),transparent 42%),
-    linear-gradient(180deg,rgba(255,255,255,.06),rgba(255,255,255,.02));
-  border-radius:30px;padding:26px 22px 24px;
-  box-shadow:0 20px 60px rgba(0,0,0,.5);position:relative;overflow:hidden;
-}
-.logo-wizard-card::before{
-  content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(255,255,255,.04),transparent);
-  animation:lwSweep 4s ease-in-out infinite;pointer-events:none;
-}
-@keyframes lwSweep{0%,100%{left:-80%}55%{left:130%}}
-.lw-header{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
-.lw-header-ico{
-  flex:none;width:50px;height:50px;border-radius:15px;
-  border:1.5px solid rgba(255,255,255,.2);
-  background:linear-gradient(145deg,rgba(255,255,255,.10),rgba(255,255,255,.03));
-  display:grid;place-items:center;color:rgba(255,255,255,.75);
-  box-shadow:0 0 18px rgba(255,255,255,.06),inset 0 1px 0 rgba(255,255,255,.12);
-}
-.lw-header-ico svg{width:22px;height:22px}
-.lw-header-info{flex:1;min-width:0}
-.lw-header-badge{
-  display:inline-flex;padding:3px 11px;border-radius:999px;
-  font-size:.58rem;letter-spacing:.22em;font-weight:800;
-  border:1px solid rgba(255,255,255,.18);
-  background:rgba(255,255,255,.06);color:rgba(255,255,255,.7);margin-bottom:6px;
-}
-.lw-header-info h4{font-size:.98rem;font-weight:700;color:#fff;margin-bottom:3px;letter-spacing:.02em}
-.lw-header-info p{font-size:.74rem;color:rgba(255,255,255,.42);line-height:1.5}
-.lw-enter-btn{
-  flex:none;display:inline-flex;align-items:center;gap:8px;
-  padding:10px 18px;border-radius:999px;
-  border:1.5px solid rgba(255,255,255,.22);background:rgba(255,255,255,.07);
-  color:rgba(255,255,255,.8);font-size:.82rem;font-weight:700;letter-spacing:.06em;
-  text-decoration:none;transition:all .3s ease;white-space:nowrap;
-}
-.lw-enter-btn:hover{
-  background:rgba(255,255,255,.13);border-color:rgba(255,255,255,.45);
-  color:#fff;transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,.3);
-}
-.lw-enter-btn svg{width:13px;height:13px;flex:none}
-.lw-steps-label{
-  font-size:.62rem;letter-spacing:.22em;color:rgba(255,255,255,.25);
-  text-transform:uppercase;margin-bottom:12px;
-}
-.lw-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:18px}
-.lw-step{
-  display:flex;flex-direction:column;align-items:center;gap:8px;
-  padding:11px 8px;border-radius:16px;text-align:center;
-  border:1px solid rgba(255,255,255,.07);background:rgba(255,255,255,.03);
-}
-.lw-step.lw-alt{border-color:rgba(255,255,255,.11);background:rgba(255,255,255,.05)}
-.lw-sn{
-  width:24px;height:24px;border-radius:50%;
-  display:grid;place-items:center;font-size:.68rem;font-weight:800;
-  border:1.5px solid rgba(255,255,255,.2);
-  background:rgba(255,255,255,.07);color:rgba(255,255,255,.65);flex:none;
-}
-.lw-step.lw-alt .lw-sn{
-  border-color:rgba(255,255,255,.32);background:rgba(255,255,255,.11);color:#fff;
-}
-.lw-st{font-size:.7rem;color:rgba(255,255,255,.55);line-height:1.35;letter-spacing:.01em}
-.lw-prompt-section{
-  border:1px solid rgba(120,210,255,.2);border-radius:18px;
-  background:rgba(80,180,255,.04);padding:16px;position:relative;overflow:hidden;
-}
-.lw-prompt-section::before{
-  content:'';position:absolute;inset:0;border-radius:18px;
-  background:radial-gradient(circle at 50% 0%,rgba(120,210,255,.08),transparent 55%);
-  pointer-events:none;animation:lwPromptPulse 3s ease-in-out infinite;
-}
-@keyframes lwPromptPulse{0%,100%{opacity:.4}50%{opacity:1}}
-.lw-prompt-top{
-  display:flex;align-items:center;justify-content:space-between;gap:10px;
-  margin-bottom:12px;position:relative;z-index:1;
-}
-.lw-prompt-badge{
-  display:flex;align-items:center;gap:8px;
-  font-size:.68rem;color:rgba(255,255,255,.65);letter-spacing:.04em;line-height:1.4;flex:1;min-width:0;
-}
-.lw-prompt-dot{
-  flex:none;width:8px;height:8px;border-radius:50%;
-  background:#7fd8ff;box-shadow:0 0 8px rgba(120,210,255,.6);
-  animation:lwDotBlink 2s ease-in-out infinite;
-}
-@keyframes lwDotBlink{0%,100%{opacity:1}50%{opacity:.35}}
-.lw-copy-btn{
-  flex:none;display:inline-flex;align-items:center;gap:6px;
-  padding:7px 14px;border-radius:999px;
-  border:1.5px solid rgba(120,210,255,.42);background:rgba(80,180,255,.12);
-  color:#7fd8ff;font-size:.72rem;font-weight:700;letter-spacing:.08em;
-  cursor:pointer;font-family:inherit;transition:all .25s ease;
-}
-.lw-copy-btn:hover{background:rgba(80,180,255,.22);border-color:rgba(120,210,255,.7);transform:translateY(-1px)}
-.lw-copy-btn.copied{background:rgba(60,220,130,.12);border-color:rgba(60,220,130,.45);color:#3cdc82}
-.lw-copy-btn svg{flex:none;transition:transform .2s}
-.lw-copy-btn:hover svg{transform:scale(1.15)}
-.lw-prompt-toggle-btn{
-  flex:none;width:30px;height:30px;border-radius:50%;
-  display:flex;align-items:center;justify-content:center;padding:0;
-  border:1.5px solid rgba(255,255,255,.14);
-  background:rgba(255,255,255,.05);
-  color:rgba(255,255,255,.5);
-  cursor:pointer;font-family:inherit;transition:.25s ease;
-}
-.lw-prompt-toggle-btn:hover{
-  background:rgba(255,255,255,.1);
-  border-color:rgba(255,255,255,.28);
-  color:#fff;
-}
-.lw-prompt-toggle-btn.active{
-  border-color:rgba(120,210,255,.5);
-  background:rgba(80,180,255,.12);
-  color:#7fd8ff;
-}
-.lw-prompt-toggle-btn svg{width:14px;height:14px;transition:transform .3s ease}
-.lw-prompt-toggle-btn.active svg{transform:rotate(180deg)}
-.lw-prompt-box{
-  position:relative;z-index:1;font-size:.72rem;color:rgba(255,255,255,.5);
-  line-height:1.8;padding:12px 14px;border-radius:12px;
-  background:rgba(0,0,0,.2);border:1px solid rgba(255,255,255,.06);
-  font-family:'Courier New',Consolas,monospace;direction:ltr;text-align:left;word-break:break-word;
-}
-@media(max-width:480px){
-  .lw-header{gap:10px}
-  .lw-enter-btn{padding:9px 14px;font-size:.76rem}
-}
-
-/* ── AI TIP SIDE CARD ── */
-.lw-ai-tip{
-  margin:14px 0;border-radius:16px;
-  border:1px solid rgba(120,210,255,.22);
-  background:radial-gradient(circle at 100% 50%,rgba(120,210,255,.06),transparent 55%),rgba(255,255,255,.03);
-  padding:13px 14px;position:relative;overflow:hidden;
-  display:flex;gap:12px;align-items:flex-start;
-}
-.lw-ai-tip::before{
-  content:'';position:absolute;right:0;top:0;bottom:0;width:2.5px;
-  background:linear-gradient(180deg,rgba(120,210,255,0) 0%,rgba(120,210,255,.7) 40%,rgba(120,210,255,.7) 60%,rgba(120,210,255,0) 100%);
-}
-.lw-ai-tip::after{
-  content:'';position:absolute;top:0;left:-80%;width:50%;height:100%;
-  background:linear-gradient(90deg,transparent,rgba(120,210,255,.06),transparent);
-  animation:alFontSweep 3.2s ease-in-out infinite;pointer-events:none;
-}
-.lw-ai-tip-icon{
-  flex:none;width:36px;height:36px;border-radius:10px;
-  border:1px solid rgba(120,210,255,.38);background:rgba(80,180,255,.10);
-  display:grid;place-items:center;color:#7fd8ff;font-size:1rem;font-weight:900;
-}
-.lw-ai-tip-body{flex:1;min-width:0}
-.lw-ai-tip-badge{
-  display:inline-flex;align-items:center;gap:6px;
-  font-size:.58rem;letter-spacing:.18em;color:rgba(120,210,255,.8);
-  text-transform:uppercase;margin-bottom:6px;
-}
-.lw-ai-tip-dot{
-  width:5px;height:5px;border-radius:50%;background:#7fd8ff;
-  box-shadow:0 0 6px rgba(120,210,255,.8);flex:none;
-  animation:lwDotBlink 2s ease-in-out infinite;
-}
-.lw-ai-tip-desc{font-size:.72rem;color:rgba(255,255,255,.5);line-height:1.65;margin-bottom:10px}
-.lw-ai-tip-flow{display:flex;align-items:center;gap:5px;flex-wrap:wrap;direction:ltr}
-.lw-ai-tip-node{
-  padding:3px 8px;border-radius:7px;font-size:.60rem;letter-spacing:.04em;
-  border:1px solid rgba(255,255,255,.10);background:rgba(255,255,255,.04);
-  color:rgba(255,255,255,.48);white-space:nowrap;
-}
-.lw-ai-tip-node.lw-node-hl{
-  border-color:rgba(120,210,255,.48);background:rgba(80,180,255,.12);
-  color:#7fd8ff;font-weight:700;box-shadow:0 0 10px rgba(120,210,255,.15);
-}
-.lw-ai-tip-chevron{color:rgba(255,255,255,.18);font-size:.55rem;flex:none}
 /* ── ZOOM LENS ── */
 .tdz-zoom-lens{position:absolute;bottom:16px;left:16px;width:132px;height:132px;border-radius:20px;border:1.5px solid rgba(255,255,255,.22);background:rgba(0,0,0,.68);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);overflow:hidden;z-index:20;box-shadow:0 8px 32px rgba(0,0,0,.6),inset 0 0 0 1px rgba(255,255,255,.06);pointer-events:none;animation:lensAppear .32s cubic-bezier(.22,1,.36,1)}
 @keyframes lensAppear{from{opacity:0;transform:scale(.82) translateY(10px)}to{opacity:1;transform:scale(1) translateY(0)}}
@@ -2187,78 +2009,7 @@ html,body{overscroll-behavior-y:none}
     </div>
     <div class="size-active-label" id="sizeLabel">المقاس الحالي: <strong id="sizeCurrent">M</strong></div>
   </div>
-  <div class="logo-wizard-section reveal">
-  <div class="logo-wizard-card">
-
-    <div class="lw-header">
-      <div class="lw-header-ico">
-       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-  <path d="M12 19l7-7 3 3-7 7-3-3z"/>
-  <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z"/>
-  <path d="M2 2l7.586 7.586"/>
-  <circle cx="11" cy="11" r="2"/>
-</svg>
-      </div>
-      <div class="lw-header-info">
-        <div class="lw-header-badge">AI LOGO MAKER</div>
-        <h4>صمّم شعارك بالذكاء الاصطناعي</h4>
-        <p>أخرج شعارا احترافيا مجانا ثم ارفعه على تيشرتك</p>
-      </div>
-      <a href="https://www.design.com/s/logo-maker?code=25OFFSEM" target="_blank" rel="noopener noreferrer" class="lw-enter-btn">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
-        ادخل
-      </a>
-    </div>
-
-    <div class="lw-steps-label">دليل سريع — 9 خطوات</div>
-    <div class="lw-steps">
-      <div class="lw-step">      <span class="lw-sn">1</span><span class="lw-st">أدخل الموقع</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">2</span><span class="lw-st">أكتب عنوانا ثم Start Now</span></div>
-      <div class="lw-step">      <span class="lw-sn">3</span><span class="lw-st">أكتب Art Style Keywords</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">4</span><span class="lw-st">اختر تصميمك</span></div>
-      <div class="lw-step">      <span class="lw-sn">5</span><span class="lw-st">Continue</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">6</span><span class="lw-st">Switch to Editor</span></div>
-      <div class="lw-step">      <span class="lw-sn">7</span><span class="lw-st">اعمل Screenshot</span></div>
-      <div class="lw-step lw-alt"><span class="lw-sn">8</span><span class="lw-st">أدخل ChatGPT</span></div>
-      <div class="lw-step">      <span class="lw-sn">9</span><span class="lw-st">اختر صورة الـ Screenshot</span></div>
-    </div>
-
-    <div class="lw-ai-tip">
-      <div class="lw-ai-tip-icon">✦</div>
-      <div class="lw-ai-tip-body">
-        <div class="lw-ai-tip-badge"><span class="lw-ai-tip-dot"></span> تعديل اللوغو بالذكاء الاصطناعي</div>
-        <p class="lw-ai-tip-desc">بعد اختيار تصميمك يمكنك تعديله بالـ AI مباشرة — اتبع هذا المسار السريع</p>
-        <div class="lw-ai-tip-flow">
-          <div class="lw-ai-tip-node">Switch to Editor</div>
-          <div class="lw-ai-tip-chevron">›</div>
-          <div class="lw-ai-tip-node">قسم Logo</div>
-          <div class="lw-ai-tip-chevron">›</div>
-          <div class="lw-ai-tip-node lw-node-hl">AI Edit ✦</div>
-          <div class="lw-ai-tip-chevron">›</div>
-          <div class="lw-ai-tip-node">اكتب التعديل</div>
-          <div class="lw-ai-tip-chevron">›</div>
-          <div class="lw-ai-tip-node">Screenshot</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="lw-prompt-section">
-      <div class="lw-prompt-top">
-        <div class="lw-prompt-badge">
-          <span class="lw-prompt-dot"></span>
-          أنسخ هذا البرومت وأرسله مع Screenshot في ChatGPT
-        </div>
-        <button class="lw-prompt-toggle-btn" id="lwToggleBtn" type="button" onclick="lwTogglePrompt()" title="تبديل البرومت" aria-label="تبديل البرومت">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M3 11V9a4 4 0 014-4h14"/><path d="M7 23l-4-4 4-4"/><path d="M21 13v2a4 4 0 01-4 4H3"/></svg>
-        </button>
-        <button class="lw-copy-btn" id="lwCopyBtn" type="button" onclick="lwCopyPrompt()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" width="13" height="13"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 01-2-2V4a2 2 0 012-2h9a2 2 0 012 2v1"/></svg>
-          <span id="lwCopyLabel">نسخ</span>
-        </button>
-      </div>
-     <div class="lw-prompt-box" id="lwPromptBox">Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged</div>
-    </div>
-
+  
   </div>
 </div>
 <div class="design-upload-section reveal">
@@ -2465,8 +2216,11 @@ html,body{overscroll-behavior-y:none}
       <button type="button" class="tdz-edit-again" id="tdzEditAgain">تعديل</button>
     </div>
 
-  </div>
+ </div>
 </div>
+</div>
+
+<!-- حقل مخفي لتمرير صورة التصميم النهائية مع الفورم -->
 
 <!-- حقل مخفي لتمرير صورة التصميم النهائية مع الفورم (نفس مبدأ fDesignImage الموجود) -->
 <input type="hidden" id="fTextDesignImage">
@@ -6646,26 +6400,6 @@ fontRemoveBtn?.addEventListener('click', e => {
   
 })();
 
-const LW_PROMPT_VISIBLE = 'Remove the background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the actual background. Enhance the design clarity and sharpness while preserving the original style. Export the result as a transparent PNG in maximum resolution. No modifications, no enhancements, no redesign. Remove any text in the image completely while keeping all other logo elements unchanged';
-
-const LW_PROMPT_HIDDEN = 'Remove background completely. Isolate the logo only. Preserve all original details, text, edges, proportions, and quality exactly. Do not remove any white parts that belong to the design; keep all internal white areas intact and remove only the true background. Enhance the design clarity and sharpness while preserving the original style. Export as a transparent PNG in maximum resolution. No modifications, no enhancement, no redesign. If the text "Since 2026" appears anywhere in the image, remove it completely while keeping all other logo elements unchanged.';
-
-let lwUsingHiddenPrompt = false;
-
-function lwTogglePrompt() {
-  lwUsingHiddenPrompt = !lwUsingHiddenPrompt;
-  const box = document.getElementById('lwPromptBox');
-  const toggleBtn = document.getElementById('lwToggleBtn');
-  if (box) box.textContent = lwUsingHiddenPrompt ? LW_PROMPT_HIDDEN : LW_PROMPT_VISIBLE;
-  if (toggleBtn) toggleBtn.classList.toggle('active', lwUsingHiddenPrompt);
-
-  if (lwUsingHiddenPrompt) {
-    window.showToast?.('الأن لديك برومت يبقي الكتابة مصممة من موقع', 'بالكتابة', 'ok');
-  } else {
-    window.showToast?.('هذا برومت يترك logo فقط اعد تبديل ان اردته هو وكتابة معا', 'بلا كتابة', 'warn');
-  }
-}
-window.lwTogglePrompt = lwTogglePrompt;
 /* ── Pull-to-Refresh ── */
 (function(){
   var THRESH=75;
